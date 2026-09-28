@@ -6,5 +6,6 @@ fun main() {
     println("\n--- REGISTERED USER ---")
     println("Name: ${user.name}")
     println("Password: ${user.email}")
+    print("TESTTTT")
 
 }
