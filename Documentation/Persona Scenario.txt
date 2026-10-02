@@ -1,0 +1,52 @@
+Customer/Sender Scenario 
+1. The customer needs to create an account first by entering their personal information. 
+2. After creating an account, the customer can now log in to the courier system. 
+3. The customer can update their profile or change their password if needed. 
+4. To book a delivery, the customer need to enter the address where the rider will pick up the package. 
+5. Next is the customer enters the address where the package will be delivered. 
+6. The customer needs to check both locations to make sure that the addresses are correct. 
+7. The system will show the available vehicles that can be used for the delivery. 
+8. The customer chooses a vehicle and checks its details, especially the maximum weight that it can carry. 
+9. After that, the customer enters a short description of the package and its estimated weight. 
+10. The system checks if the package is allowed for the chosen vehicle. If the package is too heavy, the customer needs to choose another vehicle that can carry it. 
+11. Once the needed information is complete, the system creates the delivery order. 
+12. Before confirming, the customer needs to reviews the pickup and drop-off locations, package details, chosen vehicle, and delivery fee. 
+13. If everything is correct, the customer can confirm the booking. 
+14. The system saves the order and starts looking for an available rider. 
+15. When a rider is assigned, the customer receives a notification together with some information about the rider. 
+16. Once the rider starts moving, the customer can use the tracking feature. 
+17. The customer can see the rider's current location at the map. 
+18. The rider's location will be updated while the delivery is ongoing, but the accuracy may still depend on the rider's internet connection and GPS signal. 
+19. The customer will also receive updates, such as when the rider is going to the pickup location, when the package is picked up, and when it is already on the way to the destination. 
+20. When the package reaches the destination, the customer receives a notification that the delivery is completed. 
+21. The customer can confirm the payment and check the receipt. 
+22. The completed delivery will be saved in the customer's order history. 
+23. If the customer enters a wrong address or package information, they should contact the rider or support before the delivery starts. 
+24. the customer can also log out of their account. 
+Courier/Rider Scenario 
+1. The rider logs in using their registered account. 
+2. The rider can update their profile or change their password if needed. 
+3. When a delivery is assigned, the rider receives a notification about the new order. 
+4. The rider opens the assigned order and reviews all the delivery information. 
+5. The rider checks the customer's pickup location. 
+6. The rider also checks the drop-off location where the package needs to be delivered. 
+7. The rider reviews the package description, estimated weight, and vehicle required for the delivery. 
+8. If the package information is incorrect or the package is not safe to deliver, the rider can report the problem to the customer and cancel it. 
+9. After accepting the order, the rider proceeds to the pickup location. 
+10. The rider changes the delivery status to “On the Way to Pickup.” 
+11. The system sends this update to the customer. 
+12. When the rider arrives at the pickup location, they update the status to “Arrived at Pickup.” 
+13. The rider checks the package and makes sure it is the same package described in the order. 
+14. After receiving it from the customer, the rider marks the package as “Picked Up.” 
+15. The rider starts the delivery and follows the route going to the drop-off location. 
+16. While traveling, the system sends the rider's updated location to the customer using the tracking feature. 
+17. The customer can see the rider's location. 
+18. When the rider arrives at the drop-off location, they update the status to “Arrived at Destination.” 
+19. If the receiver is not available, the rider may contact the customer or wait based on the rules of the sulitPackGo APP. 
+20. After giving the package to the correct receiver, the rider marks the order as “Completed.” 
+21. The system will stop the live tracking and save the completed delivery. 
+22. The customer receives a notification that the package was delivered successfully. 
+23. The completed order will appear in the customer's order history and the rider's delivery record. 
+24. After finishing their assigned deliveries, the rider can take another order again or log out.
+
+
