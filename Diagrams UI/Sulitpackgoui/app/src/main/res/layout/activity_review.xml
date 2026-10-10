@@ -23,7 +23,7 @@
             android:textColor="@color/black"
             android:textSize="28sp" />
 
-        <!-- DELIVERY DETAILS: dito lalabas ang input ng user -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,13 +101,13 @@
                 tools:text="" />
         </LinearLayout>
 
-        <!-- Linya sa gitna -->
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/black" />
 
-        <!-- FEES -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

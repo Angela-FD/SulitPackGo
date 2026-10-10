@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fillViewport="true"
-    tools:context=".TrackingActivity">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:textColor="@color/black"
             android:textSize="28sp" />
 
-        <!-- Lalagyan ng mapa (dito ilalagay ang map fragment sa susunod) -->
+
         <FrameLayout
             android:id="@+id/mapContainer"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             android:layout_marginTop="28dp"
             android:background="@drawable/bg_input_outline" />
 
-        <!-- Delivery # -->
+
         <TextView
             android:id="@+id/tvDeliveryNumber"
             android:layout_width="wrap_content"
@@ -44,7 +44,6 @@
             android:textColor="@color/black"
             android:textSize="18sp" />
 
-        <!-- Status (hal. Rider is on the way) - napupunan sa Kotlin -->
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
@@ -54,7 +53,7 @@
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-        <!-- Estimated Arrival -->
+
         <TextView
             android:id="@+id/tvEta"
             android:layout_width="match_parent"
