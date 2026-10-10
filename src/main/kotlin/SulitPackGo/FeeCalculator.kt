@@ -1,7 +1,0 @@
-package SulitPackGo
-
-class FeeCalculator {
-
-
-
-}
