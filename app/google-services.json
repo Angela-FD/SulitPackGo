@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "986899006449",
+    "project_id": "sulitpackgo-b20a1",
+    "storage_bucket": "sulitpackgo-b20a1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986899006449:android:857a1e015b18aaa5373a50",
+        "android_client_info": {
+          "package_name": "com.example.sulitpackgoui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuK81dJPYDfKpgvQz8MJpU1914nj7waDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
