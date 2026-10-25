@@ -7,6 +7,8 @@ class OrderData(
 
     var pickupAddress: String = "",
     var pickupAddressDetails: String = "",
+    var dropAddress: String = "",
+    var dropAddressDetails: String = "",
 
     var pickupLatitude: Double = 0.0,
     var pickupLongitude: Double = 0.0,
@@ -16,6 +18,9 @@ class OrderData(
 
     var description: String = "",
     var weight: Double = 0.0,
+    var packageType: String = "",
+    var pieces: Int = 1,
+    var instructions: String = "",
 
     var vehicleType: String = "",
 

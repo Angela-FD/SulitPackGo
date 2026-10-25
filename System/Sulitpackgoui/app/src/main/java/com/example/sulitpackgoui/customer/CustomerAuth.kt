@@ -17,22 +17,45 @@ class CustomerAuth {
     ) {
 
         if (customerName.isBlank()) {
-            onResult(false, "Please enter your name.")
+
+            onResult(
+                false,
+                "Please enter customer name."
+            )
+
             return
         }
+
 
         if (customerEmail.isBlank()) {
-            onResult(false, "Please enter your email.")
+
+            onResult(
+                false,
+                "Please enter customer email."
+            )
+
             return
         }
+
 
         if (customerPassword.length < 8) {
-            onResult(false, "Password should have at least 8 characters.")
+
+            onResult(
+                false,
+                "Password should have at least 8 characters."
+            )
+
             return
         }
 
+
         if (customerPassword != confirmPassword) {
-            onResult(false, "Passwords do not match.")
+
+            onResult(
+                false,
+                "Passwords do not match."
+            )
+
             return
         }
 
@@ -43,10 +66,18 @@ class CustomerAuth {
         )
             .addOnSuccessListener {
 
-                var firebaseCustomer = auth.currentUser
+
+                var firebaseCustomer =
+                    auth.currentUser
+
 
                 if (firebaseCustomer == null) {
-                    onResult(false, "Customer account creation failed.")
+
+                    onResult(
+                        false,
+                        "Customer account creation failed."
+                    )
+
                     return@addOnSuccessListener
                 }
 
@@ -63,6 +94,7 @@ class CustomerAuth {
                     customer
                 ) { success, message ->
 
+
                     onResult(
                         success,
                         message
@@ -70,6 +102,7 @@ class CustomerAuth {
                 }
             }
             .addOnFailureListener { error ->
+
 
                 onResult(
                     false,
@@ -86,20 +119,25 @@ class CustomerAuth {
     ) {
 
         if (customerEmail.isBlank()) {
+
             onResult(
                 false,
-                "Please enter your email.",
+                "Please enter customer email.",
                 null
             )
+
             return
         }
 
+
         if (customerPassword.isBlank()) {
+
             onResult(
                 false,
-                "Please enter your password.",
+                "Please enter customer password.",
                 null
             )
+
             return
         }
 
@@ -110,14 +148,19 @@ class CustomerAuth {
         )
             .addOnSuccessListener {
 
-                var firebaseCustomer = auth.currentUser
+
+                var firebaseCustomer =
+                    auth.currentUser
+
 
                 if (firebaseCustomer == null) {
+
                     onResult(
                         false,
                         "Customer login failed.",
                         null
                     )
+
                     return@addOnSuccessListener
                 }
 
@@ -125,6 +168,7 @@ class CustomerAuth {
                 customerDatabase.getCustomer(
                     firebaseCustomer.uid
                 ) { success, message, customer ->
+
 
                     onResult(
                         success,
@@ -134,6 +178,7 @@ class CustomerAuth {
                 }
             }
             .addOnFailureListener { error ->
+
 
                 onResult(
                     false,
@@ -145,6 +190,7 @@ class CustomerAuth {
 
 
     fun logOut() {
+
         auth.signOut()
     }
 }

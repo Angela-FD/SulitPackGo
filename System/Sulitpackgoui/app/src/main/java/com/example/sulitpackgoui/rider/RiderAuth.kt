@@ -19,37 +19,67 @@ class RiderAuth {
     ) {
 
         if (riderName.isBlank()) {
-            onResult(false, "Please enter rider name.")
+
+            onResult(
+                false,
+                "Please enter rider name."
+            )
+
             return
         }
+
 
         if (riderEmail.isBlank()) {
-            onResult(false, "Please enter rider email.")
+
+            onResult(
+                false,
+                "Please enter rider email."
+            )
+
             return
         }
+
 
         if (riderPassword.length < 8) {
-            onResult(false, "Password should have at least 8 characters.")
+
+            onResult(
+                false,
+                "Password should have at least 8 characters."
+            )
+
             return
         }
+
 
         if (riderPassword != confirmPassword) {
-            onResult(false, "Passwords do not match.")
+
+            onResult(
+                false,
+                "Passwords do not match."
+            )
+
             return
         }
+
 
         if (riderPhoneNumber.isBlank()) {
-            onResult(false, "Please enter phone number.")
+
+            onResult(
+                false,
+                "Please enter phone number."
+            )
+
             return
         }
 
-        if (
-            selectedVehicle != "Motor" &&
-            selectedVehicle != "Tricycle" &&
-            selectedVehicle != "Van" &&
-            selectedVehicle != "Truck"
-        ) {
-            onResult(false, "Please select a valid vehicle.")
+
+        if (selectedVehicle.isBlank()) {
+
+            onResult(
+                false,
+                "Please select a vehicle."
+            )
+
             return
         }
 
@@ -60,10 +90,18 @@ class RiderAuth {
         )
             .addOnSuccessListener {
 
-                var firebaseRider = auth.currentUser
+
+                var firebaseRider =
+                    auth.currentUser
+
 
                 if (firebaseRider == null) {
-                    onResult(false, "Rider account creation failed.")
+
+                    onResult(
+                        false,
+                        "Rider account creation failed."
+                    )
+
                     return@addOnSuccessListener
                 }
 
@@ -83,6 +121,7 @@ class RiderAuth {
                     rider
                 ) { success, message ->
 
+
                     onResult(
                         success,
                         message
@@ -91,12 +130,14 @@ class RiderAuth {
             }
             .addOnFailureListener { error ->
 
+
                 onResult(
                     false,
                     error.message ?: "Rider registration failed."
                 )
             }
     }
+
 
     fun logIn(
         riderEmail: String,
@@ -105,20 +146,25 @@ class RiderAuth {
     ) {
 
         if (riderEmail.isBlank()) {
+
             onResult(
                 false,
                 "Please enter rider email.",
                 null
             )
+
             return
         }
 
+
         if (riderPassword.isBlank()) {
+
             onResult(
                 false,
                 "Please enter rider password.",
                 null
             )
+
             return
         }
 
@@ -129,14 +175,19 @@ class RiderAuth {
         )
             .addOnSuccessListener {
 
-                var firebaseRider = auth.currentUser
+
+                var firebaseRider =
+                    auth.currentUser
+
 
                 if (firebaseRider == null) {
+
                     onResult(
                         false,
                         "Rider login failed.",
                         null
                     )
+
                     return@addOnSuccessListener
                 }
 
@@ -144,6 +195,7 @@ class RiderAuth {
                 riderDatabase.getRider(
                     firebaseRider.uid
                 ) { success, message, rider ->
+
 
                     onResult(
                         success,
@@ -153,6 +205,7 @@ class RiderAuth {
                 }
             }
             .addOnFailureListener { error ->
+
 
                 onResult(
                     false,
@@ -164,6 +217,7 @@ class RiderAuth {
 
 
     fun logOut() {
+
         auth.signOut()
     }
 }

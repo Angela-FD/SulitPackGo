@@ -1,8 +1,5 @@
 package com.example.sulitpackgoui.rider
 
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-
 class Rider(
     var uid: String = "",
     var name: String = "",

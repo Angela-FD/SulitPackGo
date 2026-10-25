@@ -4,8 +4,8 @@ import com.example.sulitpackgoui.DeliveryLocation
 import com.example.sulitpackgoui.FeeCalculator
 import com.example.sulitpackgoui.PackageInfo
 import com.example.sulitpackgoui.Vehicle
-import com.google.firebase.firestore.FirebaseFirestore
 import com.example.sulitpackgoui.order.OrderData
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerOrder {
 
@@ -21,16 +21,89 @@ class CustomerOrder {
     ) {
 
         if (customer.uid.isBlank()) {
-            onResult(false, "Customer is not logged in.")
+
+            onResult(
+                false,
+                "Customer is not logged in."
+            )
+
+            return
+        }
+
+
+        if (location.address.isBlank()) {
+
+            onResult(
+                false,
+                "Pickup address is required."
+            )
+
+            return
+        }
+
+
+        if (location.dropAddress.isBlank()) {
+
+            onResult(
+                false,
+                "Drop-off address is required."
+            )
+
+            return
+        }
+
+
+        if (packageInfo.description.isBlank()) {
+
+            onResult(
+                false,
+                "Package description is required."
+            )
+
+            return
+        }
+
+
+        if (packageInfo.weight <= 0.0) {
+
+            onResult(
+                false,
+                "Package weight must be greater than 0."
+            )
+
+            return
+        }
+
+
+        if (packageInfo.pieces <= 0) {
+
+            onResult(
+                false,
+                "Package pieces must be at least 1."
+            )
+
+            return
+        }
+
+
+        if (vehicle.vehicleType.isBlank()) {
+
+            onResult(
+                false,
+                "Please select a vehicle."
+            )
+
             return
         }
 
 
         if (vehicle.checkWeight(packageInfo.weight) == false) {
+
             onResult(
                 false,
                 "Package is too heavy for the selected vehicle."
             )
+
             return
         }
 
@@ -63,14 +136,20 @@ class CustomerOrder {
             System.currentTimeMillis()
 
 
-        var orderData = hashMapOf(
+        var orderData = hashMapOf<String, Any>(
+
             "orderId" to orderId,
 
             "customerId" to customer.uid,
             "riderId" to "",
 
+
             "pickupAddress" to location.address,
             "pickupAddressDetails" to location.addressDetails,
+
+            "dropAddress" to location.dropAddress,
+            "dropAddressDetails" to location.dropAddressDetails,
+
 
             "pickupLatitude" to location.pickUpLatitude,
             "pickupLongitude" to location.pickUpLongitude,
@@ -78,13 +157,20 @@ class CustomerOrder {
             "dropLatitude" to location.dropLatitude,
             "dropLongitude" to location.dropLongitude,
 
+
             "description" to packageInfo.description,
+            "packageType" to packageInfo.packageType,
             "weight" to packageInfo.weight,
+            "pieces" to packageInfo.pieces,
+            "instructions" to packageInfo.instructions,
+
 
             "vehicleType" to vehicle.vehicleType,
 
+
             "distance" to distance,
             "fee" to fee,
+
 
             "status" to "Pending",
 
@@ -110,17 +196,20 @@ class CustomerOrder {
             }
     }
 
+
     fun getMyOrders(
         customer: Customer,
         onResult: (Boolean, String, List<OrderData>) -> Unit
     ) {
 
         if (customer.uid.isBlank()) {
+
             onResult(
                 false,
                 "Customer is not logged in.",
                 emptyList()
             )
+
             return
         }
 
@@ -131,6 +220,7 @@ class CustomerOrder {
             .get()
             .addOnSuccessListener { documents ->
 
+
                 var customerOrders =
                     mutableListOf<OrderData>()
 
@@ -138,6 +228,7 @@ class CustomerOrder {
                 for (document in documents) {
 
                     var order = OrderData(
+
                         orderId =
                             document.getString("orderId") ?: "",
 
@@ -147,11 +238,19 @@ class CustomerOrder {
                         riderId =
                             document.getString("riderId") ?: "",
 
+
                         pickupAddress =
                             document.getString("pickupAddress") ?: "",
 
                         pickupAddressDetails =
                             document.getString("pickupAddressDetails") ?: "",
+
+                        dropAddress =
+                            document.getString("dropAddress") ?: "",
+
+                        dropAddressDetails =
+                            document.getString("dropAddressDetails") ?: "",
+
 
                         pickupLatitude =
                             document.getDouble("pickupLatitude") ?: 0.0,
@@ -165,20 +264,33 @@ class CustomerOrder {
                         dropLongitude =
                             document.getDouble("dropLongitude") ?: 0.0,
 
+
                         description =
                             document.getString("description") ?: "",
+
+                        packageType =
+                            document.getString("packageType") ?: "",
 
                         weight =
                             document.getDouble("weight") ?: 0.0,
 
+                        pieces =
+                            document.getLong("pieces")?.toInt() ?: 1,
+
+                        instructions =
+                            document.getString("instructions") ?: "",
+
+
                         vehicleType =
                             document.getString("vehicleType") ?: "",
+
 
                         distance =
                             document.getDouble("distance") ?: 0.0,
 
                         fee =
                             document.getDouble("fee") ?: 0.0,
+
 
                         status =
                             document.getString("status") ?: "",
@@ -189,6 +301,11 @@ class CustomerOrder {
 
 
                     customerOrders.add(order)
+                }
+
+
+                customerOrders.sortByDescending {
+                    it.createdAt
                 }
 
 
@@ -208,6 +325,7 @@ class CustomerOrder {
             }
     }
 
+
     fun cancelOrder(
         customer: Customer,
         orderId: String,
@@ -215,12 +333,23 @@ class CustomerOrder {
     ) {
 
         if (customer.uid.isBlank()) {
-            onResult(false, "Customer is not logged in.")
+
+            onResult(
+                false,
+                "Customer is not logged in."
+            )
+
             return
         }
 
+
         if (orderId.isBlank()) {
-            onResult(false, "Invalid order.")
+
+            onResult(
+                false,
+                "Invalid order."
+            )
+
             return
         }
 
@@ -231,56 +360,77 @@ class CustomerOrder {
                 .document(orderId)
 
 
-        database.runTransaction { transaction ->
-
-            var orderDocument =
-                transaction.get(orderReference)
-
-
-            if (orderDocument.exists() == false) {
-                throw Exception("Order not found.")
-            }
+        orderReference
+            .get()
+            .addOnSuccessListener { document ->
 
 
-            var orderCustomerId =
-                orderDocument.getString("customerId") ?: ""
+                if (document.exists() == false) {
 
-            if (orderCustomerId != customer.uid) {
-                throw Exception("This order does not belong to this customer.")
-            }
+                    onResult(
+                        false,
+                        "Order not found."
+                    )
 
-
-            var currentStatus =
-                orderDocument.getString("status") ?: ""
-
-            if (currentStatus != "Pending") {
-                throw Exception(
-                    "Only pending orders can be cancelled."
-                )
-            }
+                    return@addOnSuccessListener
+                }
 
 
-            transaction.update(
-                orderReference,
-                "status",
-                "Cancelled"
-            )
+                var orderCustomerId =
+                    document.getString("customerId") ?: ""
 
 
-            true
-        }
-            .addOnSuccessListener {
+                if (orderCustomerId != customer.uid) {
 
-                onResult(
-                    true,
-                    "Order cancelled successfully."
-                )
+                    onResult(
+                        false,
+                        "This order does not belong to this customer."
+                    )
+
+                    return@addOnSuccessListener
+                }
+
+
+                var currentStatus =
+                    document.getString("status") ?: ""
+
+
+                if (currentStatus != "Pending") {
+
+                    onResult(
+                        false,
+                        "Only pending orders can be cancelled."
+                    )
+
+                    return@addOnSuccessListener
+                }
+
+
+                orderReference
+                    .update(
+                        "status",
+                        "Cancelled"
+                    )
+                    .addOnSuccessListener {
+
+                        onResult(
+                            true,
+                            "Order cancelled successfully."
+                        )
+                    }
+                    .addOnFailureListener { error ->
+
+                        onResult(
+                            false,
+                            error.message ?: "Failed to cancel order."
+                        )
+                    }
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to cancel order."
+                    error.message ?: "Failed to get order."
                 )
             }
     }
