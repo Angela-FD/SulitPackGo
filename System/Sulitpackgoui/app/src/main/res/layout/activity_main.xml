@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="20dp">
+    android:padding="24dp"
+    android:background="@drawable/edittext_background">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="SulitPackGo"
-        android:textSize="28sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_marginTop="70dp"
+        android:fontFamily=""/>
+    <EditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Backend Testing"
-        android:textSize="18sp"
-        android:layout_marginTop="10dp" />
-
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/edittext_background"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_background"/>
 </LinearLayout>
+
