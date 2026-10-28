@@ -7,7 +7,6 @@ class CustomerAuth {
     private var auth = FirebaseAuth.getInstance()
     private var customerDatabase = CustomerDatabase()
 
-
     fun register(
         customerName: String,
         customerEmail: String,
@@ -15,50 +14,25 @@ class CustomerAuth {
         confirmPassword: String,
         onResult: (Boolean, String) -> Unit
     ) {
-
         if (customerName.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter customer name."
-            )
-
+            onResult(false, "Please enter your name.")
             return
         }
-
 
         if (customerEmail.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter customer email."
-            )
-
+            onResult(false, "Please enter your email.")
             return
         }
-
 
         if (customerPassword.length < 8) {
-
-            onResult(
-                false,
-                "Password should have at least 8 characters."
-            )
-
+            onResult(false, "Password must be at least 8 characters.")
             return
         }
-
 
         if (customerPassword != confirmPassword) {
-
-            onResult(
-                false,
-                "Passwords do not match."
-            )
-
+            onResult(false, "Passwords do not match.")
             return
         }
-
 
         auth.createUserWithEmailAndPassword(
             customerEmail,
@@ -66,21 +40,12 @@ class CustomerAuth {
         )
             .addOnSuccessListener {
 
-
-                var firebaseCustomer =
-                    auth.currentUser
-
+                var firebaseCustomer = auth.currentUser
 
                 if (firebaseCustomer == null) {
-
-                    onResult(
-                        false,
-                        "Customer account creation failed."
-                    )
-
+                    onResult(false, "Customer registration failed.")
                     return@addOnSuccessListener
                 }
-
 
                 var customer = Customer(
                     uid = firebaseCustomer.uid,
@@ -89,21 +54,11 @@ class CustomerAuth {
                     role = "customer"
                 )
 
-
-                customerDatabase.saveCustomer(
-                    customer
-                ) { success, message ->
-
-
-                    onResult(
-                        success,
-                        message
-                    )
+                customerDatabase.saveCustomer(customer) { success, message ->
+                    onResult(success, message)
                 }
             }
             .addOnFailureListener { error ->
-
-
                 onResult(
                     false,
                     error.message ?: "Customer registration failed."
@@ -111,36 +66,20 @@ class CustomerAuth {
             }
     }
 
-
     fun logIn(
         customerEmail: String,
         customerPassword: String,
         onResult: (Boolean, String, Customer?) -> Unit
     ) {
-
         if (customerEmail.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter customer email.",
-                null
-            )
-
+            onResult(false, "Please enter your email.", null)
             return
         }
-
 
         if (customerPassword.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter customer password.",
-                null
-            )
-
+            onResult(false, "Please enter your password.", null)
             return
         }
-
 
         auth.signInWithEmailAndPassword(
             customerEmail,
@@ -148,38 +87,22 @@ class CustomerAuth {
         )
             .addOnSuccessListener {
 
-
-                var firebaseCustomer =
-                    auth.currentUser
-
+                var firebaseCustomer = auth.currentUser
 
                 if (firebaseCustomer == null) {
-
-                    onResult(
-                        false,
-                        "Customer login failed.",
-                        null
-                    )
-
+                    onResult(false, "Customer login failed.", null)
                     return@addOnSuccessListener
                 }
 
-
-                customerDatabase.getCustomer(
-                    firebaseCustomer.uid
-                ) { success, message, customer ->
-
-
-                    onResult(
+                customerDatabase.getCustomer(firebaseCustomer.uid) {
                         success,
                         message,
-                        customer
-                    )
+                        customer ->
+
+                    onResult(success, message, customer)
                 }
             }
             .addOnFailureListener { error ->
-
-
                 onResult(
                     false,
                     error.message ?: "Customer login failed.",
@@ -188,9 +111,31 @@ class CustomerAuth {
             }
     }
 
+    fun resetPassword(
+        customerEmail: String,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        if (customerEmail.isBlank()) {
+            onResult(false, "Please enter your email.")
+            return
+        }
+
+        auth.sendPasswordResetEmail(customerEmail)
+            .addOnSuccessListener {
+                onResult(
+                    true,
+                    "Password reset email sent."
+                )
+            }
+            .addOnFailureListener { error ->
+                onResult(
+                    false,
+                    error.message ?: "Failed to send password reset email."
+                )
+            }
+    }
 
     fun logOut() {
-
         auth.signOut()
     }
 }

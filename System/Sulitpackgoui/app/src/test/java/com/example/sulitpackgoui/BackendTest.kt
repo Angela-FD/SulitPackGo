@@ -1,5 +1,6 @@
 package com.example.sulitpackgoui
 
+import com.example.sulitpackgoui.admin.VehicleFee
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -291,9 +292,17 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -320,9 +329,17 @@ class BackendTest {
         vehicle.selectVehicle("Tricycle")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Tricycle",
+            baseFee = 500.0,
+            ratePerKm = 50.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -349,9 +366,17 @@ class BackendTest {
         vehicle.selectVehicle("Van")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Van",
+            baseFee = 1000.0,
+            ratePerKm = 100.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -378,9 +403,17 @@ class BackendTest {
         vehicle.selectVehicle("Truck")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Truck",
+            baseFee = 1500.0,
+            ratePerKm = 200.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -413,9 +446,17 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -448,9 +489,17 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 

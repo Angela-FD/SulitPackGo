@@ -4,13 +4,14 @@ import com.example.sulitpackgoui.DeliveryLocation
 import com.example.sulitpackgoui.FeeCalculator
 import com.example.sulitpackgoui.PackageInfo
 import com.example.sulitpackgoui.Vehicle
+import com.example.sulitpackgoui.admin.VehicleFeeDatabase
 import com.example.sulitpackgoui.order.OrderData
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerOrder {
 
     private var database = FirebaseFirestore.getInstance()
-
+    private var vehicleFeeDatabase = VehicleFeeDatabase()
 
     fun createOrder(
         customer: Customer,
@@ -19,398 +20,269 @@ class CustomerOrder {
         vehicle: Vehicle,
         onResult: (Boolean, String) -> Unit
     ) {
-
         if (customer.uid.isBlank()) {
-
-            onResult(
-                false,
-                "Customer is not logged in."
-            )
-
+            onResult(false, "Customer is not logged in.")
             return
         }
-
 
         if (location.address.isBlank()) {
-
-            onResult(
-                false,
-                "Pickup address is required."
-            )
-
+            onResult(false, "Pickup address is missing.")
             return
         }
-
 
         if (location.dropAddress.isBlank()) {
-
-            onResult(
-                false,
-                "Drop-off address is required."
-            )
-
+            onResult(false, "Drop-off address is missing.")
             return
         }
-
 
         if (packageInfo.description.isBlank()) {
-
-            onResult(
-                false,
-                "Package description is required."
-            )
-
+            onResult(false, "Package description is missing.")
             return
         }
 
-
-        if (packageInfo.weight <= 0.0) {
-
-            onResult(
-                false,
-                "Package weight must be greater than 0."
-            )
-
+        if (packageInfo.weight <= 0) {
+            onResult(false, "Package weight must be greater than 0.")
             return
         }
-
 
         if (packageInfo.pieces <= 0) {
-
-            onResult(
-                false,
-                "Package pieces must be at least 1."
-            )
-
+            onResult(false, "Number of pieces must be greater than 0.")
             return
         }
-
 
         if (vehicle.vehicleType.isBlank()) {
-
-            onResult(
-                false,
-                "Please select a vehicle."
-            )
-
+            onResult(false, "Please select a vehicle.")
             return
         }
 
-
-        if (vehicle.checkWeight(packageInfo.weight) == false) {
-
+        if (!vehicle.checkWeight(packageInfo.weight)) {
             onResult(
                 false,
                 "Package is too heavy for the selected vehicle."
             )
-
             return
         }
 
+        vehicleFeeDatabase.getVehicleFee(vehicle.vehicleType) {
+                success,
+                message,
+                vehicleFee ->
 
-        var distance =
-            location.distanceCalculate()
+            if (!success || vehicleFee == null) {
+                onResult(false, message)
+                return@getVehicleFee
+            }
 
+            var distance = location.distanceCalculate()
 
-        var calculator = FeeCalculator(
-            devLocation = location,
-            feeVehicle = vehicle
-        )
+            var calculator = FeeCalculator(
+                devLocation = location,
+                feeVehicle = vehicle,
+                vehicleFee = vehicleFee
+            )
 
+            var fee = calculator.calculateTotalFee()
 
-        var fee =
-            calculator.calculateTotalFee()
-
-
-        var orderDocument =
-            database
+            var orderDocument = database
                 .collection("orders")
                 .document()
 
+            var orderId = orderDocument.id
 
-        var orderId =
-            orderDocument.id
+            var createdAt = System.currentTimeMillis()
 
+            var orderData = hashMapOf(
+                "orderId" to orderId,
+                "customerId" to customer.uid,
+                "riderId" to "",
 
-        var createdAt =
-            System.currentTimeMillis()
+                "pickupAddress" to location.address,
+                "pickupAddressDetails" to location.addressDetails,
 
+                "dropAddress" to location.dropAddress,
+                "dropAddressDetails" to location.dropAddressDetails,
 
-        var orderData = hashMapOf<String, Any>(
+                "pickupLatitude" to location.pickUpLatitude,
+                "pickupLongitude" to location.pickUpLongitude,
+                "dropLatitude" to location.dropLatitude,
+                "dropLongitude" to location.dropLongitude,
 
-            "orderId" to orderId,
+                "description" to packageInfo.description,
+                "packageType" to packageInfo.packageType,
+                "weight" to packageInfo.weight,
+                "pieces" to packageInfo.pieces,
+                "instructions" to packageInfo.instructions,
 
-            "customerId" to customer.uid,
-            "riderId" to "",
+                "vehicleType" to vehicle.vehicleType,
+                "distance" to distance,
+                "fee" to fee,
 
+                "status" to "Pending",
+                "createdAt" to createdAt
+            )
 
-            "pickupAddress" to location.address,
-            "pickupAddressDetails" to location.addressDetails,
+            orderDocument
+                .set(orderData)
+                .addOnSuccessListener {
 
-            "dropAddress" to location.dropAddress,
-            "dropAddressDetails" to location.dropAddressDetails,
+                    onResult(
+                        true,
+                        "Order created successfully."
+                    )
+                }
+                .addOnFailureListener { error ->
 
-
-            "pickupLatitude" to location.pickUpLatitude,
-            "pickupLongitude" to location.pickUpLongitude,
-
-            "dropLatitude" to location.dropLatitude,
-            "dropLongitude" to location.dropLongitude,
-
-
-            "description" to packageInfo.description,
-            "packageType" to packageInfo.packageType,
-            "weight" to packageInfo.weight,
-            "pieces" to packageInfo.pieces,
-            "instructions" to packageInfo.instructions,
-
-
-            "vehicleType" to vehicle.vehicleType,
-
-
-            "distance" to distance,
-            "fee" to fee,
-
-
-            "status" to "Pending",
-
-            "createdAt" to createdAt
-        )
-
-
-        orderDocument
-            .set(orderData)
-            .addOnSuccessListener {
-
-                onResult(
-                    true,
-                    "Order created successfully."
-                )
-            }
-            .addOnFailureListener { error ->
-
-                onResult(
-                    false,
-                    error.message ?: "Failed to create order."
-                )
-            }
+                    onResult(
+                        false,
+                        error.message ?: "Failed to create order."
+                    )
+                }
+        }
     }
-
 
     fun getMyOrders(
         customer: Customer,
         onResult: (Boolean, String, List<OrderData>) -> Unit
     ) {
-
         if (customer.uid.isBlank()) {
-
             onResult(
                 false,
                 "Customer is not logged in.",
                 emptyList()
             )
-
             return
         }
 
-
-        database
-            .collection("orders")
+        database.collection("orders")
             .whereEqualTo("customerId", customer.uid)
             .get()
-            .addOnSuccessListener { documents ->
+            .addOnSuccessListener { result ->
 
+                var orders = mutableListOf<OrderData>()
 
-                var customerOrders =
-                    mutableListOf<OrderData>()
-
-
-                for (document in documents) {
+                for (document in result.documents) {
 
                     var order = OrderData(
+                        orderId = document.getString("orderId") ?: "",
+                        customerId = document.getString("customerId") ?: "",
+                        riderId = document.getString("riderId") ?: "",
 
-                        orderId =
-                            document.getString("orderId") ?: "",
-
-                        customerId =
-                            document.getString("customerId") ?: "",
-
-                        riderId =
-                            document.getString("riderId") ?: "",
-
-
-                        pickupAddress =
-                            document.getString("pickupAddress") ?: "",
-
+                        pickupAddress = document.getString("pickupAddress") ?: "",
                         pickupAddressDetails =
                             document.getString("pickupAddressDetails") ?: "",
 
-                        dropAddress =
-                            document.getString("dropAddress") ?: "",
-
+                        dropAddress = document.getString("dropAddress") ?: "",
                         dropAddressDetails =
                             document.getString("dropAddressDetails") ?: "",
 
-
                         pickupLatitude =
                             document.getDouble("pickupLatitude") ?: 0.0,
-
                         pickupLongitude =
                             document.getDouble("pickupLongitude") ?: 0.0,
-
                         dropLatitude =
                             document.getDouble("dropLatitude") ?: 0.0,
-
                         dropLongitude =
                             document.getDouble("dropLongitude") ?: 0.0,
 
-
                         description =
                             document.getString("description") ?: "",
-
                         packageType =
                             document.getString("packageType") ?: "",
-
                         weight =
                             document.getDouble("weight") ?: 0.0,
-
                         pieces =
-                            document.getLong("pieces")?.toInt() ?: 1,
-
+                            document.getLong("pieces")?.toInt() ?: 0,
                         instructions =
                             document.getString("instructions") ?: "",
 
-
                         vehicleType =
                             document.getString("vehicleType") ?: "",
-
-
                         distance =
                             document.getDouble("distance") ?: 0.0,
-
                         fee =
                             document.getDouble("fee") ?: 0.0,
 
-
                         status =
                             document.getString("status") ?: "",
-
                         createdAt =
                             document.getLong("createdAt") ?: 0L
                     )
 
-
-                    customerOrders.add(order)
+                    orders.add(order)
                 }
 
-
-                customerOrders.sortByDescending {
+                orders.sortByDescending {
                     it.createdAt
                 }
 
-
                 onResult(
                     true,
-                    "Customer orders found.",
-                    customerOrders
+                    "Orders loaded successfully.",
+                    orders
                 )
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get customer orders.",
+                    error.message ?: "Failed to load orders.",
                     emptyList()
                 )
             }
     }
-
 
     fun cancelOrder(
         customer: Customer,
         orderId: String,
         onResult: (Boolean, String) -> Unit
     ) {
-
         if (customer.uid.isBlank()) {
-
-            onResult(
-                false,
-                "Customer is not logged in."
-            )
-
+            onResult(false, "Customer is not logged in.")
             return
         }
-
 
         if (orderId.isBlank()) {
-
-            onResult(
-                false,
-                "Invalid order."
-            )
-
+            onResult(false, "Order ID is missing.")
             return
         }
 
+        var orderDocument = database
+            .collection("orders")
+            .document(orderId)
 
-        var orderReference =
-            database
-                .collection("orders")
-                .document(orderId)
-
-
-        orderReference
+        orderDocument
             .get()
             .addOnSuccessListener { document ->
 
-
-                if (document.exists() == false) {
-
-                    onResult(
-                        false,
-                        "Order not found."
-                    )
-
+                if (!document.exists()) {
+                    onResult(false, "Order not found.")
                     return@addOnSuccessListener
                 }
 
-
-                var orderCustomerId =
+                var customerId =
                     document.getString("customerId") ?: ""
 
+                var status =
+                    document.getString("status") ?: ""
 
-                if (orderCustomerId != customer.uid) {
-
+                if (customerId != customer.uid) {
                     onResult(
                         false,
-                        "This order does not belong to this customer."
+                        "This order does not belong to you."
                     )
-
                     return@addOnSuccessListener
                 }
 
-
-                var currentStatus =
-                    document.getString("status") ?: ""
-
-
-                if (currentStatus != "Pending") {
-
+                if (status != "Pending") {
                     onResult(
                         false,
                         "Only pending orders can be cancelled."
                     )
-
                     return@addOnSuccessListener
                 }
 
-
-                orderReference
-                    .update(
-                        "status",
-                        "Cancelled"
-                    )
+                orderDocument
+                    .update("status", "Cancelled")
                     .addOnSuccessListener {
 
                         onResult(
@@ -430,7 +302,7 @@ class CustomerOrder {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get order."
+                    error.message ?: "Failed to check order."
                 )
             }
     }
