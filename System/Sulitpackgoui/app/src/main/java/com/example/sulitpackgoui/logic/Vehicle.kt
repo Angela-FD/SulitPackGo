@@ -1,4 +1,5 @@
-package com.example.sulitpackgoui
+package com.example.sulitpackgoui.logic
+
 class Vehicle(
     var vehicleType: String = "",
     var weightLimit: Double = 0.0

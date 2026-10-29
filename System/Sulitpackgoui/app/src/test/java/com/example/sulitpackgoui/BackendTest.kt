@@ -1,6 +1,10 @@
 package com.example.sulitpackgoui
 
 import com.example.sulitpackgoui.admin.VehicleFee
+import com.example.sulitpackgoui.logic.DeliveryLocation
+import com.example.sulitpackgoui.logic.FeeCalculator
+import com.example.sulitpackgoui.logic.PackageInfo
+import com.example.sulitpackgoui.logic.Vehicle
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

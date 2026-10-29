@@ -1,9 +1,9 @@
 package com.example.sulitpackgoui.customer
 
-import com.example.sulitpackgoui.DeliveryLocation
-import com.example.sulitpackgoui.FeeCalculator
-import com.example.sulitpackgoui.PackageInfo
-import com.example.sulitpackgoui.Vehicle
+import com.example.sulitpackgoui.logic.DeliveryLocation
+import com.example.sulitpackgoui.logic.FeeCalculator
+import com.example.sulitpackgoui.logic.PackageInfo
+import com.example.sulitpackgoui.logic.Vehicle
 import com.example.sulitpackgoui.admin.VehicleFeeDatabase
 import com.example.sulitpackgoui.order.OrderData
 import com.google.firebase.firestore.FirebaseFirestore

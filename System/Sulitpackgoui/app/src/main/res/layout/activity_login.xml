@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
     android:fillViewport="true"
-    tools:context=".MainActivity">
+    tools:context=".uic.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +27,6 @@
                 android:id="@+id/btnSettings"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="Settings"
                 android:focusable="true"
@@ -33,8 +34,8 @@
                 android:text="⚙️"
                 android:textColor="@android:color/black"
                 android:textSize="30sp" />
-        </LinearLayout>
 
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvLogo"
@@ -56,7 +57,7 @@
             android:text="Email"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etEmail"
@@ -79,7 +80,7 @@
             android:text="Password"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etPassword"
@@ -100,17 +101,16 @@
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:padding="4dp"
             android:text="Forgot password?"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRiderLogin"
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="32dp"
@@ -122,7 +122,6 @@
             android:textStyle="bold"
             app:cornerRadius="12dp" />
 
-
         <TextView
             android:id="@+id/tvSignUp"
             android:layout_width="wrap_content"
@@ -130,14 +129,14 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
-            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             android:padding="4dp"
             android:text="Don’t you have an account? Sign up"
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
+
 </ScrollView>

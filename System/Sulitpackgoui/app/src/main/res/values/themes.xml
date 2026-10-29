@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Sulitpackgoui" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sulitpackgoui" parent="Theme.MaterialComponents.Light.NoActionBar">
 
     </style>
+
     <style name="VehicleCard">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">72dp</item>

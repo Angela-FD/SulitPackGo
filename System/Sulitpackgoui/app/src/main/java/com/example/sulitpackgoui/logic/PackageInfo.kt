@@ -1,4 +1,4 @@
-package com.example.sulitpackgoui
+package com.example.sulitpackgoui.logic
 
 class PackageInfo(
     var description: String = "",

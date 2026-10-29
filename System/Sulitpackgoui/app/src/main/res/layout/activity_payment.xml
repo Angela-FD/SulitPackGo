@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -6,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
     android:fillViewport="true"
-    tools:context=".MainActivity">
+    tools:context=".uic.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,6 @@
             android:id="@+id/btnBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop=""
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
             android:padding="10dp"
@@ -77,8 +77,8 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
-
             </LinearLayout>
+
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -88,5 +88,10 @@
             android:layout_marginTop="32dp"
             android:backgroundTint="#2B8F3F"
             android:text="CONFIRM ORDER"
-            android:textStyle="bold"
             android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
+</ScrollView>

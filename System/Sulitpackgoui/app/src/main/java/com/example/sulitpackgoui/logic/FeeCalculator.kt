@@ -1,4 +1,4 @@
-package com.example.sulitpackgoui
+package com.example.sulitpackgoui.logic
 
 import com.example.sulitpackgoui.admin.VehicleFee
 

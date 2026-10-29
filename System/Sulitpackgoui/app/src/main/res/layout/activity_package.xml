@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@drawable/bg_login"
-    tools:context=".MainActivity">
+    tools:context=".uic.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,12 +32,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop=""
             android:text="Package Details"
             android:textColor="@color/black"
             android:textSize="28sp"
-            android:textStyle="bold"/>
-
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDescriptionLabel"
@@ -47,8 +46,7 @@
             android:text="What are you sending?"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
-
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etDescription"
@@ -72,7 +70,7 @@
             android:text="Package Type"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etPackageType"
@@ -86,7 +84,6 @@
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-
         <TextView
             android:id="@+id/tvWeightLabel"
             android:layout_width="wrap_content"
@@ -96,7 +93,7 @@
             android:text="Weight"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -122,6 +119,7 @@
                 android:text="kg"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
+
         </FrameLayout>
 
         <TextView
@@ -133,7 +131,7 @@
             android:text="Number of Pieces"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etPieces"
@@ -147,7 +145,6 @@
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-
         <TextView
             android:id="@+id/tvInstructionsLabel"
             android:layout_width="wrap_content"
@@ -157,7 +154,7 @@
             android:text="Additional Instructions"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/etInstructions"
@@ -182,7 +179,8 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
+
 </ScrollView>

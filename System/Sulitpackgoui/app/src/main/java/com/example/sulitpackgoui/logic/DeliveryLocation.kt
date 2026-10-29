@@ -1,5 +1,10 @@
-package com.example.sulitpackgoui
-import kotlin.math.*
+package com.example.sulitpackgoui.logic
+
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+
 class DeliveryLocation (
     var address: String = "",
     var addressDetails: String = "",
@@ -35,5 +40,3 @@ class DeliveryLocation (
         return earthRadius * c
     }
 }
-
-
