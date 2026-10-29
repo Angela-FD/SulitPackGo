@@ -13,29 +13,3 @@
 .externalNativeBuild
 .cxx
 local.properties
-
-# Android Studio
-.gradle/
-**/.gradle/
-
-.idea/
-**/.idea/
-
-.kotlin/
-
-# Build folders
-build/
-**/build/
-
-# Local computer settings
-local.properties
-
-# IntelliJ files
-*.iml
-
-# Android native build files
-.externalNativeBuild/
-.cxx/
-
-# Captures
-captures/

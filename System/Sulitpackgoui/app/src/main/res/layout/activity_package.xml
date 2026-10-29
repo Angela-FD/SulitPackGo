@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:fillViewport="true"
+    android:background="@drawable/bg_login"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -15,15 +15,27 @@
         android:paddingEnd="24dp"
         android:paddingBottom="32dp">
 
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop=""
             android:text="Package Details"
             android:textColor="@color/black"
-            android:textSize="28sp" />
+            android:textSize="28sp"
+            android:textStyle="bold"/>
 
 
         <TextView
@@ -34,7 +46,9 @@
             android:layout_marginTop="32dp"
             android:text="What are you sending?"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
 
         <EditText
             android:id="@+id/etDescription"
@@ -49,7 +63,6 @@
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-
         <TextView
             android:id="@+id/tvPackageTypeLabel"
             android:layout_width="wrap_content"
@@ -58,7 +71,8 @@
             android:layout_marginTop="16dp"
             android:text="Package Type"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/etPackageType"
@@ -81,7 +95,8 @@
             android:layout_marginTop="16dp"
             android:text="Weight"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -117,7 +132,8 @@
             android:layout_marginTop="16dp"
             android:text="Number of Pieces"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/etPieces"
@@ -140,7 +156,8 @@
             android:layout_marginTop="16dp"
             android:text="Additional Instructions"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/etInstructions"
@@ -160,11 +177,12 @@
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
-            android:backgroundTint="@color/brand_green"
+            android:backgroundTint="#2B8F3F"
             android:text="Continue"
             android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 </ScrollView>

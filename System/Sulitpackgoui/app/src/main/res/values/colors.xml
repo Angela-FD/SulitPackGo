@@ -8,4 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="brand_green">#FF34C759</color>
+    <color name="login_bg">#7BC97C</color>
+    <color name="login_circle">#8FD592</color>
+    <color name="login_dark_green">#2B8F3F</color>
+    <color name="login_go">#0B5D2E</color>
+    <color name="login_field">#F3FAF3</color>
 </resources>

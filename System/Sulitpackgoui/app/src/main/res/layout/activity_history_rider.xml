@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Delivery History"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Your recently handled deliveries."
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvNoHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:text="No deliveries yet."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/cardHistory1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:background="@drawable/bg_input_outline"
+            android:paddingStart="16dp"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvHistoryId1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-1" />
+
+                <TextView
+                    android:id="@+id/tvHistoryFee1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="₱185" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHistoryRoute1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Lipa to Malvar" />
+
+            <TextView
+                android:id="@+id/tvHistoryStatus1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                tools:text="Delivered • Oct 17, 10:35 AM" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardHistory2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvHistoryId2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-2" />
+
+                <TextView
+                    android:id="@+id/tvHistoryFee2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="₱240" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHistoryRoute2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Lipa to Tanauan" />
+
+            <TextView
+                android:id="@+id/tvHistoryStatus2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                tools:text="Delivered • Oct 16, 4:20 PM" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardHistory3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvHistoryId3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-3" />
+
+                <TextView
+                    android:id="@+id/tvHistoryFee3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="₱310" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHistoryRoute3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Lipa to Sto. Tomas" />
+
+            <TextView
+                android:id="@+id/tvHistoryStatus3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                tools:text="Delivered • Oct 14, 11:10 AM" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardHistory4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvHistoryId4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-4" />
+
+                <TextView
+                    android:id="@+id/tvHistoryFee4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="₱150" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHistoryRoute4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Mataasnakahoy to Lipa" />
+
+            <TextView
+                android:id="@+id/tvHistoryStatus4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="11sp"
+                tools:text="Delivered • Oct 13, 2:45 PM" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

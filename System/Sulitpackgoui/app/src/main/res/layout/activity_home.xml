@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg_login"
     android:fillViewport="true"
     tools:context=".MainActivity">
 
@@ -16,6 +16,18 @@
         android:paddingEnd="16dp"
         android:paddingBottom="24dp">
 
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -23,7 +35,8 @@
             android:layout_marginTop="48dp"
             android:text="Where are you sending today?"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvPickupLabel"
@@ -32,7 +45,8 @@
             android:layout_marginTop="32dp"
             android:text="Pick up at?"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPickup"
@@ -66,7 +80,8 @@
             android:layout_marginTop="16dp"
             android:text="Where to?"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDropoff"
@@ -99,20 +114,22 @@
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
-            android:backgroundTint="@color/brand_green"
+            android:backgroundTint="#2B8F3F"
             android:text="Continue"
             android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvVehiclesLabel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="18dp"
             android:layout_marginTop="24dp"
             android:text="Available Vehicles"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold"/>
 
         <GridLayout
             android:id="@+id/gridVehicles"
@@ -122,46 +139,61 @@
             android:columnCount="2">
 
             <TextView
-                android:id="@+id/vehicleMotorcycle"
+                android:id="@+id/vehicleMotor"
                 style="@style/VehicleCard"
-                android:text="Motorcycle"
+                android:text="Motor"
                 android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
+                android:backgroundTint="#2B8F3F"
+                android:drawableLeft="@drawable/ic_motorcycle"
+                android:drawablePadding="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/vehicleSidecar"
+                android:id="@+id/vehicleTricycle"
                 style="@style/VehicleCard"
-                android:text="3-wheel sidecar"
                 android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
+                android:backgroundTint="#2B8F3F"
+                android:drawableLeft="@drawable/ic_tricycle"
+                android:drawableTint="@android:color/black"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="Tricycle"
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/vehicleSuv"
+                android:id="@+id/vehicleVan"
                 style="@style/VehicleCard"
-                android:text="SUV"
+                android:text="Van"
                 android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
+                android:drawableLeft="@drawable/ic_van"
+                android:backgroundTint="#2B8F3F"
+                android:drawablePadding="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/vehicleCrossover"
+                android:id="@+id/vehicleTruck"
                 style="@style/VehicleCard"
-                android:text="Crossover SUV"
+                android:text="Truck"
                 android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
+                android:drawableLeft="@drawable/ic_truck"
+                android:backgroundTint="#2B8F3F"
+                android:drawablePadding="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/vehicleVan1000"
-                style="@style/VehicleCard"
-                android:text="1000kg\nAluminum Van"
-                android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
 
-            <TextView
-                android:id="@+id/vehicleVan2000"
-                style="@style/VehicleCard"
-                android:text="2000kg\nAluminum Van"
-                android:background="@drawable/bg_input_outline"
-                android:backgroundTint="@color/brand_green"/>
+
+
         </GridLayout>
 
     </LinearLayout>
