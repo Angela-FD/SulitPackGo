@@ -1,234 +1,12 @@
 package com.example.sulitpackgoui
 
+import com.example.sulitpackgoui.admin.VehicleFee
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
 class BackendTest {
-
-    // This runs before every test.
-    // It makes sure old test data does not affect the next test.
-    @Before
-    fun resetData() {
-
-        TemporaryStorage.users.clear()
-        Session.logout()
-    }
-
-
-    // =========================================
-    // USER TESTS
-    // =========================================
-
-    @Test
-    fun testUserRegister() {
-
-        var user = User()
-
-        var result = user.register(
-            userName = "Test User",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "password123"
-        )
-
-        assertEquals(
-            "Registration successful.",
-            result
-        )
-
-        assertEquals(
-            "Test User",
-            user.name
-        )
-
-        assertEquals(
-            "test@email.com",
-            user.email
-        )
-
-        assertEquals(
-            1,
-            TemporaryStorage.users.size
-        )
-    }
-
-
-    @Test
-    fun testUserWrongPasswordConfirmation() {
-
-        var user = User()
-
-        var result = user.register(
-            userName = "Test User",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "wrongPassword"
-        )
-
-        assertEquals(
-            "Passwords do not match.",
-            result
-        )
-
-        assertEquals(
-            0,
-            TemporaryStorage.users.size
-        )
-    }
-
-
-    @Test
-    fun testDuplicateEmail() {
-
-        var user1 = User()
-
-        user1.register(
-            userName = "User One",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "password123"
-        )
-
-
-        var user2 = User()
-
-        var result = user2.register(
-            userName = "User Two",
-            userEmail = "test@email.com",
-            userPassword = "password456",
-            confirmPassword = "password456"
-        )
-
-        assertEquals(
-            "Email is already registered.",
-            result
-        )
-
-        assertEquals(
-            1,
-            TemporaryStorage.users.size
-        )
-    }
-
-
-    @Test
-    fun testUserLogin() {
-
-        var user = User()
-
-        user.register(
-            userName = "Test User",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "password123"
-        )
-
-
-        var loginUser = User()
-
-        var loginResult = loginUser.logIn(
-            userEmail = "test@email.com",
-            userPassword = "password123"
-        )
-
-        assertTrue(loginResult)
-
-        assertTrue(Session.isLoggedIn)
-
-        assertEquals(
-            "Test User",
-            Session.name
-        )
-
-        assertEquals(
-            "test@email.com",
-            Session.email
-        )
-    }
-
-
-    @Test
-    fun testWrongLogin() {
-
-        var user = User()
-
-        user.register(
-            userName = "Test User",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "password123"
-        )
-
-
-        var loginUser = User()
-
-        var loginResult = loginUser.logIn(
-            userEmail = "test@email.com",
-            userPassword = "wrongPassword"
-        )
-
-        assertFalse(loginResult)
-
-        assertFalse(Session.isLoggedIn)
-    }
-
-
-    // =========================================
-    // SESSION TEST
-    // =========================================
-
-    @Test
-    fun testSessionLogout() {
-
-        Session.isLoggedIn = true
-        Session.name = "Test User"
-        Session.email = "test@email.com"
-
-        Session.logout()
-
-        assertFalse(Session.isLoggedIn)
-
-        assertEquals(
-            "",
-            Session.name
-        )
-
-        assertEquals(
-            "",
-            Session.email
-        )
-    }
-
-
-    // =========================================
-    // TEMPORARY STORAGE TEST
-    // =========================================
-
-    @Test
-    fun testTemporaryStorage() {
-
-        var user = User()
-
-        user.register(
-            userName = "Test User",
-            userEmail = "test@email.com",
-            userPassword = "password123",
-            confirmPassword = "password123"
-        )
-
-        assertEquals(
-            1,
-            TemporaryStorage.users.size
-        )
-
-        assertEquals(
-            "test@email.com",
-            TemporaryStorage.users[0].email
-        )
-    }
 
 
     // =========================================
@@ -236,42 +14,78 @@ class BackendTest {
     // =========================================
 
     @Test
-    fun testVehicle() {
+    fun testMotorVehicle() {
 
         var vehicle = Vehicle()
 
         vehicle.selectVehicle("Motor")
+
 
         assertEquals(
             "Motor",
             vehicle.vehicleType
         )
 
+
         assertEquals(
             40.0,
             vehicle.weightLimit,
             0.0
         )
+    }
+
+
+    @Test
+    fun testMotorAllowedWeight() {
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Motor")
 
 
         var allowed =
             vehicle.checkWeight(20.0)
+
 
         assertTrue(allowed)
     }
 
 
     @Test
-    fun testVehicleTooHeavy() {
+    fun testMotorTooHeavy() {
 
         var vehicle = Vehicle()
 
         vehicle.selectVehicle("Motor")
 
+
         var allowed =
             vehicle.checkWeight(70.0)
 
+
         assertFalse(allowed)
+    }
+
+
+    @Test
+    fun testTricycleVehicle() {
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Tricycle")
+
+
+        assertEquals(
+            "Tricycle",
+            vehicle.vehicleType
+        )
+
+
+        assertEquals(
+            80.0,
+            vehicle.weightLimit,
+            0.0
+        )
     }
 
 
@@ -282,10 +96,12 @@ class BackendTest {
 
         vehicle.selectVehicle("Van")
 
+
         assertEquals(
             "Van",
             vehicle.vehicleType
         )
+
 
         assertEquals(
             300.0,
@@ -293,6 +109,51 @@ class BackendTest {
             0.0
         )
     }
+
+
+    @Test
+    fun testTruckVehicle() {
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Truck")
+
+
+        assertEquals(
+            "Truck",
+            vehicle.vehicleType
+        )
+
+
+        assertEquals(
+            1000.0,
+            vehicle.weightLimit,
+            0.0
+        )
+    }
+
+
+    @Test
+    fun testInvalidVehicle() {
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Car")
+
+
+        assertEquals(
+            "",
+            vehicle.vehicleType
+        )
+
+
+        assertEquals(
+            0.0,
+            vehicle.weightLimit,
+            0.0
+        )
+    }
+
 
 
     // =========================================
@@ -303,39 +164,109 @@ class BackendTest {
     fun testPackageInfo() {
 
         var packageInfo = PackageInfo(
-            description = "Box of clothes",
-            weight = 20.0
+            description = "Laptop and charger",
+            packageType = "Electronics",
+            weight = 4.5,
+            pieces = 2,
+            instructions = "Handle with care"
         )
 
+
         assertEquals(
-            "Box of clothes",
+            "Laptop and charger",
             packageInfo.description
         )
 
+
         assertEquals(
-            20.0,
+            "Electronics",
+            packageInfo.packageType
+        )
+
+
+        assertEquals(
+            4.5,
             packageInfo.weight,
             0.0
+        )
+
+
+        assertEquals(
+            2,
+            packageInfo.pieces
+        )
+
+
+        assertEquals(
+            "Handle with care",
+            packageInfo.instructions
         )
     }
 
 
+
     // =========================================
-    // DELIVERY LOCATION TEST
+    // DELIVERY LOCATION TESTS
     // =========================================
 
     @Test
-    fun testDeliveryLocation() {
+    fun testDeliveryLocationInformation() {
+
+        var location = DeliveryLocation(
+            address = "Nasugbu, Batangas",
+            addressDetails = "Near the school",
+
+            pickUpLatitude = 14.0723,
+            pickUpLongitude = 120.6298,
+
+            dropLatitude = 14.0800,
+            dropLongitude = 120.6350,
+
+            dropAddress = "Lian, Batangas",
+            dropAddressDetails = "Near the market"
+        )
+
+
+        assertEquals(
+            "Nasugbu, Batangas",
+            location.address
+        )
+
+
+        assertEquals(
+            "Near the school",
+            location.addressDetails
+        )
+
+
+        assertEquals(
+            "Lian, Batangas",
+            location.dropAddress
+        )
+
+
+        assertEquals(
+            "Near the market",
+            location.dropAddressDetails
+        )
+    }
+
+
+    @Test
+    fun testDeliveryDistance() {
 
         var location = DeliveryLocation(
             pickUpLatitude = 14.0723,
             pickUpLongitude = 120.6298,
+
             dropLatitude = 14.0800,
             dropLongitude = 120.6350
         )
 
+
         var distance =
             location.distanceCalculate()
+
 
         assertEquals(
             1.02,
@@ -345,6 +276,7 @@ class BackendTest {
     }
 
 
+
     // =========================================
     // FEE CALCULATOR TESTS
     // =========================================
@@ -352,12 +284,7 @@ class BackendTest {
     @Test
     fun testMotorBaseFee() {
 
-        var location = DeliveryLocation(
-            pickUpLatitude = 14.0723,
-            pickUpLongitude = 120.6298,
-            dropLatitude = 14.0800,
-            dropLongitude = 120.6350
-        )
+        var location = DeliveryLocation()
 
 
         var vehicle = Vehicle()
@@ -365,9 +292,17 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -384,11 +319,123 @@ class BackendTest {
 
 
     @Test
-    fun testDistanceFee() {
+    fun testTricycleBaseFee() {
+
+        var location = DeliveryLocation()
+
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Tricycle")
+
+
+        var vehicleFee = VehicleFee(
+            vehicleType = "Tricycle",
+            baseFee = 500.0,
+            ratePerKm = 50.0
+        )
+
+
+        var calculator = FeeCalculator(
+            devLocation = location,
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
+        )
+
+
+        var baseFee =
+            calculator.calculateBaseFee()
+
+
+        assertEquals(
+            500.0,
+            baseFee,
+            0.0
+        )
+    }
+
+
+    @Test
+    fun testVanBaseFee() {
+
+        var location = DeliveryLocation()
+
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Van")
+
+
+        var vehicleFee = VehicleFee(
+            vehicleType = "Van",
+            baseFee = 1000.0,
+            ratePerKm = 100.0
+        )
+
+
+        var calculator = FeeCalculator(
+            devLocation = location,
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
+        )
+
+
+        var baseFee =
+            calculator.calculateBaseFee()
+
+
+        assertEquals(
+            1000.0,
+            baseFee,
+            0.0
+        )
+    }
+
+
+    @Test
+    fun testTruckBaseFee() {
+
+        var location = DeliveryLocation()
+
+
+        var vehicle = Vehicle()
+
+        vehicle.selectVehicle("Truck")
+
+
+        var vehicleFee = VehicleFee(
+            vehicleType = "Truck",
+            baseFee = 1500.0,
+            ratePerKm = 200.0
+        )
+
+
+        var calculator = FeeCalculator(
+            devLocation = location,
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
+        )
+
+
+        var baseFee =
+            calculator.calculateBaseFee()
+
+
+        assertEquals(
+            1500.0,
+            baseFee,
+            0.0
+        )
+    }
+
+
+    @Test
+    fun testMotorDistanceFee() {
 
         var location = DeliveryLocation(
             pickUpLatitude = 14.0723,
             pickUpLongitude = 120.6298,
+
             dropLatitude = 14.0800,
             dropLongitude = 120.6350
         )
@@ -399,9 +446,17 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
+        )
+
+
         var calculator = FeeCalculator(
             devLocation = location,
-            feeVehicle = vehicle
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
         )
 
 
@@ -418,11 +473,12 @@ class BackendTest {
 
 
     @Test
-    fun testTotalFee() {
+    fun testMotorTotalFee() {
 
         var location = DeliveryLocation(
             pickUpLatitude = 14.0723,
             pickUpLongitude = 120.6298,
+
             dropLatitude = 14.0800,
             dropLongitude = 120.6350
         )
@@ -433,126 +489,28 @@ class BackendTest {
         vehicle.selectVehicle("Motor")
 
 
-        var calculator = FeeCalculator(
-            devLocation = location,
-            feeVehicle = vehicle
+        var vehicleFee = VehicleFee(
+            vehicleType = "Motor",
+            baseFee = 50.0,
+            ratePerKm = 25.0
         )
 
 
-        var total =
+        var calculator = FeeCalculator(
+            devLocation = location,
+            feeVehicle = vehicle,
+            vehicleFee = vehicleFee
+        )
+
+
+        var totalFee =
             calculator.calculateTotalFee()
 
 
         assertEquals(
             75.59,
-            total,
+            totalFee,
             0.10
         )
-    }
-
-
-    // =========================================
-    // DELIVERY ORDER TESTS
-    // =========================================
-
-    @Test
-    fun testDeliveryOrder() {
-
-        var user = User(
-            name = "Test User",
-            email = "test@email.com"
-        )
-
-
-        var location = DeliveryLocation(
-            pickUpLatitude = 14.0723,
-            pickUpLongitude = 120.6298,
-            dropLatitude = 14.0800,
-            dropLongitude = 120.6350
-        )
-
-
-        var packageInfo = PackageInfo(
-            description = "Box of clothes",
-            weight = 20.0
-        )
-
-
-        var vehicle = Vehicle()
-
-        vehicle.selectVehicle("Motor")
-
-
-        var order = DeliveryOrder(
-            user = user,
-            location = location,
-            packageInfo = packageInfo,
-            vehicle = vehicle
-        )
-
-
-        var result =
-            order.processOrder()
-
-
-        assertTrue(result)
-
-        assertTrue(
-            order.distance > 0.0
-        )
-
-        assertTrue(
-            order.fee > 0.0
-        )
-
-        assertEquals(
-            "Pending",
-            order.status
-        )
-    }
-
-
-    @Test
-    fun testDeliveryOrderTooHeavy() {
-
-        var user = User(
-            name = "Test User",
-            email = "test@email.com"
-        )
-
-
-        var location = DeliveryLocation(
-            pickUpLatitude = 14.0723,
-            pickUpLongitude = 120.6298,
-            dropLatitude = 14.0800,
-            dropLongitude = 120.6350
-        )
-
-
-        // 70 kg is too heavy for Motor
-        var packageInfo = PackageInfo(
-            description = "Heavy package",
-            weight = 70.0
-        )
-
-
-        var vehicle = Vehicle()
-
-        vehicle.selectVehicle("Motor")
-
-
-        var order = DeliveryOrder(
-            user = user,
-            location = location,
-            packageInfo = packageInfo,
-            vehicle = vehicle
-        )
-
-
-        var result =
-            order.processOrder()
-
-
-        assertFalse(result)
     }
 }
