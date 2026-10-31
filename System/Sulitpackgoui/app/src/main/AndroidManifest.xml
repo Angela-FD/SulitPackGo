@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- INTERNET -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -11,68 +13,113 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sulitpackgoui">
 
-        <!-- REAL APP LAUNCHER -->
+        <!-- SPLASH SCREEN -->
+
         <activity
-            android:name=".uic.MainActivity"
+            android:name=".uic.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.Sulitpackgoui">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action
+                    android:name="android.intent.action.MAIN" />
+
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
 
         </activity>
 
+        <!-- LOGIN -->
 
-        <!-- CUSTOMER ACTIVITIES -->
+        <activity
+            android:name=".uic.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- SIGN UP -->
+
+        <activity
+            android:name=".uic.SignUpActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- CUSTOMER HOME -->
+
         <activity
             android:name=".uic.customer.CustomerHomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
 
-        <activity
-            android:name=".uic.customer.CustomerPackageActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerReviewActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerConfirmationActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerTrackActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerOrdersActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerEditProfileActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".uic.customer.CustomerChangePasswordActivity"
-            android:exported="false" />
+        <!-- LOCATION PICKER -->
 
         <activity
             android:name=".uic.customer.CustomerLocationPickerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
 
+        <!-- PACKAGE DETAILS -->
 
-
-        <!-- SIGN UP -->
         <activity
-            android:name=".uic.SignUpActivity"
-            android:exported="false" />
+            android:name=".uic.customer.CustomerPackageActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- REVIEW ORDER -->
+
+        <activity
+            android:name=".uic.customer.CustomerReviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <!-- ORDER CONFIRMATION -->
+
+        <activity
+            android:name=".uic.customer.CustomerConfirmationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <!-- TRACK ORDER -->
+
+        <activity
+            android:name=".uic.customer.CustomerTrackActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <!-- CUSTOMER ORDERS -->
+
+        <activity
+            android:name=".uic.customer.CustomerOrdersActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <!-- CUSTOMER PROFILE -->
+
+        <activity
+            android:name=".uic.customer.CustomerProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <!-- EDIT PROFILE -->
+
+        <activity
+            android:name=".uic.customer.CustomerEditProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- CHANGE PASSWORD -->
+
+        <activity
+            android:name=".uic.customer.CustomerChangePasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 
