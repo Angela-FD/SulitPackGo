@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Sulitpackgoui">
 
-        <activity
-            android:name=".uic.SignUpActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Sulitpackgoui"
-            android:windowSoftInputMode="adjustResize" />
-
+        <!-- REAL APP LAUNCHER -->
         <activity
             android:name=".uic.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Sulitpackgoui"
-            android:windowSoftInputMode="adjustResize">
+            android:theme="@style/Theme.Sulitpackgoui">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +24,55 @@
             </intent-filter>
 
         </activity>
+
+
+        <!-- CUSTOMER ACTIVITIES -->
+        <activity
+            android:name=".uic.customer.CustomerHomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerPackageActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerReviewActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerConfirmationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerTrackActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerOrdersActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerEditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerChangePasswordActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".uic.customer.CustomerLocationPickerActivity"
+            android:exported="false" />
+
+
+
+        <!-- SIGN UP -->
+        <activity
+            android:name=".uic.SignUpActivity"
+            android:exported="false" />
 
     </application>
 

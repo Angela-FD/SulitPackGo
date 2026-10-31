@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
     android:fillViewport="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".uic.MainActivity">
 
     <LinearLayout
@@ -15,6 +17,8 @@
         android:orientation="vertical"
         android:paddingStart="24dp"
         android:paddingEnd="24dp">
+
+        <!-- SETTINGS -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,6 +41,8 @@
 
         </LinearLayout>
 
+        <!-- LOGO -->
+
         <TextView
             android:id="@+id/tvLogo"
             android:layout_width="wrap_content"
@@ -47,6 +53,8 @@
             android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold" />
+
+        <!-- EMAIL -->
 
         <TextView
             android:id="@+id/tvEmailLabel"
@@ -66,10 +74,20 @@
             android:layout_marginTop="8dp"
             android:autofillHints="emailAddress"
             android:background="@drawable/bg_input_outline"
+            android:clickable="true"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Enter your email"
+            android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/black" />
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="#777777" />
+
+        <!-- PASSWORD -->
 
         <TextView
             android:id="@+id/tvPasswordLabel"
@@ -89,10 +107,20 @@
             android:layout_marginTop="8dp"
             android:autofillHints="password"
             android:background="@drawable/bg_input_outline"
+            android:clickable="true"
+            android:cursorVisible="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Enter your password"
+            android:imeOptions="actionDone"
             android:inputType="textPassword"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/black" />
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="#777777" />
+
+        <!-- FORGOT PASSWORD -->
 
         <TextView
             android:id="@+id/tvForgotPassword"
@@ -109,6 +137,8 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
+        <!-- LOGIN -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -121,6 +151,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:cornerRadius="12dp" />
+
+        <!-- SIGN UP -->
 
         <TextView
             android:id="@+id/tvSignUp"

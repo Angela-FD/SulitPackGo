@@ -66,9 +66,6 @@ class RiderOrder {
                         description =
                             document.getString("description") ?: "",
 
-                        packageType =
-                            document.getString("packageType") ?: "",
-
                         weight =
                             document.getDouble("weight") ?: 0.0,
 
@@ -523,8 +520,6 @@ class RiderOrder {
                     description =
                         document.getString("description") ?: "",
 
-                    packageType =
-                        document.getString("packageType") ?: "",
 
                     weight =
                         document.getDouble("weight") ?: 0.0,

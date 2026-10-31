@@ -18,7 +18,7 @@ class SignUpActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_signup)
+        setContentView(R.layout.customer_signup)
 
         var etName =
             findViewById<EditText>(R.id.etName)

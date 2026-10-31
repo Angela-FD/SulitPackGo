@@ -201,7 +201,6 @@ class AdminDatabase {
                         dropLongitude = document.getDouble("dropLongitude") ?: 0.0,
 
                         description = document.getString("description") ?: "",
-                        packageType = document.getString("packageType") ?: "",
                         weight = document.getDouble("weight") ?: 0.0,
                         pieces = document.getLong("pieces")?.toInt() ?: 0,
                         instructions = document.getString("instructions") ?: "",

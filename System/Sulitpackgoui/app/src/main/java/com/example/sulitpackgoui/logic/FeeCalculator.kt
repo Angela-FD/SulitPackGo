@@ -6,6 +6,7 @@ class FeeCalculator(
     var devLocation: DeliveryLocation,
     var feeVehicle: Vehicle,
     var vehicleFee: VehicleFee,
+    var roadDistanceKm: Double = 0.0,
     var totalFee: Double = 0.0
 ) {
 
@@ -14,9 +15,7 @@ class FeeCalculator(
     }
 
     fun calculateDistanceFee(): Double {
-        var distanceKm = devLocation.distanceCalculate()
-
-        return vehicleFee.ratePerKm * distanceKm
+        return vehicleFee.ratePerKm * roadDistanceKm
     }
 
     fun calculateTotalFee(): Double {

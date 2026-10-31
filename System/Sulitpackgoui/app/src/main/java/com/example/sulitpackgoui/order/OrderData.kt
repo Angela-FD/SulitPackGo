@@ -12,18 +12,15 @@ class OrderData(
 
     var pickupLatitude: Double = 0.0,
     var pickupLongitude: Double = 0.0,
-
     var dropLatitude: Double = 0.0,
     var dropLongitude: Double = 0.0,
 
     var description: String = "",
     var weight: Double = 0.0,
-    var packageType: String = "",
-    var pieces: Int = 1,
+    var pieces: Int = 0,
     var instructions: String = "",
 
     var vehicleType: String = "",
-
     var distance: Double = 0.0,
     var fee: Double = 0.0,
 

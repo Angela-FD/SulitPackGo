@@ -2,74 +2,256 @@ package com.example.sulitpackgoui.uic
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.sulitpackgoui.R
 import com.example.sulitpackgoui.customer.CustomerAuth
+import com.example.sulitpackgoui.uic.customer.CustomerHomeActivity
+import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
 
-    private var customerAuth = CustomerAuth()
+    private var customerAuth =
+        CustomerAuth()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var firebaseAuth =
+        FirebaseAuth.getInstance()
 
+    private lateinit var etEmail: EditText
+    private lateinit var etPassword: EditText
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
+        setContentView(
+            R.layout.customer_login
+        )
 
-        var etEmail =
-            findViewById<EditText>(R.id.etEmail)
+        setupViews()
+        setupKeyboard()
+        setupButtons()
+    }
 
-        var etPassword =
-            findViewById<EditText>(R.id.etPassword)
+    private fun setupViews() {
 
-        var btnLogin =
-            findViewById<Button>(R.id.btnLogin)
+        etEmail =
+            findViewById(
+                R.id.etEmail
+            )
 
-        var tvSignUp =
-            findViewById<TextView>(R.id.tvSignUp)
+        etPassword =
+            findViewById(
+                R.id.etPassword
+            )
+    }
+
+    private fun setupKeyboard() {
+
+        etEmail.setOnClickListener {
+
+            etEmail.requestFocus()
+
+            showKeyboard(
+                etEmail
+            )
+        }
+
+        etPassword.setOnClickListener {
+
+            etPassword.requestFocus()
+
+            showKeyboard(
+                etPassword
+            )
+        }
+    }
+
+    private fun setupButtons() {
+
+        val btnLogin =
+            findViewById<MaterialButton>(
+                R.id.btnLogin
+            )
+
+        val tvSignUp =
+            findViewById<TextView>(
+                R.id.tvSignUp
+            )
+
+        val tvForgotPassword =
+            findViewById<TextView>(
+                R.id.tvForgotPassword
+            )
 
         btnLogin.setOnClickListener {
+            login()
+        }
 
-            var email =
-                etEmail.text.toString().trim()
-
-            var password =
-                etPassword.text.toString()
-
-            customerAuth.logIn(
-                customerEmail = email,
-                customerPassword = password
-            ) { success, message, customer ->
-
-                if (success && customer != null) {
-
-                    Toast.makeText(
-                        this,
-                        "Login successful.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                } else {
-
-                    Toast.makeText(
-                        this,
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+        tvForgotPassword.setOnClickListener {
+            forgotPassword()
         }
 
         tvSignUp.setOnClickListener {
 
-            var intent =
-                Intent(this, SignUpActivity::class.java)
+            val intent =
+                Intent(
+                    this,
+                    SignUpActivity::class.java
+                )
 
-            startActivity(intent)
+            startActivity(
+                intent
+            )
         }
+    }
+
+    private fun login() {
+
+        val email =
+            etEmail.text
+                .toString()
+                .trim()
+
+        val password =
+            etPassword.text
+                .toString()
+
+        if (email.isBlank()) {
+
+            showMessage(
+                "Enter your email."
+            )
+
+            etEmail.requestFocus()
+
+            showKeyboard(
+                etEmail
+            )
+
+            return
+        }
+
+        if (password.isBlank()) {
+
+            showMessage(
+                "Enter your password."
+            )
+
+            etPassword.requestFocus()
+
+            showKeyboard(
+                etPassword
+            )
+
+            return
+        }
+
+        customerAuth.logIn(
+            customerEmail = email,
+            customerPassword = password
+        ) { success, message, customer ->
+
+            if (
+                success &&
+                customer != null
+            ) {
+
+                val intent =
+                    Intent(
+                        this,
+                        CustomerHomeActivity::class.java
+                    )
+
+                intent.putExtra(
+                    "customerName",
+                    customer.name
+                )
+
+                startActivity(
+                    intent
+                )
+
+                finish()
+
+            } else {
+
+                showMessage(
+                    message
+                )
+            }
+        }
+    }
+
+    private fun forgotPassword() {
+
+        val email =
+            etEmail.text
+                .toString()
+                .trim()
+
+        if (email.isBlank()) {
+
+            showMessage(
+                "Enter your email first."
+            )
+
+            etEmail.requestFocus()
+
+            showKeyboard(
+                etEmail
+            )
+
+            return
+        }
+
+        firebaseAuth
+            .sendPasswordResetEmail(
+                email
+            )
+            .addOnSuccessListener {
+
+                showMessage(
+                    "Password reset email sent. Check your email."
+                )
+            }
+            .addOnFailureListener { error ->
+
+                showMessage(
+                    error.message
+                        ?: "Failed to send password reset email."
+                )
+            }
+    }
+
+    private fun showKeyboard(
+        editText: EditText
+    ) {
+
+        val keyboard =
+            getSystemService(
+                INPUT_METHOD_SERVICE
+            ) as InputMethodManager
+
+        keyboard.showSoftInput(
+            editText,
+            InputMethodManager.SHOW_IMPLICIT
+        )
+    }
+
+    private fun showMessage(
+        message: String
+    ) {
+
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
