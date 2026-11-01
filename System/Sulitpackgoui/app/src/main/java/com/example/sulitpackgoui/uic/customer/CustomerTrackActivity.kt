@@ -13,37 +13,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 
 class CustomerTrackActivity : ComponentActivity() {
-
-    private var customerOrder =
-        CustomerOrder()
-
-
-    private var auth =
-        FirebaseAuth.getInstance()
-
-
-    private var orderId =
-        ""
-
-
-    private lateinit var tvOrderId:
-            TextView
-
-    private lateinit var tvStatus:
-            TextView
-
-    private lateinit var tvVehicle:
-            TextView
-
-    private lateinit var tvPickup:
-            TextView
-
-    private lateinit var tvDropoff:
-            TextView
-
-    private lateinit var tvFee:
-            TextView
-
+    private var customerOrder = CustomerOrder()
+    private var auth = FirebaseAuth.getInstance()
+    private var orderId = ""
+    private lateinit var tvOrderId: TextView
+    private lateinit var tvStatus: TextView
+    private lateinit var tvVehicle: TextView
+    private lateinit var tvPickup: TextView
+    private lateinit var tvDropoff: TextView
+    private lateinit var tvFee: TextView
     private lateinit var btnCancelOrder:
             MaterialButton
 

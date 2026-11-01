@@ -15,20 +15,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
-
-    private var firebaseAuth =
-        FirebaseAuth.getInstance()
-
-
-    private var database =
-        FirebaseFirestore.getInstance()
-
-
+    private var firebaseAuth = FirebaseAuth.getInstance()
+    private var database = FirebaseFirestore.getInstance()
     private lateinit var etEmail: EditText
-
     private lateinit var etPassword: EditText
-
-
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {

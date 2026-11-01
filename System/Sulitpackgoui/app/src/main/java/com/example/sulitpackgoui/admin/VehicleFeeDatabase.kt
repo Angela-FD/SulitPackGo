@@ -7,7 +7,6 @@ class VehicleFeeDatabase {
     private var database =
         FirebaseFirestore.getInstance()
 
-
     fun getVehicleFee(
         vehicleType: String,
         onResult: (
@@ -167,7 +166,6 @@ class VehicleFeeDatabase {
                 )
             }
     }
-
 
     private fun getErrorMessage(
         error: Exception,

@@ -6,10 +6,8 @@ import com.example.sulitpackgoui.rider.Rider
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminDatabase {
-
     private var database =
         FirebaseFirestore.getInstance()
-
 
     fun getCustomers(
         onResult: (
@@ -28,21 +26,17 @@ class AdminDatabase {
             .get()
             .addOnSuccessListener { result ->
 
-
                 var customers =
                     mutableListOf<Customer>()
-
 
                 for (
                 document in
                 result.documents
                 ) {
-
                     var customer =
                         document.toObject(
                             Customer::class.java
                         )
-
 
                     if (customer != null) {
 
@@ -51,7 +45,6 @@ class AdminDatabase {
                         )
                     }
                 }
-
 
                 onResult(
                     true,
@@ -72,7 +65,6 @@ class AdminDatabase {
             }
     }
 
-
     fun deleteCustomer(
         customerId: String,
         onResult: (Boolean, String) -> Unit
@@ -87,7 +79,6 @@ class AdminDatabase {
 
             return
         }
-
 
         database
             .collection("users")
@@ -112,7 +103,6 @@ class AdminDatabase {
             }
     }
 
-
     fun getRiders(
         onResult: (
             Boolean,
@@ -120,27 +110,22 @@ class AdminDatabase {
             List<Rider>
         ) -> Unit
     ) {
-
         database
             .collection("riders")
             .get()
             .addOnSuccessListener { result ->
 
-
                 var riders =
                     mutableListOf<Rider>()
-
 
                 for (
                 document in
                 result.documents
                 ) {
-
                     var rider =
                         document.toObject(
                             Rider::class.java
                         )
-
 
                     if (rider != null) {
 
@@ -149,7 +134,6 @@ class AdminDatabase {
                         )
                     }
                 }
-
 
                 onResult(
                     true,
@@ -170,7 +154,6 @@ class AdminDatabase {
             }
     }
 
-
     fun deleteRider(
         riderId: String,
         onResult: (Boolean, String) -> Unit
@@ -186,17 +169,14 @@ class AdminDatabase {
             return
         }
 
-
         var riderReference =
             database
                 .collection("riders")
                 .document(riderId)
 
-
         riderReference
             .get()
             .addOnSuccessListener { document ->
-
 
                 if (
                     document.exists() == false
@@ -213,7 +193,6 @@ class AdminDatabase {
                         document.toObject(
                             Rider::class.java
                         )
-
 
                     if (rider == null) {
 
@@ -267,7 +246,6 @@ class AdminDatabase {
             }
     }
 
-
     fun getOrders(
         onResult: (
             Boolean,
@@ -275,16 +253,13 @@ class AdminDatabase {
             List<OrderData>
         ) -> Unit
     ) {
-
         database
             .collection("orders")
             .get()
             .addOnSuccessListener { result ->
 
-
                 var orders =
                     mutableListOf<OrderData>()
-
 
                 for (
                 document in
@@ -296,7 +271,6 @@ class AdminDatabase {
                             OrderData::class.java
                         )
 
-
                     if (order != null) {
 
                         orders.add(
@@ -305,12 +279,9 @@ class AdminDatabase {
                     }
                 }
 
-
                 orders.sortByDescending { order ->
-
                     order.createdAt
                 }
-
 
                 onResult(
                     true,
@@ -330,19 +301,14 @@ class AdminDatabase {
                 )
             }
     }
-
-
     private fun getErrorMessage(
         error: Exception,
         defaultMessage: String
     ): String {
-
         if (error.message != null) {
 
             return error.message.toString()
         }
-
-
         return defaultMessage
     }
 }
