@@ -2,7 +2,6 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- INTERNET -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -13,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sulitpackgoui">
 
-        <!-- SPLASH SCREEN -->
-
+        <!-- Splash Screen -->
         <activity
             android:name=".uic.SplashActivity"
             android:exported="true"
@@ -32,37 +30,33 @@
 
         </activity>
 
-        <!-- LOGIN -->
 
+        <!-- Main Login -->
         <activity
             android:name=".uic.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- SIGN UP -->
 
+        <!-- Customer Sign Up -->
         <activity
             android:name=".uic.SignUpActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- CUSTOMER HOME -->
 
+        <!-- Customer Screens -->
         <activity
             android:name=".uic.customer.CustomerHomeActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
 
-        <!-- LOCATION PICKER -->
-
         <activity
             android:name=".uic.customer.CustomerLocationPickerActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
-
-        <!-- PACKAGE DETAILS -->
 
         <activity
             android:name=".uic.customer.CustomerPackageActivity"
@@ -70,42 +64,30 @@
             android:theme="@style/Theme.Sulitpackgoui"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- REVIEW ORDER -->
-
         <activity
             android:name=".uic.customer.CustomerReviewActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
-
-        <!-- ORDER CONFIRMATION -->
 
         <activity
             android:name=".uic.customer.CustomerConfirmationActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
 
-        <!-- TRACK ORDER -->
-
         <activity
             android:name=".uic.customer.CustomerTrackActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
-
-        <!-- CUSTOMER ORDERS -->
 
         <activity
             android:name=".uic.customer.CustomerOrdersActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
 
-        <!-- CUSTOMER PROFILE -->
-
         <activity
             android:name=".uic.customer.CustomerProfileActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui" />
-
-        <!-- EDIT PROFILE -->
 
         <activity
             android:name=".uic.customer.CustomerEditProfileActivity"
@@ -113,13 +95,53 @@
             android:theme="@style/Theme.Sulitpackgoui"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- CHANGE PASSWORD -->
-
         <activity
             android:name=".uic.customer.CustomerChangePasswordActivity"
             android:exported="false"
             android:theme="@style/Theme.Sulitpackgoui"
             android:windowSoftInputMode="adjustResize" />
+
+
+        <!-- Rider Screens -->
+        <activity
+            android:name=".uic.rider.RiderHomeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <activity
+            android:name=".uic.rider.RiderAvailableOrdersActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <activity
+            android:name=".uic.rider.RiderOrderDetailsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <activity
+            android:name=".uic.rider.RiderActiveDeliveryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <activity
+            android:name=".uic.rider.RiderHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+        <activity
+            android:name=".uic.rider.RiderProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+
+        <!-- Map Test -->
+        <!-- Keep only if MapTestActivity still exists -->
+        <activity
+            android:name=".uic.MapTestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Sulitpackgoui" />
+
+
 
     </application>
 

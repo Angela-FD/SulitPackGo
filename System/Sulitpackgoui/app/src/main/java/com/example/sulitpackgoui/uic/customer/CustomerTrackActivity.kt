@@ -16,8 +16,10 @@ class CustomerTrackActivity : ComponentActivity() {
     private var customerOrder =
         CustomerOrder()
 
+
     private var orderId =
         ""
+
 
     private lateinit var tvOrderId: TextView
     private lateinit var tvStatus: TextView
@@ -28,61 +30,118 @@ class CustomerTrackActivity : ComponentActivity() {
 
     private lateinit var btnCancelOrder: MaterialButton
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
 
         setContentView(
             R.layout.customer_track
         )
 
+
         setupViews()
+
         setupButtons()
 
-        orderId =
-            intent.getStringExtra("orderId") ?: ""
 
-        loadOrder()
+        orderId =
+            intent.getStringExtra(
+                "orderId"
+            ) ?: ""
+
+
+        if (orderId.isBlank()) {
+
+            showMessage(
+                "Order ID not found."
+            )
+
+            finish()
+
+            return
+        }
     }
+
+
+    // Every time the Customer opens or returns
+    // to this screen, load the newest order status.
+    override fun onResume() {
+        super.onResume()
+
+        if (orderId.isNotBlank()) {
+
+            loadOrder()
+        }
+    }
+
 
     private fun setupViews() {
 
         tvOrderId =
-            findViewById(R.id.tvOrderId)
+            findViewById(
+                R.id.tvOrderId
+            )
+
 
         tvStatus =
-            findViewById(R.id.tvStatus)
+            findViewById(
+                R.id.tvStatus
+            )
+
 
         tvVehicle =
-            findViewById(R.id.tvVehicle)
+            findViewById(
+                R.id.tvVehicle
+            )
+
 
         tvPickup =
-            findViewById(R.id.tvPickup)
+            findViewById(
+                R.id.tvPickup
+            )
+
 
         tvDropoff =
-            findViewById(R.id.tvDropoff)
+            findViewById(
+                R.id.tvDropoff
+            )
+
 
         tvFee =
-            findViewById(R.id.tvFee)
+            findViewById(
+                R.id.tvFee
+            )
+
 
         btnCancelOrder =
-            findViewById(R.id.btnCancelOrder)
+            findViewById(
+                R.id.btnCancelOrder
+            )
     }
+
 
     private fun setupButtons() {
 
-        var btnBack =
+        val btnBack =
             findViewById<MaterialButton>(
                 R.id.btnBack
             )
 
+
         btnBack.setOnClickListener {
+
             finish()
         }
 
+
         btnCancelOrder.setOnClickListener {
+
             cancelOrder()
         }
     }
+
 
     private fun loadOrder() {
 
@@ -90,32 +149,45 @@ class CustomerTrackActivity : ComponentActivity() {
             orderId
         ) { success, message, order ->
 
+
             if (!success || order == null) {
-                showMessage(message)
+
+                showMessage(
+                    message
+                )
+
                 return@getOrder
             }
 
+
             runOnUiThread {
+
 
                 tvOrderId.text =
                     order.orderId
 
+
                 tvStatus.text =
                     order.status
+
 
                 tvVehicle.text =
                     order.vehicleType
 
+
                 tvPickup.text =
                     order.pickupAddress
 
+
                 tvDropoff.text =
                     order.dropAddress
+
 
                 tvFee.text =
                     "₱%.2f".format(
                         order.fee
                     )
+
 
                 updateCancelButton(
                     order.status
@@ -124,11 +196,19 @@ class CustomerTrackActivity : ComponentActivity() {
         }
     }
 
+
     private fun updateCancelButton(
         status: String
     ) {
 
-        if (status == "Pending") {
+        // Customer can only cancel
+        // while the order is still Pending.
+        if (
+            status.equals(
+                "Pending",
+                ignoreCase = true
+            )
+        ) {
 
             btnCancelOrder.visibility =
                 View.VISIBLE
@@ -140,12 +220,14 @@ class CustomerTrackActivity : ComponentActivity() {
         }
     }
 
+
     private fun cancelOrder() {
 
-        var firebaseUser =
+        val firebaseUser =
             FirebaseAuth
                 .getInstance()
                 .currentUser
+
 
         if (firebaseUser == null) {
 
@@ -156,23 +238,29 @@ class CustomerTrackActivity : ComponentActivity() {
             return
         }
 
-        var customer =
+
+        val customer =
             Customer(
                 uid = firebaseUser.uid
             )
 
+
         btnCancelOrder.isEnabled =
             false
 
+
         btnCancelOrder.text =
             "Cancelling..."
+
 
         customerOrder.cancelOrder(
             customer,
             orderId
         ) { success, message ->
 
+
             runOnUiThread {
+
 
                 if (success) {
 
@@ -180,17 +268,24 @@ class CustomerTrackActivity : ComponentActivity() {
                         "Order cancelled successfully."
                     )
 
+
                     btnCancelOrder.visibility =
                         View.GONE
 
+
+                    // Load the updated status
                     loadOrder()
 
                 } else {
 
-                    showMessage(message)
+                    showMessage(
+                        message
+                    )
+
 
                     btnCancelOrder.text =
                         "Cancel Order"
+
 
                     btnCancelOrder.isEnabled =
                         true
@@ -198,6 +293,7 @@ class CustomerTrackActivity : ComponentActivity() {
             }
         }
     }
+
 
     private fun showMessage(
         message: String

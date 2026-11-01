@@ -1,289 +1,341 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
-    android:fillViewport="true"
-    tools:context=".uic.MainActivity">
+    tools:context=".uic.rider.RiderHistoryActivity">
 
-    <LinearLayout
+
+    <!-- MAIN CONTENT -->
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Delivery History"
-            android:textColor="@android:color/black"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Your recently handled deliveries."
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvNoHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:gravity="center"
-            android:text="No deliveries yet."
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="92dp"
+        android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/cardHistory1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@android:color/white"
             android:orientation="vertical"
-            android:background="@drawable/bg_input_outline"
-            android:paddingStart="16dp"
-            android:padding="16dp">
+            android:padding="24dp">
 
-            <LinearLayout
+
+            <!-- TITLE -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="Delivery History"
+                android:textColor="@android:color/black"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Your completed deliveries"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+
+            <!-- NO HISTORY -->
+
+            <TextView
+                android:id="@+id/tvNoHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:padding="24dp"
+                android:text="No completed deliveries yet."
+                android:textColor="#666666"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+
+            <!-- HISTORY 1 -->
+
+            <LinearLayout
+                android:id="@+id/cardHistory1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHistoryId1"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="20dp"
+                    android:text="Order #"
                     android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="#ABC-1" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryRoute1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Pickup → Drop-off"
+                    android:textColor="#444444"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvHistoryFee1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B8F3F"
+                    android:layout_marginTop="8dp"
+                    android:text="₱0.00"
+                    android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="₱185" />
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryStatus1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Delivered"
+                    android:textColor="#2B8F3F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvHistoryRoute1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:minHeight="18dp"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                tools:text="Lipa to Malvar" />
 
-            <TextView
-                android:id="@+id/tvHistoryStatus1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:minHeight="16dp"
-                android:textColor="#666666"
-                android:textSize="11sp"
-                tools:text="Delivered • Oct 17, 10:35 AM" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardHistory2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_input_outline"
-            android:backgroundTint="@android:color/white"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <!-- HISTORY 2 -->
 
             <LinearLayout
+                android:id="@+id/cardHistory2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHistoryId2"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="20dp"
+                    android:text="Order #"
                     android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="#ABC-2" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryRoute2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Pickup → Drop-off"
+                    android:textColor="#444444"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvHistoryFee2"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B8F3F"
+                    android:layout_marginTop="8dp"
+                    android:text="₱0.00"
+                    android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="₱240" />
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryStatus2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Delivered"
+                    android:textColor="#2B8F3F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvHistoryRoute2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:minHeight="18dp"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                tools:text="Lipa to Tanauan" />
 
-            <TextView
-                android:id="@+id/tvHistoryStatus2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:minHeight="16dp"
-                android:textColor="#666666"
-                android:textSize="11sp"
-                tools:text="Delivered • Oct 16, 4:20 PM" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardHistory3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_input_outline"
-            android:backgroundTint="@android:color/white"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <!-- HISTORY 3 -->
 
             <LinearLayout
+                android:id="@+id/cardHistory3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHistoryId3"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="20dp"
+                    android:text="Order #"
                     android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="#ABC-3" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryRoute3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Pickup → Drop-off"
+                    android:textColor="#444444"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvHistoryFee3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B8F3F"
+                    android:layout_marginTop="8dp"
+                    android:text="₱0.00"
+                    android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="₱310" />
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryStatus3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Delivered"
+                    android:textColor="#2B8F3F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvHistoryRoute3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:minHeight="18dp"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                tools:text="Lipa to Sto. Tomas" />
 
-            <TextView
-                android:id="@+id/tvHistoryStatus3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:minHeight="16dp"
-                android:textColor="#666666"
-                android:textSize="11sp"
-                tools:text="Delivered • Oct 14, 11:10 AM" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardHistory4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/bg_input_outline"
-            android:backgroundTint="@android:color/white"
-            android:orientation="vertical"
-            android:padding="16dp">
+            <!-- HISTORY 4 -->
 
             <LinearLayout
+                android:id="@+id/cardHistory4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHistoryId4"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="20dp"
+                    android:text="Order #"
                     android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="#ABC-4" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryRoute4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Pickup → Drop-off"
+                    android:textColor="#444444"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tvHistoryFee4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="#2B8F3F"
+                    android:layout_marginTop="8dp"
+                    android:text="₱0.00"
+                    android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="₱150" />
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHistoryStatus4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Delivered"
+                    android:textColor="#2B8F3F"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvHistoryRoute4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:minHeight="18dp"
-                android:textColor="@android:color/black"
-                android:textSize="13sp"
-                tools:text="Mataasnakahoy to Lipa" />
-
-            <TextView
-                android:id="@+id/tvHistoryStatus4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:minHeight="16dp"
-                android:textColor="#666666"
-                android:textSize="11sp"
-                tools:text="Delivered • Oct 13, 2:45 PM" />
         </LinearLayout>
 
+    </ScrollView>
+
+
+    <!-- BOTTOM NAVIGATION -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:elevation="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <!-- SETTINGS -->
+
+        <TextView
+            android:id="@+id/navSettings"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Settings"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <!-- HOME -->
+
+        <TextView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Home"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <!-- HISTORY -->
+
+        <TextView
+            android:id="@+id/navHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="History"
+            android:textColor="#2B8F3F"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
-</ScrollView>
+
+</FrameLayout>

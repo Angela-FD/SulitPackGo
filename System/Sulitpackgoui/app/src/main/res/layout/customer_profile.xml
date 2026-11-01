@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_login">
 
-    <!-- SCROLLABLE CONTENT -->
+
+    <!-- MAIN CONTENT -->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,9 +21,13 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+
+            <!-- TITLE -->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:text="Profile"
                 android:textColor="@color/black"
                 android:textSize="28sp"
@@ -36,6 +41,7 @@
                 android:textColor="#666666"
                 android:textSize="14sp" />
 
+
             <!-- PROFILE CARD -->
 
             <LinearLayout
@@ -43,8 +49,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
                 android:orientation="vertical"
                 android:padding="18dp">
+
+
+                <!-- NAME -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,10 +68,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="-"
+                    android:text="Customer Name"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+
+                <!-- EMAIL -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -76,9 +89,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="-"
+                    android:text="customer@email.com"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
+
+
+                <!-- EDIT PROFILE -->
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEditProfile"
@@ -90,9 +106,11 @@
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     app:cornerRadius="12dp" />
 
             </LinearLayout>
+
 
             <!-- ACCOUNT -->
 
@@ -105,12 +123,16 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
+
+            <!-- CHANGE PASSWORD -->
+
             <TextView
                 android:id="@+id/btnChangePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_input_outline"
+                android:backgroundTint="@android:color/white"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -120,12 +142,15 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+
+            <!-- LOGOUT -->
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="30dp"
                 android:backgroundTint="#C62828"
                 android:text="Logout"
                 android:textAllCaps="false"
@@ -138,7 +163,8 @@
 
     </ScrollView>
 
-    <!-- FIXED BOTTOM NAV -->
+
+    <!-- BOTTOM NAVIGATION -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,65 +175,50 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_bottom_nav"
         android:elevation="10dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textColor="#666666"
-                android:textSize="14sp" />
+        <!-- ORDERS -->
 
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
             android:id="@+id/navOrders"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="Orders"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Orders"
-                android:textColor="#666666"
-                android:textSize="14sp" />
 
-        </LinearLayout>
+        <!-- HOME -->
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Home"
+            android:textColor="#666666"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <!-- PROFILE -->
+
+        <TextView
             android:id="@+id/navProfile"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textColor="#2B8F3F"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+            android:text="Profile"
+            android:textColor="#2B8F3F"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
