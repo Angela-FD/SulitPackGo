@@ -19,6 +19,8 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <!-- TITLE -->
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,6 +36,8 @@
                 android:text="View your current deliveries."
                 android:textColor="#666666"
                 android:textSize="14sp" />
+
+            <!-- ORDER LIST -->
 
             <LinearLayout
                 android:id="@+id/ordersContainer"
@@ -72,24 +76,7 @@
         android:elevation="10dp"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Home"
-                android:textColor="#666666"
-                android:textSize="14sp" />
-
-        </LinearLayout>
+        <!-- ORDERS -->
 
         <LinearLayout
             android:id="@+id/navOrders"
@@ -110,6 +97,29 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <!-- HOME -->
+
+        <LinearLayout
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- PROFILE -->
 
         <LinearLayout
             android:id="@+id/navProfile"

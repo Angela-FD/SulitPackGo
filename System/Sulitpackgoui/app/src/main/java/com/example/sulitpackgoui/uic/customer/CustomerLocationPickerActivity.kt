@@ -18,24 +18,40 @@ import org.maplibre.android.maps.MapView
 
 class CustomerLocationPickerActivity : ComponentActivity() {
 
-    private lateinit var mapView: MapView
+    private lateinit var mapView:
+            MapView
+
 
     private lateinit var nasugbuBoundary:
             NasugbuBoundary
 
-    private var selectedPoint: LatLng? =
-        null
+
+    private var selectedLatitude =
+        0.0
+
+
+    private var selectedLongitude =
+        0.0
+
+
+    private var locationSelected =
+        false
+
 
     private lateinit var tvCoordinates:
             TextView
 
+
     private lateinit var btnConfirm:
             MaterialButton
+
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         MapLibre.getInstance(
             this,
@@ -43,60 +59,78 @@ class CustomerLocationPickerActivity : ComponentActivity() {
             WellKnownTileServer.MapLibre
         )
 
+
         setContentView(
             R.layout.customer_location_picker
         )
 
+
         mapView =
-            findViewById(R.id.mapView)
+            findViewById(
+                R.id.mapView
+            )
+
 
         mapView.onCreate(
             savedInstanceState
         )
 
+
         nasugbuBoundary =
-            NasugbuBoundary(this)
+            NasugbuBoundary(
+                this
+            )
+
 
         setupViews()
+
         setupMap()
     }
 
+
     private fun setupViews() {
 
-        val tvTitle =
+        var tvTitle =
             findViewById<TextView>(
                 R.id.tvMapTitle
             )
 
-        val tvInstruction =
+
+        var tvInstruction =
             findViewById<TextView>(
                 R.id.tvMapInstruction
             )
+
 
         tvCoordinates =
             findViewById(
                 R.id.tvSelectedCoordinates
             )
 
+
         btnConfirm =
             findViewById(
                 R.id.btnConfirmLocation
             )
 
-        val btnCancel =
+
+        var btnCancel =
             findViewById<MaterialButton>(
                 R.id.btnCancel
             )
 
-        val locationType =
-            intent.getStringExtra(
+
+        var locationType =
+            readTextExtra(
                 "locationType"
-            ) ?: "pickup"
+            )
+
 
         if (locationType == "pickup") {
 
             tvTitle.text =
                 "Select Pickup Location"
+
 
             tvInstruction.text =
                 "Tap the exact pickup location inside Nasugbu."
@@ -106,77 +140,114 @@ class CustomerLocationPickerActivity : ComponentActivity() {
             tvTitle.text =
                 "Select Drop-off Location"
 
+
             tvInstruction.text =
                 "Tap the exact drop-off location inside Nasugbu."
         }
 
+
         btnConfirm.setOnClickListener {
+
             confirmLocation()
         }
 
+
         btnCancel.setOnClickListener {
+
             finish()
         }
     }
+
 
     private fun setupMap() {
 
         mapView.getMapAsync { map ->
 
+
             map.setStyle(
                 "https://tiles.openfreemap.org/styles/liberty"
             ) {
 
+
                 map.cameraPosition =
-                    CameraPosition.Builder()
+                    CameraPosition
+                        .Builder()
                         .target(
                             LatLng(
                                 14.07,
                                 120.63
                             )
                         )
-                        .zoom(12.0)
+                        .zoom(
+                            12.0
+                        )
                         .build()
+
 
                 map.addOnMapClickListener { point ->
 
-                    val insideNasugbu =
+
+                    var insideNasugbu =
                         nasugbuBoundary
                             .isInsideNasugbu(
                                 point.latitude,
                                 point.longitude
                             )
 
-                    if (!insideNasugbu) {
+
+                    if (
+                        insideNasugbu == false
+                    ) {
 
                         showMessage(
                             "Please select a location inside Nasugbu."
                         )
 
-                        return@addOnMapClickListener true
-                    }
+                    } else {
 
-                    selectedPoint =
-                        point
+                        selectedLatitude =
+                            point.latitude
 
-                    map.clear()
 
-                    map.addMarker(
-                        MarkerOptions()
-                            .position(point)
-                            .title(
-                                "Selected Location"
-                            )
-                    )
-
-                    tvCoordinates.text =
-                        "Selected: %.6f, %.6f".format(
-                            point.latitude,
+                        selectedLongitude =
                             point.longitude
+
+
+                        locationSelected =
+                            true
+
+
+                        map.clear()
+
+
+                        map.addMarker(
+                            MarkerOptions()
+                                .position(
+                                    point
+                                )
+                                .title(
+                                    "Selected Location"
+                                )
                         )
 
-                    btnConfirm.isEnabled =
-                        true
+
+                        tvCoordinates.text =
+                            "Selected: " +
+                                    String.format(
+                                        "%.6f",
+                                        selectedLatitude
+                                    ) +
+                                    ", " +
+                                    String.format(
+                                        "%.6f",
+                                        selectedLongitude
+                                    )
+
+
+                        btnConfirm.isEnabled =
+                            true
+                    }
+
 
                     true
                 }
@@ -184,12 +255,12 @@ class CustomerLocationPickerActivity : ComponentActivity() {
         }
     }
 
+
     private fun confirmLocation() {
 
-        val point =
-            selectedPoint
-
-        if (point == null) {
+        if (
+            locationSelected == false
+        ) {
 
             showMessage(
                 "Select a location first."
@@ -198,26 +269,52 @@ class CustomerLocationPickerActivity : ComponentActivity() {
             return
         }
 
-        val resultIntent =
+
+        var resultIntent =
             Intent()
+
 
         resultIntent.putExtra(
             "latitude",
-            point.latitude
+            selectedLatitude
         )
+
 
         resultIntent.putExtra(
             "longitude",
-            point.longitude
+            selectedLongitude
         )
+
 
         setResult(
             Activity.RESULT_OK,
             resultIntent
         )
 
+
         finish()
     }
+
+
+    private fun readTextExtra(
+        name: String
+    ): String {
+
+        var value =
+            intent.getStringExtra(
+                name
+            )
+
+
+        if (value == null) {
+
+            return ""
+        }
+
+
+        return value
+    }
+
 
     private fun showMessage(
         message: String
@@ -230,33 +327,51 @@ class CustomerLocationPickerActivity : ComponentActivity() {
         ).show()
     }
 
+
     override fun onStart() {
+
         super.onStart()
+
         mapView.onStart()
     }
 
+
     override fun onResume() {
+
         super.onResume()
+
         mapView.onResume()
     }
 
+
     override fun onPause() {
+
         mapView.onPause()
+
         super.onPause()
     }
 
+
     override fun onStop() {
+
         mapView.onStop()
+
         super.onStop()
     }
 
+
     override fun onDestroy() {
+
         mapView.onDestroy()
+
         super.onDestroy()
     }
 
+
     override fun onLowMemory() {
+
         super.onLowMemory()
+
         mapView.onLowMemory()
     }
 }

@@ -7,203 +7,322 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.sulitpackgoui.R
+import com.example.sulitpackgoui.customer.CustomerDatabase
 import com.example.sulitpackgoui.uic.MainActivity
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerProfileActivity : ComponentActivity() {
 
     private var auth =
         FirebaseAuth.getInstance()
 
-    private var database =
-        FirebaseFirestore.getInstance()
 
-    private lateinit var tvName: TextView
-    private lateinit var tvEmail: TextView
+    private var customerDatabase =
+        CustomerDatabase()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    private lateinit var tvProfileName:
+            TextView
+
+    private lateinit var tvProfileEmail:
+            TextView
+
+    private lateinit var tvProfilePhone:
+            TextView
+
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.customer_profile
         )
 
+
         setupViews()
+
         setupButtons()
+
         setupNavigation()
     }
 
+
     override fun onResume() {
+
         super.onResume()
+
 
         loadProfile()
     }
 
+
     private fun setupViews() {
 
-        tvName =
+        tvProfileName =
             findViewById(
                 R.id.tvProfileName
             )
 
-        tvEmail =
+
+        tvProfileEmail =
             findViewById(
                 R.id.tvProfileEmail
             )
+
+
+        tvProfilePhone =
+            findViewById(
+                R.id.tvProfilePhone
+            )
     }
+
 
     private fun loadProfile() {
 
-        val user =
+        var user =
             auth.currentUser
 
+
         if (user == null) {
+
             showMessage(
                 "Please log in again."
             )
+
             return
         }
 
-        database
-            .collection("users")
-            .document(user.uid)
-            .get()
-            .addOnSuccessListener { document ->
 
-                tvName.text =
-                    document.getString("name")
-                        ?: "Customer"
+        customerDatabase.getCustomer(
+            user.uid
+        ) { success, message, customer ->
 
-                tvEmail.text =
-                    document.getString("email")
-                        ?: user.email
-                                ?: ""
-            }
-            .addOnFailureListener { error ->
+
+            if (success) {
+
+                if (customer != null) {
+
+                    tvProfileName.text =
+                        customer.name
+
+
+                    if (
+                        customer.email.isBlank()
+                    ) {
+
+                        if (user.email != null) {
+
+                            tvProfileEmail.text =
+                                user.email.toString()
+
+                        } else {
+
+                            tvProfileEmail.text =
+                                ""
+                        }
+
+                    } else {
+
+                        tvProfileEmail.text =
+                            customer.email
+                    }
+
+
+                    if (
+                        customer.phoneNumber.isBlank()
+                    ) {
+
+                        tvProfilePhone.text =
+                            "Not provided"
+
+                    } else {
+
+                        tvProfilePhone.text =
+                            customer.phoneNumber
+                    }
+
+                } else {
+
+                    showMessage(
+                        "Customer profile not found."
+                    )
+                }
+
+            } else {
 
                 showMessage(
-                    error.message
-                        ?: "Failed to load profile."
+                    message
                 )
             }
+        }
     }
+
 
     private fun setupButtons() {
 
-        val btnEditProfile =
+        var btnEditProfile =
             findViewById<MaterialButton>(
                 R.id.btnEditProfile
             )
 
-        val btnChangePassword =
+
+        var btnChangePassword =
             findViewById<TextView>(
                 R.id.btnChangePassword
             )
 
-        val btnLogout =
+
+        var btnLogout =
             findViewById<MaterialButton>(
                 R.id.btnLogout
             )
 
+
         btnEditProfile.setOnClickListener {
 
-            startActivity(
+            var intent =
                 Intent(
                     this,
                     CustomerEditProfileActivity::class.java
                 )
+
+
+            startActivity(
+                intent
             )
         }
 
+
         btnChangePassword.setOnClickListener {
 
-            startActivity(
+            var intent =
                 Intent(
                     this,
                     CustomerChangePasswordActivity::class.java
                 )
+
+
+            startActivity(
+                intent
             )
         }
 
+
         btnLogout.setOnClickListener {
+
             logout()
         }
     }
 
+
     private fun setupNavigation() {
 
-        val navHome =
-            findViewById<LinearLayout>(
-                R.id.navHome
-            )
-
-        val navOrders =
+        var navOrders =
             findViewById<LinearLayout>(
                 R.id.navOrders
             )
 
-        val navProfile =
+
+        var navHome =
+            findViewById<LinearLayout>(
+                R.id.navHome
+            )
+
+
+        var navProfile =
             findViewById<LinearLayout>(
                 R.id.navProfile
             )
 
+
+        navOrders.setOnClickListener {
+
+            var intent =
+                Intent(
+                    this,
+                    CustomerOrdersActivity::class.java
+                )
+
+
+            startActivity(
+                intent
+            )
+
+
+            finish()
+        }
+
+
         navHome.setOnClickListener {
 
-            val homeIntent =
+            var intent =
                 Intent(
                     this,
                     CustomerHomeActivity::class.java
                 )
 
-            homeIntent.flags =
+
+            intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+
+
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_SINGLE_TOP
+            )
+
 
             startActivity(
-                homeIntent
+                intent
             )
+
 
             finish()
         }
 
-        navOrders.setOnClickListener {
-
-            startActivity(
-                Intent(
-                    this,
-                    CustomerOrdersActivity::class.java
-                )
-            )
-
-            finish()
-        }
 
         navProfile.setOnClickListener {
-            // Already on Profile
+
+            loadProfile()
         }
     }
+
 
     private fun logout() {
 
         auth.signOut()
 
-        val loginIntent =
+
+        var intent =
             Intent(
                 this,
                 MainActivity::class.java
             )
 
-        loginIntent.flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+
+
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TASK
+        )
+
 
         startActivity(
-            loginIntent
+            intent
         )
+
 
         finish()
     }
+
 
     private fun showMessage(
         message: String

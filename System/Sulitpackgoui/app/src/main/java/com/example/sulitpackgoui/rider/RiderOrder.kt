@@ -5,107 +5,62 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class RiderOrder {
 
-    private var database = FirebaseFirestore.getInstance()
+    private var database =
+        FirebaseFirestore.getInstance()
 
 
-    // Get all Pending orders that match the Rider's vehicle
     fun getPendingOrders(
         rider: Rider,
-        onResult: (Boolean, String, List<OrderData>) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            List<OrderData>
+        ) -> Unit
     ) {
 
         database
             .collection("orders")
-            .whereEqualTo("status", "Pending")
+            .whereEqualTo(
+                "status",
+                "Pending"
+            )
             .get()
-            .addOnSuccessListener { documents ->
-
-                var pendingOrders = mutableListOf<OrderData>()
+            .addOnSuccessListener { result ->
 
 
-                for (document in documents) {
-
-                    var order = OrderData(
-
-                        orderId =
-                            document.getString("orderId") ?: "",
-
-                        customerId =
-                            document.getString("customerId") ?: "",
-
-                        riderId =
-                            document.getString("riderId") ?: "",
+                var pendingOrders =
+                    mutableListOf<OrderData>()
 
 
-                        pickupAddress =
-                            document.getString("pickupAddress") ?: "",
+                for (
+                document in
+                result.documents
+                ) {
 
-                        pickupAddressDetails =
-                            document.getString("pickupAddressDetails") ?: "",
-
-                        dropAddress =
-                            document.getString("dropAddress") ?: "",
-
-                        dropAddressDetails =
-                            document.getString("dropAddressDetails") ?: "",
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
+                        )
 
 
-                        pickupLatitude =
-                            document.getDouble("pickupLatitude") ?: 0.0,
+                    if (order != null) {
 
-                        pickupLongitude =
-                            document.getDouble("pickupLongitude") ?: 0.0,
+                        if (
+                            order.vehicleType ==
+                            rider.vehicleType
+                        ) {
 
-                        dropLatitude =
-                            document.getDouble("dropLatitude") ?: 0.0,
-
-                        dropLongitude =
-                            document.getDouble("dropLongitude") ?: 0.0,
-
-
-                        description =
-                            document.getString("description") ?: "",
-
-                        weight =
-                            document.getDouble("weight") ?: 0.0,
-
-                        pieces =
-                            document.getLong("pieces")?.toInt() ?: 1,
-
-                        instructions =
-                            document.getString("instructions") ?: "",
-
-
-                        vehicleType =
-                            document.getString("vehicleType") ?: "",
-
-
-                        distance =
-                            document.getDouble("distance") ?: 0.0,
-
-                        fee =
-                            document.getDouble("fee") ?: 0.0,
-
-
-                        status =
-                            document.getString("status") ?: "",
-
-                        createdAt =
-                            document.getLong("createdAt") ?: 0L
-                    )
-
-
-                    // Rider only sees orders for the same vehicle type
-                    if (order.vehicleType == rider.vehicleType) {
-
-                        pendingOrders.add(order)
+                            pendingOrders.add(
+                                order
+                            )
+                        }
                     }
                 }
 
 
-                // Newest orders appear first
-                pendingOrders.sortByDescending {
-                    it.createdAt
+                pendingOrders.sortByDescending { order ->
+
+                    order.createdAt
                 }
 
 
@@ -119,14 +74,16 @@ class RiderOrder {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get pending orders.",
+                    getErrorMessage(
+                        error,
+                        "Failed to get pending orders."
+                    ),
                     emptyList()
                 )
             }
     }
 
 
-    // Rider accepts a Pending order
     fun acceptOrder(
         rider: Rider,
         orderId: String,
@@ -144,7 +101,9 @@ class RiderOrder {
         }
 
 
-        if (rider.isAvailable == false) {
+        if (
+            rider.isAvailable == false
+        ) {
 
             onResult(
                 false,
@@ -183,113 +142,124 @@ class RiderOrder {
             .addOnSuccessListener { document ->
 
 
-                if (document.exists() == false) {
+                if (
+                    document.exists() == false
+                ) {
 
                     onResult(
                         false,
                         "Order not found."
                     )
 
-                    return@addOnSuccessListener
-                }
+                } else {
 
-
-                var orderStatus =
-                    document.getString("status") ?: ""
-
-
-                if (orderStatus != "Pending") {
-
-                    onResult(
-                        false,
-                        "Order is no longer available."
-                    )
-
-                    return@addOnSuccessListener
-                }
-
-
-                var requiredVehicle =
-                    document.getString("vehicleType") ?: ""
-
-
-                if (requiredVehicle != rider.vehicleType) {
-
-                    onResult(
-                        false,
-                        "This order requires a $requiredVehicle."
-                    )
-
-                    return@addOnSuccessListener
-                }
-
-
-                var orderUpdate = hashMapOf<String, Any>(
-                    "riderId" to rider.uid,
-                    "status" to "Pick Up Pending"
-                )
-
-
-                orderReference
-                    .update(orderUpdate)
-                    .addOnSuccessListener {
-
-
-                        var riderUpdate = hashMapOf<String, Any>(
-                            "isAvailable" to false,
-                            "currentOrderId" to orderId
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
                         )
 
 
-                        riderReference
-                            .update(riderUpdate)
+                    if (order == null) {
+
+                        onResult(
+                            false,
+                            "Failed to read order."
+                        )
+
+                    } else if (
+                        order.status !=
+                        "Pending"
+                    ) {
+
+                        onResult(
+                            false,
+                            "Order is no longer available."
+                        )
+
+                    } else if (
+                        order.vehicleType !=
+                        rider.vehicleType
+                    ) {
+
+                        onResult(
+                            false,
+                            "This order requires a " +
+                                    order.vehicleType +
+                                    "."
+                        )
+
+                    } else {
+
+                        orderReference
+                            .update(
+                                "riderId",
+                                rider.uid,
+                                "status",
+                                "Pick Up Pending"
+                            )
                             .addOnSuccessListener {
 
 
-                                rider.isAvailable = false
-                                rider.currentOrderId = orderId
+                                riderReference
+                                    .update(
+                                        "isAvailable",
+                                        false,
+                                        "currentOrderId",
+                                        orderId
+                                    )
+                                    .addOnSuccessListener {
 
 
-                                onResult(
-                                    true,
-                                    "Order accepted successfully."
-                                )
+                                        rider.isAvailable =
+                                            false
+
+
+                                        rider.currentOrderId =
+                                            orderId
+
+
+                                        onResult(
+                                            true,
+                                            "Order accepted successfully."
+                                        )
+                                    }
+                                    .addOnFailureListener { error ->
+
+                                        onResult(
+                                            false,
+                                            getErrorMessage(
+                                                error,
+                                                "Failed to update rider."
+                                            )
+                                        )
+                                    }
                             }
                             .addOnFailureListener { error ->
 
                                 onResult(
                                     false,
-                                    error.message
-                                        ?: "Failed to update rider."
+                                    getErrorMessage(
+                                        error,
+                                        "Failed to accept order."
+                                    )
                                 )
                             }
                     }
-                    .addOnFailureListener { error ->
-
-                        onResult(
-                            false,
-                            error.message
-                                ?: "Failed to accept order."
-                        )
-                    }
+                }
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get order."
+                    getErrorMessage(
+                        error,
+                        "Failed to get order."
+                    )
                 )
             }
     }
 
 
-    // Change delivery status
-    //
-    // Pick Up Pending
-    //        ↓
-    // Out for Delivery
-    //        ↓
-    // Delivered
     fun updateDeliveryStatus(
         rider: Rider,
         onResult: (Boolean, String) -> Unit
@@ -306,7 +276,9 @@ class RiderOrder {
         }
 
 
-        if (rider.currentOrderId.isBlank()) {
+        if (
+            rider.currentOrderId.isBlank()
+        ) {
 
             onResult(
                 false,
@@ -317,151 +289,192 @@ class RiderOrder {
         }
 
 
+        getOrder(
+            rider.currentOrderId
+        ) { success, message, order ->
+
+
+            if (success == false) {
+
+                onResult(
+                    false,
+                    message
+                )
+
+            } else if (
+                order == null
+            ) {
+
+                onResult(
+                    false,
+                    "Order not found."
+                )
+
+            } else if (
+                order.riderId !=
+                rider.uid
+            ) {
+
+                onResult(
+                    false,
+                    "This order does not belong to this rider."
+                )
+
+            } else {
+
+                moveToNextStatus(
+                    rider,
+                    order,
+                    onResult
+                )
+            }
+        }
+    }
+
+
+    private fun moveToNextStatus(
+        rider: Rider,
+        order: OrderData,
+        onResult: (Boolean, String) -> Unit
+    ) {
+
+        var newStatus =
+            ""
+
+
+        if (
+            order.status ==
+            "Pick Up Pending"
+        ) {
+
+            newStatus =
+                "Out for Delivery"
+
+        } else if (
+            order.status ==
+            "Out for Delivery"
+        ) {
+
+            newStatus =
+                "Delivered"
+
+        } else {
+
+            onResult(
+                false,
+                "No next delivery status."
+            )
+
+            return
+        }
+
+
         var orderReference =
             database
                 .collection("orders")
-                .document(rider.currentOrderId)
+                .document(order.orderId)
 
 
         orderReference
-            .get()
-            .addOnSuccessListener { document ->
+            .update(
+                "status",
+                newStatus
+            )
+            .addOnSuccessListener {
 
 
-                if (document.exists() == false) {
+                if (
+                    newStatus ==
+                    "Delivered"
+                ) {
 
-                    onResult(
-                        false,
-                        "Order not found."
+                    finishDelivery(
+                        rider,
+                        onResult
                     )
-
-                    return@addOnSuccessListener
-                }
-
-
-                var assignedRiderId =
-                    document.getString("riderId") ?: ""
-
-
-                if (assignedRiderId != rider.uid) {
-
-                    onResult(
-                        false,
-                        "This order does not belong to this rider."
-                    )
-
-                    return@addOnSuccessListener
-                }
-
-
-                var currentStatus =
-                    document.getString("status") ?: ""
-
-
-                var newStatus = ""
-
-
-                if (currentStatus == "Pick Up Pending") {
-
-                    newStatus = "Out for Delivery"
-
-                } else if (currentStatus == "Out for Delivery") {
-
-                    newStatus = "Delivered"
 
                 } else {
 
                     onResult(
-                        false,
-                        "No next delivery status."
+                        true,
+                        "Order status updated to " +
+                                newStatus +
+                                "."
                     )
-
-                    return@addOnSuccessListener
                 }
-
-
-                orderReference
-                    .update(
-                        "status",
-                        newStatus
-                    )
-                    .addOnSuccessListener {
-
-
-                        // If delivery is finished,
-                        // make Rider available again
-                        if (newStatus == "Delivered") {
-
-
-                            var riderReference =
-                                database
-                                    .collection("riders")
-                                    .document(rider.uid)
-
-
-                            var riderUpdate = hashMapOf<String, Any>(
-                                "isAvailable" to true,
-                                "currentOrderId" to ""
-                            )
-
-
-                            riderReference
-                                .update(riderUpdate)
-                                .addOnSuccessListener {
-
-
-                                    rider.isAvailable = true
-                                    rider.currentOrderId = ""
-
-
-                                    onResult(
-                                        true,
-                                        "Order delivered successfully."
-                                    )
-                                }
-                                .addOnFailureListener { error ->
-
-                                    onResult(
-                                        false,
-                                        error.message
-                                            ?: "Failed to update rider."
-                                    )
-                                }
-
-                        } else {
-
-                            onResult(
-                                true,
-                                "Order status updated to $newStatus."
-                            )
-                        }
-                    }
-                    .addOnFailureListener { error ->
-
-                        onResult(
-                            false,
-                            error.message
-                                ?: "Failed to update order status."
-                        )
-                    }
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get order."
+                    getErrorMessage(
+                        error,
+                        "Failed to update order status."
+                    )
                 )
             }
     }
 
 
-    // Get the Rider's current active order
-    fun getCurrentOrder(
+    private fun finishDelivery(
         rider: Rider,
-        onResult: (Boolean, String, OrderData?) -> Unit
+        onResult: (Boolean, String) -> Unit
     ) {
 
-        if (rider.currentOrderId.isBlank()) {
+        var riderReference =
+            database
+                .collection("riders")
+                .document(rider.uid)
+
+
+        riderReference
+            .update(
+                "isAvailable",
+                true,
+                "currentOrderId",
+                ""
+            )
+            .addOnSuccessListener {
+
+
+                rider.isAvailable =
+                    true
+
+
+                rider.currentOrderId =
+                    ""
+
+
+                onResult(
+                    true,
+                    "Order delivered successfully."
+                )
+            }
+            .addOnFailureListener { error ->
+
+                onResult(
+                    false,
+                    getErrorMessage(
+                        error,
+                        "Failed to update rider."
+                    )
+                )
+            }
+    }
+
+
+    fun getCurrentOrder(
+        rider: Rider,
+        onResult: (
+            Boolean,
+            String,
+            OrderData?
+        ) -> Unit
+    ) {
+
+        if (
+            rider.currentOrderId.isBlank()
+        ) {
 
             onResult(
                 false,
@@ -473,106 +486,41 @@ class RiderOrder {
         }
 
 
-        database
-            .collection("orders")
-            .document(rider.currentOrderId)
-            .get()
-            .addOnSuccessListener { document ->
+        getOrder(
+            rider.currentOrderId
+        ) { success, message, order ->
 
 
-                if (document.exists() == false) {
+            if (success == false) {
 
-                    onResult(
-                        false,
-                        "Order not found.",
-                        null
-                    )
-
-                    return@addOnSuccessListener
-                }
-
-
-                var order = OrderData(
-
-                    orderId =
-                        document.getString("orderId") ?: "",
-
-                    customerId =
-                        document.getString("customerId") ?: "",
-
-                    riderId =
-                        document.getString("riderId") ?: "",
-
-
-                    pickupAddress =
-                        document.getString("pickupAddress") ?: "",
-
-                    pickupAddressDetails =
-                        document.getString("pickupAddressDetails") ?: "",
-
-                    dropAddress =
-                        document.getString("dropAddress") ?: "",
-
-                    dropAddressDetails =
-                        document.getString("dropAddressDetails") ?: "",
-
-
-                    pickupLatitude =
-                        document.getDouble("pickupLatitude") ?: 0.0,
-
-                    pickupLongitude =
-                        document.getDouble("pickupLongitude") ?: 0.0,
-
-                    dropLatitude =
-                        document.getDouble("dropLatitude") ?: 0.0,
-
-                    dropLongitude =
-                        document.getDouble("dropLongitude") ?: 0.0,
-
-
-                    description =
-                        document.getString("description") ?: "",
-
-                    weight =
-                        document.getDouble("weight") ?: 0.0,
-
-                    pieces =
-                        document.getLong("pieces")?.toInt() ?: 1,
-
-                    instructions =
-                        document.getString("instructions") ?: "",
-
-
-                    vehicleType =
-                        document.getString("vehicleType") ?: "",
-
-
-                    distance =
-                        document.getDouble("distance") ?: 0.0,
-
-                    fee =
-                        document.getDouble("fee") ?: 0.0,
-
-
-                    status =
-                        document.getString("status") ?: "",
-
-                    createdAt =
-                        document.getLong("createdAt") ?: 0L
+                onResult(
+                    false,
+                    message,
+                    null
                 )
 
+            } else if (
+                order == null
+            ) {
 
-                if (order.riderId != rider.uid) {
+                onResult(
+                    false,
+                    "Order not found.",
+                    null
+                )
 
-                    onResult(
-                        false,
-                        "This order is not assigned to this rider.",
-                        null
-                    )
+            } else if (
+                order.riderId !=
+                rider.uid
+            ) {
 
-                    return@addOnSuccessListener
-                }
+                onResult(
+                    false,
+                    "This order is not assigned to this rider.",
+                    null
+                )
 
+            } else {
 
                 onResult(
                     true,
@@ -580,21 +528,17 @@ class RiderOrder {
                     order
                 )
             }
-            .addOnFailureListener { error ->
-
-                onResult(
-                    false,
-                    error.message ?: "Failed to get current order.",
-                    null
-                )
-            }
+        }
     }
 
 
-    // Get one specific order using its order ID
     fun getOrder(
         orderId: String,
-        onResult: (Boolean, String, OrderData?) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            OrderData?
+        ) -> Unit
     ) {
 
         if (orderId.isBlank()) {
@@ -616,7 +560,9 @@ class RiderOrder {
             .addOnSuccessListener { document ->
 
 
-                if (document.exists() == false) {
+                if (
+                    document.exists() == false
+                ) {
 
                     onResult(
                         false,
@@ -624,101 +570,53 @@ class RiderOrder {
                         null
                     )
 
-                    return@addOnSuccessListener
+                } else {
+
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
+                        )
+
+
+                    if (order == null) {
+
+                        onResult(
+                            false,
+                            "Failed to read order.",
+                            null
+                        )
+
+                    } else {
+
+                        onResult(
+                            true,
+                            "Order found.",
+                            order
+                        )
+                    }
                 }
-
-
-                var order = OrderData(
-
-                    orderId =
-                        document.getString("orderId") ?: "",
-
-                    customerId =
-                        document.getString("customerId") ?: "",
-
-                    riderId =
-                        document.getString("riderId") ?: "",
-
-
-                    pickupAddress =
-                        document.getString("pickupAddress") ?: "",
-
-                    pickupAddressDetails =
-                        document.getString("pickupAddressDetails") ?: "",
-
-                    dropAddress =
-                        document.getString("dropAddress") ?: "",
-
-                    dropAddressDetails =
-                        document.getString("dropAddressDetails") ?: "",
-
-
-                    pickupLatitude =
-                        document.getDouble("pickupLatitude") ?: 0.0,
-
-                    pickupLongitude =
-                        document.getDouble("pickupLongitude") ?: 0.0,
-
-                    dropLatitude =
-                        document.getDouble("dropLatitude") ?: 0.0,
-
-                    dropLongitude =
-                        document.getDouble("dropLongitude") ?: 0.0,
-
-
-                    description =
-                        document.getString("description") ?: "",
-
-                    weight =
-                        document.getDouble("weight") ?: 0.0,
-
-                    pieces =
-                        document.getLong("pieces")?.toInt() ?: 1,
-
-                    instructions =
-                        document.getString("instructions") ?: "",
-
-
-                    vehicleType =
-                        document.getString("vehicleType") ?: "",
-
-
-                    distance =
-                        document.getDouble("distance") ?: 0.0,
-
-                    fee =
-                        document.getDouble("fee") ?: 0.0,
-
-
-                    status =
-                        document.getString("status") ?: "",
-
-                    createdAt =
-                        document.getLong("createdAt") ?: 0L
-                )
-
-
-                onResult(
-                    true,
-                    "Order found.",
-                    order
-                )
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get order.",
+                    getErrorMessage(
+                        error,
+                        "Failed to get order."
+                    ),
                     null
                 )
             }
     }
 
 
-    // Get all delivered orders for this Rider
     fun getDeliveryHistory(
         rider: Rider,
-        onResult: (Boolean, String, List<OrderData>) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            List<OrderData>
+        ) -> Unit
     ) {
 
         if (rider.uid.isBlank()) {
@@ -735,100 +633,47 @@ class RiderOrder {
 
         database
             .collection("orders")
-            .whereEqualTo("riderId", rider.uid)
+            .whereEqualTo(
+                "riderId",
+                rider.uid
+            )
             .get()
-            .addOnSuccessListener { documents ->
-
-                var history = mutableListOf<OrderData>()
+            .addOnSuccessListener { result ->
 
 
-                for (document in documents) {
-
-                    var status =
-                        document.getString("status") ?: ""
+                var history =
+                    mutableListOf<OrderData>()
 
 
-                    // Only delivered orders belong in history
-                    if (status == "Delivered") {
+                for (
+                document in
+                result.documents
+                ) {
 
-                        var order = OrderData(
-
-                            orderId =
-                                document.getString("orderId") ?: "",
-
-                            customerId =
-                                document.getString("customerId") ?: "",
-
-                            riderId =
-                                document.getString("riderId") ?: "",
-
-
-                            pickupAddress =
-                                document.getString("pickupAddress") ?: "",
-
-                            pickupAddressDetails =
-                                document.getString("pickupAddressDetails") ?: "",
-
-                            dropAddress =
-                                document.getString("dropAddress") ?: "",
-
-                            dropAddressDetails =
-                                document.getString("dropAddressDetails") ?: "",
-
-
-                            pickupLatitude =
-                                document.getDouble("pickupLatitude") ?: 0.0,
-
-                            pickupLongitude =
-                                document.getDouble("pickupLongitude") ?: 0.0,
-
-                            dropLatitude =
-                                document.getDouble("dropLatitude") ?: 0.0,
-
-                            dropLongitude =
-                                document.getDouble("dropLongitude") ?: 0.0,
-
-
-                            description =
-                                document.getString("description") ?: "",
-
-                            weight =
-                                document.getDouble("weight") ?: 0.0,
-
-                            pieces =
-                                document.getLong("pieces")?.toInt() ?: 1,
-
-                            instructions =
-                                document.getString("instructions") ?: "",
-
-
-                            vehicleType =
-                                document.getString("vehicleType") ?: "",
-
-
-                            distance =
-                                document.getDouble("distance") ?: 0.0,
-
-                            fee =
-                                document.getDouble("fee") ?: 0.0,
-
-
-                            status =
-                                document.getString("status") ?: "",
-
-                            createdAt =
-                                document.getLong("createdAt") ?: 0L
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
                         )
 
 
-                        history.add(order)
+                    if (order != null) {
+
+                        if (
+                            order.status ==
+                            "Delivered"
+                        ) {
+
+                            history.add(
+                                order
+                            )
+                        }
                     }
                 }
 
 
-                // Newest completed deliveries first
-                history.sortByDescending {
-                    it.createdAt
+                history.sortByDescending { order ->
+
+                    order.createdAt
                 }
 
 
@@ -842,9 +687,27 @@ class RiderOrder {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to get delivery history.",
+                    getErrorMessage(
+                        error,
+                        "Failed to get delivery history."
+                    ),
                     emptyList()
                 )
             }
+    }
+
+
+    private fun getErrorMessage(
+        error: Exception,
+        defaultMessage: String
+    ): String {
+
+        if (error.message != null) {
+
+            return error.message.toString()
+        }
+
+
+        return defaultMessage
     }
 }

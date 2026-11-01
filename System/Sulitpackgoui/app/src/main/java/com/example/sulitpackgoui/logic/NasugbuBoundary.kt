@@ -2,11 +2,13 @@ package com.example.sulitpackgoui.logic
 
 import android.content.Context
 import com.example.sulitpackgoui.R
+import org.json.JSONArray
 import org.json.JSONObject
 
 class NasugbuBoundary(
     private var context: Context
 ) {
+
 
     fun isInsideNasugbu(
         latitude: Double,
@@ -14,32 +16,58 @@ class NasugbuBoundary(
     ): Boolean {
 
         var geoJsonText =
-            context.resources
-                .openRawResource(R.raw.nasugbu_boundary)
-                .bufferedReader()
-                .use { it.readText() }
+            readBoundaryFile()
+
 
         var geoJson =
-            JSONObject(geoJsonText)
+            JSONObject(
+                geoJsonText
+            )
+
 
         var features =
-            geoJson.getJSONArray("features")
+            geoJson.getJSONArray(
+                "features"
+            )
 
-        for (i in 0 until features.length()) {
+
+        var featureNumber =
+            0
+
+
+        while (
+            featureNumber <
+            features.length()
+        ) {
 
             var feature =
-                features.getJSONObject(i)
+                features.getJSONObject(
+                    featureNumber
+                )
+
 
             var geometry =
-                feature.getJSONObject("geometry")
+                feature.getJSONObject(
+                    "geometry"
+                )
+
 
             var geometryType =
-                geometry.getString("type")
+                geometry.getString(
+                    "type"
+                )
+
 
             var coordinates =
-                geometry.getJSONArray("coordinates")
+                geometry.getJSONArray(
+                    "coordinates"
+                )
 
-            if (geometryType == "Polygon") {
+
+            if (
+                geometryType ==
+                "Polygon"
+            ) {
 
                 if (
                     checkPolygon(
@@ -48,15 +76,29 @@ class NasugbuBoundary(
                         coordinates
                     )
                 ) {
+
                     return true
                 }
 
-            } else if (geometryType == "MultiPolygon") {
+            } else if (
+                geometryType ==
+                "MultiPolygon"
+            ) {
 
-                for (j in 0 until coordinates.length()) {
+                var polygonNumber =
+                    0
+
+
+                while (
+                    polygonNumber <
+                    coordinates.length()
+                ) {
 
                     var polygon =
-                        coordinates.getJSONArray(j)
+                        coordinates.getJSONArray(
+                            polygonNumber
+                        )
+
 
                     if (
                         checkPolygon(
@@ -65,28 +107,71 @@ class NasugbuBoundary(
                             polygon
                         )
                     ) {
+
                         return true
                     }
+
+
+                    polygonNumber =
+                        polygonNumber + 1
                 }
             }
+
+
+            featureNumber =
+                featureNumber + 1
         }
+
 
         return false
     }
 
+
+    private fun readBoundaryFile(): String {
+
+        var inputStream =
+            context
+                .resources
+                .openRawResource(
+                    R.raw.nasugbu_boundary
+                )
+
+
+        var reader =
+            inputStream
+                .bufferedReader()
+
+
+        var text =
+            reader.readText()
+
+
+        reader.close()
+
+
+        return text
+    }
+
+
     private fun checkPolygon(
         latitude: Double,
         longitude: Double,
-        polygon: org.json.JSONArray
+        polygon: JSONArray
     ): Boolean {
 
-        if (polygon.length() == 0) {
+        if (
+            polygon.length() == 0
+        ) {
+
             return false
         }
 
-        // First ring is the outer boundary.
+
         var outerRing =
-            polygon.getJSONArray(0)
+            polygon.getJSONArray(
+                0
+            )
+
 
         var insideOuter =
             isPointInsideRing(
@@ -95,79 +180,188 @@ class NasugbuBoundary(
                 outerRing
             )
 
-        if (!insideOuter) {
+
+        if (
+            insideOuter == false
+        ) {
+
             return false
         }
 
-        // Remaining rings are holes inside the polygon.
-        for (i in 1 until polygon.length()) {
+
+        var holeNumber =
+            1
+
+
+        while (
+            holeNumber <
+            polygon.length()
+        ) {
 
             var hole =
-                polygon.getJSONArray(i)
+                polygon.getJSONArray(
+                    holeNumber
+                )
 
-            if (
+
+            var insideHole =
                 isPointInsideRing(
                     latitude,
                     longitude,
                     hole
                 )
-            ) {
+
+
+            if (insideHole) {
+
                 return false
             }
+
+
+            holeNumber =
+                holeNumber + 1
         }
+
 
         return true
     }
 
+
     private fun isPointInsideRing(
         latitude: Double,
         longitude: Double,
-        ring: org.json.JSONArray
+        ring: JSONArray
     ): Boolean {
 
-        var inside = false
-        var j = ring.length() - 1
+        var inside =
+            false
 
-        for (i in 0 until ring.length()) {
 
-            var pointI =
-                ring.getJSONArray(i)
+        var previousPointNumber =
+            ring.length() - 1
 
-            var pointJ =
-                ring.getJSONArray(j)
 
-            // GeoJSON coordinates are:
-            // [longitude, latitude]
+        var pointNumber =
+            0
 
-            var longitudeI =
-                pointI.getDouble(0)
 
-            var latitudeI =
-                pointI.getDouble(1)
+        while (
+            pointNumber <
+            ring.length()
+        ) {
 
-            var longitudeJ =
-                pointJ.getDouble(0)
+            var currentPoint =
+                ring.getJSONArray(
+                    pointNumber
+                )
 
-            var latitudeJ =
-                pointJ.getDouble(1)
 
-            var intersects =
-                ((latitudeI > latitude) !=
-                        (latitudeJ > latitude)) &&
-                        (
-                                longitude <
-                                        (longitudeJ - longitudeI) *
-                                        (latitude - latitudeI) /
-                                        (latitudeJ - latitudeI) +
-                                        longitudeI
-                                )
+            var previousPoint =
+                ring.getJSONArray(
+                    previousPointNumber
+                )
 
-            if (intersects) {
-                inside = !inside
+
+            var currentLongitude =
+                currentPoint.getDouble(
+                    0
+                )
+
+
+            var currentLatitude =
+                currentPoint.getDouble(
+                    1
+                )
+
+
+            var previousLongitude =
+                previousPoint.getDouble(
+                    0
+                )
+
+
+            var previousLatitude =
+                previousPoint.getDouble(
+                    1
+                )
+
+
+            var crossesLatitude =
+                false
+
+
+            if (
+                currentLatitude >
+                latitude
+            ) {
+
+                if (
+                    previousLatitude <=
+                    latitude
+                ) {
+
+                    crossesLatitude =
+                        true
+                }
+
+            } else {
+
+                if (
+                    previousLatitude >
+                    latitude
+                ) {
+
+                    crossesLatitude =
+                        true
+                }
             }
 
-            j = i
+
+            if (crossesLatitude) {
+
+                var crossingLongitude =
+                    (
+                            previousLongitude -
+                                    currentLongitude
+                            ) *
+                            (
+                                    latitude -
+                                            currentLatitude
+                                    ) /
+                            (
+                                    previousLatitude -
+                                            currentLatitude
+                                    ) +
+                            currentLongitude
+
+
+                if (
+                    longitude <
+                    crossingLongitude
+                ) {
+
+                    if (inside) {
+
+                        inside =
+                            false
+
+                    } else {
+
+                        inside =
+                            true
+                    }
+                }
+            }
+
+
+            previousPointNumber =
+                pointNumber
+
+
+            pointNumber =
+                pointNumber + 1
         }
+
 
         return inside
     }

@@ -9,31 +9,59 @@ import com.google.android.material.button.MaterialButton
 
 class CustomerConfirmationActivity : ComponentActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.customer_confirmation)
+
+        setContentView(
+            R.layout.customer_confirmation
+        )
+
 
         var tvOrderId =
-            findViewById<TextView>(R.id.tvOrderId)
+            findViewById<TextView>(
+                R.id.tvOrderId
+            )
+
 
         var tvStatus =
-            findViewById<TextView>(R.id.tvOrderStatus)
+            findViewById<TextView>(
+                R.id.tvOrderStatus
+            )
+
 
         var tvPayment =
-            findViewById<TextView>(R.id.tvPaymentMethod)
+            findViewById<TextView>(
+                R.id.tvPaymentMethod
+            )
+
 
         var tvTotalFee =
-            findViewById<TextView>(R.id.tvTotalFee)
+            findViewById<TextView>(
+                R.id.tvTotalFee
+            )
+
 
         var btnTrack =
-            findViewById<MaterialButton>(R.id.btnTrackDelivery)
+            findViewById<MaterialButton>(
+                R.id.btnTrackDelivery
+            )
+
 
         var btnHome =
-            findViewById<MaterialButton>(R.id.btnBackToHome)
+            findViewById<MaterialButton>(
+                R.id.btnBackToHome
+            )
+
 
         var orderId =
-            intent.getStringExtra("orderId") ?: ""
+            readTextExtra(
+                "orderId"
+            )
+
 
         var totalFee =
             intent.getDoubleExtra(
@@ -41,54 +69,119 @@ class CustomerConfirmationActivity : ComponentActivity() {
                 0.0
             )
 
-        var customerName =
-            intent.getStringExtra(
-                "customerName"
-            ) ?: "Customer"
 
-        tvOrderId.text = orderId
-        tvStatus.text = "Pending"
-        tvPayment.text = "Cash on Delivery"
+        tvOrderId.text =
+            orderId
+
+
+        tvStatus.text =
+            "Pending"
+
+
+        tvPayment.text =
+            "Cash on Delivery"
+
 
         tvTotalFee.text =
-            "₱%.2f".format(totalFee)
+            formatMoney(
+                totalFee
+            )
+
 
         btnTrack.setOnClickListener {
 
-            var trackIntent =
-                Intent(
-                    this,
-                    CustomerTrackActivity::class.java
-                )
-
-            trackIntent.putExtra(
-                "orderId",
+            openTracking(
                 orderId
             )
-
-            startActivity(trackIntent)
         }
+
 
         btnHome.setOnClickListener {
 
-            var homeIntent =
-                Intent(
-                    this,
-                    CustomerHomeActivity::class.java
-                )
+            openHome()
+        }
+    }
 
-            homeIntent.putExtra(
-                "customerName",
-                customerName
+
+    private fun openTracking(
+        orderId: String
+    ) {
+
+        var trackIntent =
+            Intent(
+                this,
+                CustomerTrackActivity::class.java
             )
 
-            homeIntent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_NEW_TASK
 
-            startActivity(homeIntent)
+        trackIntent.putExtra(
+            "orderId",
+            orderId
+        )
 
-            finish()
+
+        startActivity(
+            trackIntent
+        )
+    }
+
+
+    private fun openHome() {
+
+        var homeIntent =
+            Intent(
+                this,
+                CustomerHomeActivity::class.java
+            )
+
+
+        homeIntent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP
+        )
+
+
+        homeIntent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+
+
+        startActivity(
+            homeIntent
+        )
+
+
+        finish()
+    }
+
+
+    private fun readTextExtra(
+        name: String
+    ): String {
+
+        var value =
+            intent.getStringExtra(
+                name
+            )
+
+
+        if (value == null) {
+
+            return ""
         }
+
+
+        return value
+    }
+
+
+    private fun formatMoney(
+        amount: Double
+    ): String {
+
+        return "₱" +
+                String.format(
+                    "%.2f",
+                    amount
+                )
     }
 }

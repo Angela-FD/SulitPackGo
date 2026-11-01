@@ -2,12 +2,12 @@ package com.example.sulitpackgoui.uic
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.sulitpackgoui.R
+import com.example.sulitpackgoui.customer.Customer
 import com.example.sulitpackgoui.uic.customer.CustomerHomeActivity
 import com.example.sulitpackgoui.uic.rider.RiderHomeActivity
 import com.google.android.material.button.MaterialButton
@@ -19,24 +19,30 @@ class MainActivity : ComponentActivity() {
     private var firebaseAuth =
         FirebaseAuth.getInstance()
 
+
     private var database =
         FirebaseFirestore.getInstance()
 
+
     private lateinit var etEmail: EditText
+
     private lateinit var etPassword: EditText
 
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.customer_login
         )
 
+
         setupViews()
-        setupKeyboard()
+
         setupButtons()
     }
 
@@ -48,6 +54,7 @@ class MainActivity : ComponentActivity() {
                 R.id.etEmail
             )
 
+
         etPassword =
             findViewById(
                 R.id.etPassword
@@ -55,42 +62,21 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun setupKeyboard() {
-
-        etEmail.setOnClickListener {
-
-            etEmail.requestFocus()
-
-            showKeyboard(
-                etEmail
-            )
-        }
-
-
-        etPassword.setOnClickListener {
-
-            etPassword.requestFocus()
-
-            showKeyboard(
-                etPassword
-            )
-        }
-    }
-
-
     private fun setupButtons() {
 
-        val btnLogin =
+        var btnLogin =
             findViewById<MaterialButton>(
                 R.id.btnLogin
             )
 
-        val tvSignUp =
+
+        var tvSignUp =
             findViewById<TextView>(
                 R.id.tvSignUp
             )
 
-        val tvForgotPassword =
+
+        var tvForgotPassword =
             findViewById<TextView>(
                 R.id.tvForgotPassword
             )
@@ -108,15 +94,14 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        // Sign Up is still for CUSTOMER only.
-        // Rider accounts will be created by Admin later.
         tvSignUp.setOnClickListener {
 
-            val intent =
+            var intent =
                 Intent(
                     this,
                     SignUpActivity::class.java
                 )
+
 
             startActivity(
                 intent
@@ -127,13 +112,16 @@ class MainActivity : ComponentActivity() {
 
     private fun login() {
 
-        val email =
-            etEmail.text
+        var email =
+            etEmail
+                .text
                 .toString()
                 .trim()
 
-        val password =
-            etPassword.text
+
+        var password =
+            etPassword
+                .text
                 .toString()
 
 
@@ -143,11 +131,8 @@ class MainActivity : ComponentActivity() {
                 "Enter your email."
             )
 
-            etEmail.requestFocus()
 
-            showKeyboard(
-                etEmail
-            )
+            etEmail.requestFocus()
 
             return
         }
@@ -159,20 +144,13 @@ class MainActivity : ComponentActivity() {
                 "Enter your password."
             )
 
-            etPassword.requestFocus()
 
-            showKeyboard(
-                etPassword
-            )
+            etPassword.requestFocus()
 
             return
         }
 
 
-        // First, login using Firebase Authentication.
-        //
-        // Customer, Rider and Admin will all use
-        // the same Firebase login.
         firebaseAuth
             .signInWithEmailAndPassword(
                 email,
@@ -180,8 +158,7 @@ class MainActivity : ComponentActivity() {
             )
             .addOnSuccessListener {
 
-
-                val currentUser =
+                var currentUser =
                     firebaseAuth.currentUser
 
 
@@ -191,25 +168,28 @@ class MainActivity : ComponentActivity() {
                         "Login failed."
                     )
 
-                    return@addOnSuccessListener
+                } else {
+
+                    checkUserType(
+                        currentUser.uid
+                    )
                 }
-
-
-                val uid =
-                    currentUser.uid
-
-
-                // After login, check what type
-                // of account this UID belongs to.
-                checkUserType(
-                    uid
-                )
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Login failed."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 showMessage(
-                    error.message
-                        ?: "Login failed."
+                    message
                 )
             }
     }
@@ -219,8 +199,6 @@ class MainActivity : ComponentActivity() {
         uid: String
     ) {
 
-        // FIRST:
-        // Check if this account is a Rider.
         database
             .collection("riders")
             .document(uid)
@@ -234,8 +212,6 @@ class MainActivity : ComponentActivity() {
 
                 } else {
 
-                    // If it is not a Rider,
-                    // check the users collection.
                     checkUserCollection(
                         uid
                     )
@@ -261,42 +237,33 @@ class MainActivity : ComponentActivity() {
             .addOnSuccessListener { userDocument ->
 
 
-                if (userDocument.exists() == false) {
+                var customer =
+                    userDocument.toObject(
+                        Customer::class.java
+                    )
+
+
+                if (customer == null) {
 
                     firebaseAuth.signOut()
+
 
                     showMessage(
                         "Account profile not found."
                     )
 
-                    return@addOnSuccessListener
-                }
+                } else if (
+                    customer.role == "customer"
+                ) {
 
+                    openCustomerHome()
 
-                val role =
-                    userDocument
-                        .getString("role")
-                        ?: ""
-
-
-                if (role == "customer") {
-
-                    val customerName =
-                        userDocument
-                            .getString("name")
-                            ?: ""
-
-
-                    openCustomerHome(
-                        customerName
-                    )
-
-                } else if (role == "admin") {
-
-                    // We will connect the Admin
-                    // dashboard later.
+                } else if (
+                    customer.role == "admin"
+                ) {
 
                     firebaseAuth.signOut()
+
 
                     showMessage(
                         "Admin side is not finished yet."
@@ -305,6 +272,7 @@ class MainActivity : ComponentActivity() {
                 } else {
 
                     firebaseAuth.signOut()
+
 
                     showMessage(
                         "Unknown account type."
@@ -320,26 +288,19 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun openCustomerHome(
-        customerName: String
-    ) {
+    private fun openCustomerHome() {
 
-        val intent =
+        var intent =
             Intent(
                 this,
                 CustomerHomeActivity::class.java
             )
 
 
-        intent.putExtra(
-            "customerName",
-            customerName
-        )
-
-
         startActivity(
             intent
         )
+
 
         finish()
     }
@@ -347,7 +308,7 @@ class MainActivity : ComponentActivity() {
 
     private fun openRiderHome() {
 
-        val intent =
+        var intent =
             Intent(
                 this,
                 RiderHomeActivity::class.java
@@ -358,14 +319,16 @@ class MainActivity : ComponentActivity() {
             intent
         )
 
+
         finish()
     }
 
 
     private fun forgotPassword() {
 
-        val email =
-            etEmail.text
+        var email =
+            etEmail
+                .text
                 .toString()
                 .trim()
 
@@ -376,11 +339,8 @@ class MainActivity : ComponentActivity() {
                 "Enter your email first."
             )
 
-            etEmail.requestFocus()
 
-            showKeyboard(
-                etEmail
-            )
+            etEmail.requestFocus()
 
             return
         }
@@ -398,28 +358,21 @@ class MainActivity : ComponentActivity() {
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to send password reset email."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 showMessage(
-                    error.message
-                        ?: "Failed to send password reset email."
+                    message
                 )
             }
-    }
-
-
-    private fun showKeyboard(
-        editText: EditText
-    ) {
-
-        val keyboard =
-            getSystemService(
-                INPUT_METHOD_SERVICE
-            ) as InputMethodManager
-
-
-        keyboard.showSoftInput(
-            editText,
-            InputMethodManager.SHOW_IMPLICIT
-        )
     }
 
 

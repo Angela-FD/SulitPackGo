@@ -13,9 +13,25 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+
+        <!-- BACK -->
+
+        <TextView
+            android:id="@+id/btnBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="←"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
+
+        <!-- TITLE -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Edit Profile"
             android:textColor="@color/black"
             android:textSize="28sp"
@@ -25,15 +41,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Update your account name."
+            android:text="Update your customer information."
             android:textColor="#666666"
             android:textSize="14sp" />
+
+
+        <!-- NAME -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Name"
+            android:layout_marginTop="28dp"
+            android:text="Full Name"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -41,67 +60,79 @@
         <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="54dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_input_outline"
-            android:hint="Enter your name"
             android:inputType="textPersonName"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/black"
-            android:textColorHint="#777777" />
+            android:textColor="@color/black" />
+
+
+        <!-- EMAIL -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="20dp"
             android:text="Email"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvEmail"
+        <EditText
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="54dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_input_outline"
-            android:gravity="center_vertical"
+            android:enabled="false"
+            android:inputType="textEmailAddress"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="-"
-            android:textColor="#666666"
-            android:textSize="15sp" />
+            android:textColor="@color/black" />
+
+
+        <!-- PHONE NUMBER -->
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Email cannot be changed here."
-            android:textColor="#777777"
-            android:textSize="12sp" />
+            android:layout_marginTop="20dp"
+            android:text="Phone Number"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_input_outline"
+            android:hint="09XXXXXXXXX"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="#777777" />
+
+
+        <!-- SAVE -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="54dp"
             android:layout_marginTop="32dp"
+            android:layout_marginBottom="24dp"
             android:backgroundTint="#2B8F3F"
             android:text="Save Changes"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:cornerRadius="12dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="12dp"
-            android:text="Cancel"
-            android:textAllCaps="false"
-            android:textSize="16sp"
             app:cornerRadius="12dp" />
 
     </LinearLayout>

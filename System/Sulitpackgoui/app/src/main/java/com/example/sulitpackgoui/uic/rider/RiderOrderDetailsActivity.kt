@@ -2,70 +2,101 @@ package com.example.sulitpackgoui.uic.rider
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.sulitpackgoui.R
+import com.example.sulitpackgoui.customer.CustomerDatabase
 import com.example.sulitpackgoui.order.OrderData
 import com.example.sulitpackgoui.rider.Rider
 import com.example.sulitpackgoui.rider.RiderDatabase
 import com.example.sulitpackgoui.rider.RiderOrder
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class RiderOrderDetailsActivity : ComponentActivity() {
 
-    private var firebaseAuth =
+    private var auth =
         FirebaseAuth.getInstance()
 
-    private var database =
-        FirebaseFirestore.getInstance()
 
     private var riderDatabase =
         RiderDatabase()
+
 
     private var riderOrder =
         RiderOrder()
 
 
-    private var currentRider: Rider? =
-        null
-
-    private var currentOrder: OrderData? =
-        null
-
-    private var orderId =
-        ""
+    private var customerDatabase =
+        CustomerDatabase()
 
 
-    // Order information
-    private lateinit var tvOrderNumber: TextView
-    private lateinit var tvDeliveryFee: TextView
+    private var currentRider =
+        Rider()
 
-    private lateinit var tvPickup: TextView
-    private lateinit var tvDropoff: TextView
 
-    private lateinit var tvDistance: TextView
-    private lateinit var tvWeight: TextView
-    private lateinit var tvVehicle: TextView
+    private var currentOrder =
+        OrderData()
 
-    private lateinit var tvDescription: TextView
-    private lateinit var tvPickupDetails: TextView
 
-    private lateinit var tvCustomerName: TextView
-    private lateinit var tvCustomerPhone: TextView
+    private var riderLoaded =
+        false
 
-    private lateinit var btnAcceptOrder: MaterialButton
-    private lateinit var btnDeclineOrder: MaterialButton
+
+    private var orderLoaded =
+        false
+
+
+    private lateinit var tvOrderId:
+            TextView
+
+    private lateinit var tvFee:
+            TextView
+
+    private lateinit var tvCustomerName:
+            TextView
+
+    private lateinit var tvCustomerPhone:
+            TextView
+
+    private lateinit var tvPickupAddress:
+            TextView
+
+    private lateinit var tvPickupDetails:
+            TextView
+
+    private lateinit var tvDropoffAddress:
+            TextView
+
+    private lateinit var tvDropoffDetails:
+            TextView
+
+    private lateinit var tvDescription:
+            TextView
+
+    private lateinit var tvWeight:
+            TextView
+
+    private lateinit var tvDistance:
+            TextView
+
+    private lateinit var tvVehicle:
+            TextView
+
+    private lateinit var btnAccept:
+            MaterialButton
+
+    private lateinit var btnDecline:
+            MaterialButton
 
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.rider_order_details
@@ -77,19 +108,18 @@ class RiderOrderDetailsActivity : ComponentActivity() {
         setupButtons()
 
 
-        // Get the order ID sent from
-        // RiderAvailableOrdersActivity.
-        orderId =
-            intent.getStringExtra(
+        var orderId =
+            readTextExtra(
                 "orderId"
-            ) ?: ""
+            )
 
 
         if (orderId.isBlank()) {
 
             showMessage(
-                "Order ID not found."
+                "Order not found."
             )
+
 
             finish()
 
@@ -97,63 +127,23 @@ class RiderOrderDetailsActivity : ComponentActivity() {
         }
 
 
-        loadRider()
+        loadRider(
+            orderId
+        )
     }
 
 
     private fun setupViews() {
 
-        tvOrderNumber =
+        tvOrderId =
             findViewById(
-                R.id.tvOrderNumber
+                R.id.tvOrderId
             )
 
 
-        tvDeliveryFee =
+        tvFee =
             findViewById(
-                R.id.tvDeliveryFee
-            )
-
-
-        tvPickup =
-            findViewById(
-                R.id.tvPickup
-            )
-
-
-        tvDropoff =
-            findViewById(
-                R.id.tvDropoff
-            )
-
-
-        tvDistance =
-            findViewById(
-                R.id.tvDistance
-            )
-
-
-        tvWeight =
-            findViewById(
-                R.id.tvWeight
-            )
-
-
-        tvVehicle =
-            findViewById(
-                R.id.tvVehicle
-            )
-
-
-        tvDescription =
-            findViewById(
-                R.id.tvDescription
-            )
-
-
-        tvPickupDetails =
-            findViewById(
-                R.id.tvPickupDetails
+                R.id.tvFee
             )
 
 
@@ -169,32 +159,71 @@ class RiderOrderDetailsActivity : ComponentActivity() {
             )
 
 
-        btnAcceptOrder =
+        tvPickupAddress =
             findViewById(
-                R.id.btnAcceptOrder
+                R.id.tvPickupAddress
             )
 
 
-        btnDeclineOrder =
+        tvPickupDetails =
             findViewById(
-                R.id.btnDeclineOrder
+                R.id.tvPickupDetails
             )
 
 
-        // Your customer backend does not
-        // currently save a phone number.
-        //
-        // Because of that, we hide this field
-        // instead of showing fake information.
-        tvCustomerPhone.visibility =
-            View.GONE
+        tvDropoffAddress =
+            findViewById(
+                R.id.tvDropoffAddress
+            )
+
+
+        tvDropoffDetails =
+            findViewById(
+                R.id.tvDropoffDetails
+            )
+
+
+        tvDescription =
+            findViewById(
+                R.id.tvDescription
+            )
+
+
+        tvWeight =
+            findViewById(
+                R.id.tvWeight
+            )
+
+
+        tvDistance =
+            findViewById(
+                R.id.tvDistance
+            )
+
+
+        tvVehicle =
+            findViewById(
+                R.id.tvVehicle
+            )
+
+
+        btnAccept =
+            findViewById(
+                R.id.btnAccept
+            )
+
+
+        btnDecline =
+            findViewById(
+                R.id.btnDecline
+            )
     }
 
 
     private fun setupButtons() {
 
-        val btnBack =
-            findViewById<ImageButton>(
+        var btnBack =
+            findViewById<TextView>(
                 R.id.btnBack
             )
 
@@ -205,34 +234,33 @@ class RiderOrderDetailsActivity : ComponentActivity() {
         }
 
 
-        btnDeclineOrder.setOnClickListener {
+        btnDecline.setOnClickListener {
 
-            // Decline does NOT cancel the order.
-            //
-            // The Rider simply chooses not
-            // to accept this order.
             finish()
         }
 
 
-        btnAcceptOrder.setOnClickListener {
+        btnAccept.setOnClickListener {
 
             acceptOrder()
         }
     }
 
 
-    private fun loadRider() {
+    private fun loadRider(
+        orderId: String
+    ) {
 
-        val currentUser =
-            firebaseAuth.currentUser
+        var user =
+            auth.currentUser
 
 
-        if (currentUser == null) {
+        if (user == null) {
 
             showMessage(
                 "Rider is not logged in."
             )
+
 
             finish()
 
@@ -241,198 +269,266 @@ class RiderOrderDetailsActivity : ComponentActivity() {
 
 
         riderDatabase.getRider(
-            currentUser.uid
+            user.uid
         ) { success, message, rider ->
 
 
-            if (success && rider != null) {
-
-                currentRider =
-                    rider
-
-
-                loadOrder()
-
-            } else {
+            if (success == false) {
 
                 showMessage(
                     message
                 )
 
-                finish()
+            } else if (
+                rider == null
+            ) {
+
+                showMessage(
+                    "Rider profile not found."
+                )
+
+            } else {
+
+                currentRider =
+                    rider
+
+
+                riderLoaded =
+                    true
+
+
+                loadOrder(
+                    orderId
+                )
             }
         }
     }
 
 
-    private fun loadOrder() {
+    private fun loadOrder(
+        orderId: String
+    ) {
 
         riderOrder.getOrder(
             orderId
         ) { success, message, order ->
 
 
-            if (success && order != null) {
-
-                currentOrder =
-                    order
-
-
-                showOrderInformation(
-                    order
-                )
-
-
-                loadCustomerName(
-                    order.customerId
-                )
-
-            } else {
+            if (success == false) {
 
                 showMessage(
                     message
                 )
 
+
                 finish()
+
+            } else if (
+                order == null
+            ) {
+
+                showMessage(
+                    "Order not found."
+                )
+
+
+                finish()
+
+            } else {
+
+                currentOrder =
+                    order
+
+
+                orderLoaded =
+                    true
+
+
+                showOrder()
+
+                loadCustomer(
+                    order.customerId
+                )
             }
         }
     }
 
 
-    private fun showOrderInformation(
-        order: OrderData
-    ) {
+    private fun showOrder() {
 
-        tvOrderNumber.text =
-            "Order #${order.orderId}"
-
-
-        tvDeliveryFee.text =
-            "₱${String.format("%.2f", order.fee)}"
+        tvOrderId.text =
+            "Order #" +
+                    currentOrder.orderId
 
 
-        tvPickup.text =
-            order.pickupAddress
+        tvFee.text =
+            formatMoney(
+                currentOrder.fee
+            )
 
 
-        tvDropoff.text =
-            order.dropAddress
+        tvPickupAddress.text =
+            currentOrder.pickupAddress
 
 
-        tvDistance.text =
-            "${String.format("%.2f", order.distance)} km"
-
-
-        tvWeight.text =
-            "${String.format("%.2f", order.weight)} kg"
-
-
-        tvVehicle.text =
-            order.vehicleType
-
-
-        tvDescription.text =
-            order.description
-
-
-        // Show pickup address details
-        // if the customer entered one.
-        if (order.pickupAddressDetails.isBlank()) {
+        if (
+            currentOrder.pickupAddressDetails.isBlank()
+        ) {
 
             tvPickupDetails.text =
-                "No pickup details."
+                "No additional pickup details."
 
         } else {
 
             tvPickupDetails.text =
-                "Pickup details: ${order.pickupAddressDetails}"
+                currentOrder.pickupAddressDetails
         }
+
+
+        tvDropoffAddress.text =
+            currentOrder.dropAddress
+
+
+        if (
+            currentOrder.dropAddressDetails.isBlank()
+        ) {
+
+            tvDropoffDetails.text =
+                "No additional drop-off details."
+
+        } else {
+
+            tvDropoffDetails.text =
+                currentOrder.dropAddressDetails
+        }
+
+
+        if (
+            currentOrder.description.isBlank()
+        ) {
+
+            tvDescription.text =
+                "No description"
+
+        } else {
+
+            tvDescription.text =
+                currentOrder.description
+        }
+
+
+        tvWeight.text =
+            "Weight: " +
+                    formatNumber(
+                        currentOrder.weight
+                    ) +
+                    " kg"
+
+
+        tvDistance.text =
+            "Distance: " +
+                    formatNumber(
+                        currentOrder.distance
+                    ) +
+                    " km"
+
+
+        tvVehicle.text =
+            "Vehicle: " +
+                    currentOrder.vehicleType
     }
 
 
-    private fun loadCustomerName(
+    private fun loadCustomer(
         customerId: String
     ) {
 
         if (customerId.isBlank()) {
 
-            tvCustomerName.text =
-                "Customer"
+            showUnknownCustomer()
 
             return
         }
 
 
-        database
-            .collection("users")
-            .document(customerId)
-            .get()
-            .addOnSuccessListener { document ->
+        customerDatabase.getCustomer(
+            customerId
+        ) { success, message, customer ->
 
 
-                if (document.exists()) {
+            if (success == false) {
 
-                    val customerName =
-                        document.getString("name")
-                            ?: "Customer"
+                showUnknownCustomer()
+
+            } else if (
+                customer == null
+            ) {
+
+                showUnknownCustomer()
+
+            } else {
+
+                tvCustomerName.text =
+                    customer.name
 
 
-                    tvCustomerName.text =
-                        customerName
+                if (
+                    customer.phoneNumber.isBlank()
+                ) {
+
+                    tvCustomerPhone.text =
+                        "Not provided"
 
                 } else {
 
-                    tvCustomerName.text =
-                        "Customer"
+                    tvCustomerPhone.text =
+                        customer.phoneNumber
                 }
             }
-            .addOnFailureListener {
+        }
+    }
 
-                tvCustomerName.text =
-                    "Customer"
-            }
+
+    private fun showUnknownCustomer() {
+
+        tvCustomerName.text =
+            "Customer"
+
+
+        tvCustomerPhone.text =
+            "Not provided"
     }
 
 
     private fun acceptOrder() {
 
-        val rider =
-            currentRider
-
-
-        val order =
-            currentOrder
-
-
-        if (rider == null) {
+        if (riderLoaded == false) {
 
             showMessage(
-                "Rider information is not ready."
+                "Rider information is still loading."
             )
 
             return
         }
 
 
-        if (order == null) {
+        if (orderLoaded == false) {
 
             showMessage(
-                "Order information is not ready."
+                "Order information is still loading."
             )
 
             return
         }
 
 
-        // Prevent multiple clicks while
-        // Firebase is processing.
-        btnAcceptOrder.isEnabled =
+        btnAccept.isEnabled =
             false
 
 
         riderOrder.acceptOrder(
-            rider,
-            order.orderId
+            currentRider,
+            currentOrder.orderId
         ) { success, message ->
 
 
@@ -447,7 +543,7 @@ class RiderOrderDetailsActivity : ComponentActivity() {
 
             } else {
 
-                btnAcceptOrder.isEnabled =
+                btnAccept.isEnabled =
                     true
 
 
@@ -461,11 +557,16 @@ class RiderOrderDetailsActivity : ComponentActivity() {
 
     private fun openCurrentDelivery() {
 
-        val intent =
+        var intent =
             Intent(
                 this,
                 RiderActiveDeliveryActivity::class.java
             )
+
+
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TOP
+        )
 
 
         startActivity(
@@ -474,6 +575,48 @@ class RiderOrderDetailsActivity : ComponentActivity() {
 
 
         finish()
+    }
+
+
+    private fun readTextExtra(
+        name: String
+    ): String {
+
+        var value =
+            intent.getStringExtra(
+                name
+            )
+
+
+        if (value == null) {
+
+            return ""
+        }
+
+
+        return value
+    }
+
+
+    private fun formatNumber(
+        number: Double
+    ): String {
+
+        return String.format(
+            "%.2f",
+            number
+        )
+    }
+
+
+    private fun formatMoney(
+        amount: Double
+    ): String {
+
+        return "₱" +
+                formatNumber(
+                    amount
+                )
     }
 
 

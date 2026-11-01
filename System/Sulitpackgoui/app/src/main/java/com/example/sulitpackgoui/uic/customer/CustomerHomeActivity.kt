@@ -10,116 +10,167 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.sulitpackgoui.R
+import com.example.sulitpackgoui.customer.CustomerDatabase
 import com.example.sulitpackgoui.logic.Vehicle
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerHomeActivity : ComponentActivity() {
 
     private var vehicle =
         Vehicle()
 
-    private var pickupLatitude: Double? =
-        null
 
-    private var pickupLongitude: Double? =
-        null
+    private var pickupLatitude =
+        0.0
 
-    private var dropLatitude: Double? =
-        null
+    private var pickupLongitude =
+        0.0
 
-    private var dropLongitude: Double? =
-        null
 
-    private lateinit var tvCustomerName: TextView
-    private lateinit var tvPickupLocationStatus: TextView
-    private lateinit var tvDropoffLocationStatus: TextView
+    private var dropLatitude =
+        0.0
+
+    private var dropLongitude =
+        0.0
+
+
+    private lateinit var tvCustomerName:
+            TextView
+
+    private lateinit var tvPickupLocationStatus:
+            TextView
+
+    private lateinit var tvDropoffLocationStatus:
+            TextView
+
 
     private var auth =
         FirebaseAuth.getInstance()
 
-    private var database =
-        FirebaseFirestore.getInstance()
+
+    private var customerDatabase =
+        CustomerDatabase()
+
 
     private val pickupLocationLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
 
-            if (result.resultCode == Activity.RESULT_OK) {
 
-                pickupLatitude =
-                    result.data?.getDoubleExtra(
-                        "latitude",
-                        0.0
-                    )
+            if (
+                result.resultCode ==
+                Activity.RESULT_OK
+            ) {
 
-                pickupLongitude =
-                    result.data?.getDoubleExtra(
-                        "longitude",
-                        0.0
-                    )
+                var data =
+                    result.data
 
-                tvPickupLocationStatus.text =
-                    "✓ Precise pickup location selected"
 
-                tvPickupLocationStatus.setTextColor(
-                    getColor(
-                        android.R.color.holo_green_dark
-                    )
-                )
+                if (data != null) {
+
+                    pickupLatitude =
+                        data.getDoubleExtra(
+                            "latitude",
+                            0.0
+                        )
+
+
+                    pickupLongitude =
+                        data.getDoubleExtra(
+                            "longitude",
+                            0.0
+                        )
+
+
+                    tvPickupLocationStatus.text =
+                        "✓ Precise pickup location selected"
+
+
+                    tvPickupLocationStatus
+                        .setTextColor(
+                            getColor(
+                                android.R.color.holo_green_dark
+                            )
+                        )
+                }
             }
         }
+
 
     private val dropoffLocationLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
 
-            if (result.resultCode == Activity.RESULT_OK) {
 
-                dropLatitude =
-                    result.data?.getDoubleExtra(
-                        "latitude",
-                        0.0
-                    )
+            if (
+                result.resultCode ==
+                Activity.RESULT_OK
+            ) {
 
-                dropLongitude =
-                    result.data?.getDoubleExtra(
-                        "longitude",
-                        0.0
-                    )
+                var data =
+                    result.data
 
-                tvDropoffLocationStatus.text =
-                    "✓ Precise drop-off location selected"
 
-                tvDropoffLocationStatus.setTextColor(
-                    getColor(
-                        android.R.color.holo_green_dark
-                    )
-                )
+                if (data != null) {
+
+                    dropLatitude =
+                        data.getDoubleExtra(
+                            "latitude",
+                            0.0
+                        )
+
+
+                    dropLongitude =
+                        data.getDoubleExtra(
+                            "longitude",
+                            0.0
+                        )
+
+
+                    tvDropoffLocationStatus.text =
+                        "✓ Precise drop-off location selected"
+
+
+                    tvDropoffLocationStatus
+                        .setTextColor(
+                            getColor(
+                                android.R.color.holo_green_dark
+                            )
+                        )
+                }
             }
         }
+
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.customer_home
         )
 
+
         setupHome()
+
         loadCustomerName()
     }
+
 
     override fun onResume() {
+
         super.onResume()
+
 
         loadCustomerName()
     }
+
 
     private fun setupHome() {
 
@@ -128,82 +179,100 @@ class CustomerHomeActivity : ComponentActivity() {
                 R.id.tvCustomerName
             )
 
-        val etPickupAddress =
+
+        var etPickupAddress =
             findViewById<EditText>(
                 R.id.etPickupAddress
             )
 
-        val etPickupDetails =
+
+        var etPickupDetails =
             findViewById<EditText>(
                 R.id.etPickupDetails
             )
 
-        val etDropAddress =
+
+        var etDropAddress =
             findViewById<EditText>(
                 R.id.etDropAddress
             )
 
-        val etDropDetails =
+
+        var etDropDetails =
             findViewById<EditText>(
                 R.id.etDropDetails
             )
+
 
         tvPickupLocationStatus =
             findViewById(
                 R.id.tvPickupLocationStatus
             )
 
+
         tvDropoffLocationStatus =
             findViewById(
                 R.id.tvDropoffLocationStatus
             )
 
-        val btnSelectPickup =
+
+        var btnSelectPickup =
             findViewById<MaterialButton>(
                 R.id.btnSelectPickupLocation
             )
 
-        val btnSelectDropoff =
+
+        var btnSelectDropoff =
             findViewById<MaterialButton>(
                 R.id.btnSelectDropoffLocation
             )
 
-        val btnMotor =
+
+        var btnMotor =
             findViewById<TextView>(
                 R.id.btnMotor
             )
 
-        val btnTricycle =
+
+        var btnTricycle =
             findViewById<TextView>(
                 R.id.btnTricycle
             )
 
-        val btnVan =
+
+        var btnVan =
             findViewById<TextView>(
                 R.id.btnVan
             )
 
-        val btnTruck =
+
+        var btnTruck =
             findViewById<TextView>(
                 R.id.btnTruck
             )
 
-        val btnContinue =
+
+        var btnContinue =
             findViewById<MaterialButton>(
                 R.id.btnContinue
             )
 
+
         btnSelectPickup.setOnClickListener {
+
             openLocationPicker(
                 "pickup"
             )
         }
 
+
         btnSelectDropoff.setOnClickListener {
+
             openLocationPicker(
                 "dropoff"
             )
         }
+
 
         setupVehicles(
             btnMotor,
@@ -212,34 +281,55 @@ class CustomerHomeActivity : ComponentActivity() {
             btnTruck
         )
 
+
         setupNavigation()
+
 
         btnContinue.setOnClickListener {
 
-            continueOrder(
-                etPickupAddress.text
-                    .toString()
-                    .trim(),
-
-                etPickupDetails.text
-                    .toString()
-                    .trim(),
-
-                etDropAddress.text
-                    .toString()
-                    .trim(),
-
-                etDropDetails.text
+            var pickupAddress =
+                etPickupAddress
+                    .text
                     .toString()
                     .trim()
+
+
+            var pickupDetails =
+                etPickupDetails
+                    .text
+                    .toString()
+                    .trim()
+
+
+            var dropAddress =
+                etDropAddress
+                    .text
+                    .toString()
+                    .trim()
+
+
+            var dropDetails =
+                etDropDetails
+                    .text
+                    .toString()
+                    .trim()
+
+
+            continueOrder(
+                pickupAddress,
+                pickupDetails,
+                dropAddress,
+                dropDetails
             )
         }
     }
 
+
     private fun loadCustomerName() {
 
-        val user =
+        var user =
             auth.currentUser
+
 
         if (user == null) {
 
@@ -249,37 +339,50 @@ class CustomerHomeActivity : ComponentActivity() {
             return
         }
 
-        database
-            .collection("users")
-            .document(user.uid)
-            .get()
-            .addOnSuccessListener { document ->
 
-                tvCustomerName.text =
-                    document.getString("name")
-                        ?: "Customer"
-            }
-            .addOnFailureListener {
+        customerDatabase.getCustomer(
+            user.uid
+        ) { success, message, customer ->
+
+
+            if (success) {
+
+                if (customer != null) {
+
+                    tvCustomerName.text =
+                        customer.name
+
+                } else {
+
+                    tvCustomerName.text =
+                        "Customer"
+                }
+
+            } else {
 
                 tvCustomerName.text =
                     "Customer"
             }
+        }
     }
+
 
     private fun openLocationPicker(
         type: String
     ) {
 
-        val mapIntent =
+        var mapIntent =
             Intent(
                 this,
                 CustomerLocationPickerActivity::class.java
             )
 
+
         mapIntent.putExtra(
             "locationType",
             type
         )
+
 
         if (type == "pickup") {
 
@@ -295,6 +398,7 @@ class CustomerHomeActivity : ComponentActivity() {
         }
     }
 
+
     private fun setupVehicles(
         motor: TextView,
         tricycle: TextView,
@@ -303,6 +407,7 @@ class CustomerHomeActivity : ComponentActivity() {
     ) {
 
         motor.setOnClickListener {
+
             selectVehicle(
                 "Motor",
                 motor,
@@ -312,7 +417,9 @@ class CustomerHomeActivity : ComponentActivity() {
             )
         }
 
+
         tricycle.setOnClickListener {
+
             selectVehicle(
                 "Tricycle",
                 motor,
@@ -322,7 +429,9 @@ class CustomerHomeActivity : ComponentActivity() {
             )
         }
 
+
         van.setOnClickListener {
+
             selectVehicle(
                 "Van",
                 motor,
@@ -332,7 +441,9 @@ class CustomerHomeActivity : ComponentActivity() {
             )
         }
 
+
         truck.setOnClickListener {
+
             selectVehicle(
                 "Truck",
                 motor,
@@ -343,6 +454,7 @@ class CustomerHomeActivity : ComponentActivity() {
         }
     }
 
+
     private fun selectVehicle(
         type: String,
         motor: TextView,
@@ -351,32 +463,60 @@ class CustomerHomeActivity : ComponentActivity() {
         truck: TextView
     ) {
 
-        vehicle.selectVehicle(type)
+        vehicle.selectVehicle(
+            type
+        )
 
-        motor.alpha = 0.5f
-        tricycle.alpha = 0.5f
-        van.alpha = 0.5f
-        truck.alpha = 0.5f
+
+        motor.alpha =
+            0.5f
+
+        tricycle.alpha =
+            0.5f
+
+        van.alpha =
+            0.5f
+
+        truck.alpha =
+            0.5f
+
 
         when (type) {
 
-            "Motor" ->
-                motor.alpha = 1f
+            "Motor" -> {
 
-            "Tricycle" ->
-                tricycle.alpha = 1f
+                motor.alpha =
+                    1f
+            }
 
-            "Van" ->
-                van.alpha = 1f
 
-            "Truck" ->
-                truck.alpha = 1f
+            "Tricycle" -> {
+
+                tricycle.alpha =
+                    1f
+            }
+
+
+            "Van" -> {
+
+                van.alpha =
+                    1f
+            }
+
+
+            "Truck" -> {
+
+                truck.alpha =
+                    1f
+            }
         }
 
+
         showMessage(
-            "$type selected"
+            type + " selected"
         )
     }
+
 
     private fun continueOrder(
         pickupAddress: String,
@@ -386,139 +526,194 @@ class CustomerHomeActivity : ComponentActivity() {
     ) {
 
         if (pickupAddress.isBlank()) {
+
             showMessage(
                 "Enter the pickup address."
             )
+
             return
         }
 
-        if (
-            pickupLatitude == null ||
-            pickupLongitude == null
-        ) {
+
+        if (pickupLatitude == 0.0) {
+
             showMessage(
                 "Select the precise pickup location on the map."
             )
+
             return
         }
 
+
+        if (pickupLongitude == 0.0) {
+
+            showMessage(
+                "Select the precise pickup location on the map."
+            )
+
+            return
+        }
+
+
         if (dropAddress.isBlank()) {
+
             showMessage(
                 "Enter the drop-off address."
             )
+
             return
         }
 
-        if (
-            dropLatitude == null ||
-            dropLongitude == null
-        ) {
+
+        if (dropLatitude == 0.0) {
+
             showMessage(
                 "Select the precise drop-off location on the map."
             )
+
             return
         }
 
+
+        if (dropLongitude == 0.0) {
+
+            showMessage(
+                "Select the precise drop-off location on the map."
+            )
+
+            return
+        }
+
+
         if (vehicle.vehicleType.isBlank()) {
+
             showMessage(
                 "Select a vehicle."
             )
+
             return
         }
 
-        val packageIntent =
+
+        var packageIntent =
             Intent(
                 this,
                 CustomerPackageActivity::class.java
             )
+
 
         packageIntent.putExtra(
             "pickupAddress",
             pickupAddress
         )
 
+
         packageIntent.putExtra(
             "pickupAddressDetails",
             pickupDetails
         )
 
+
         packageIntent.putExtra(
             "pickupLatitude",
-            pickupLatitude!!
+            pickupLatitude
         )
+
 
         packageIntent.putExtra(
             "pickupLongitude",
-            pickupLongitude!!
+            pickupLongitude
         )
+
 
         packageIntent.putExtra(
             "dropAddress",
             dropAddress
         )
 
+
         packageIntent.putExtra(
             "dropAddressDetails",
             dropDetails
         )
 
+
         packageIntent.putExtra(
             "dropLatitude",
-            dropLatitude!!
+            dropLatitude
         )
+
 
         packageIntent.putExtra(
             "dropLongitude",
-            dropLongitude!!
+            dropLongitude
         )
+
 
         packageIntent.putExtra(
             "vehicleType",
             vehicle.vehicleType
         )
 
+
         packageIntent.putExtra(
             "customerName",
-            tvCustomerName.text.toString()
+            tvCustomerName
+                .text
+                .toString()
         )
+
 
         startActivity(
             packageIntent
         )
     }
 
+
     private fun setupNavigation() {
 
-        val navOrders =
+        var navOrders =
             findViewById<LinearLayout>(
                 R.id.navOrders
             )
 
-        val navProfile =
+
+        var navProfile =
             findViewById<LinearLayout>(
                 R.id.navProfile
             )
 
+
         navOrders.setOnClickListener {
 
-            startActivity(
+            var intent =
                 Intent(
                     this,
                     CustomerOrdersActivity::class.java
                 )
+
+
+            startActivity(
+                intent
             )
         }
 
+
         navProfile.setOnClickListener {
 
-            startActivity(
+            var intent =
                 Intent(
                     this,
                     CustomerProfileActivity::class.java
                 )
+
+
+            startActivity(
+                intent
             )
         }
     }
+
 
     private fun showMessage(
         message: String

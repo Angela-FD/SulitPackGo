@@ -19,30 +19,45 @@ class CustomerOrdersActivity : ComponentActivity() {
     private var customerOrder =
         CustomerOrder()
 
+
+    private var auth =
+        FirebaseAuth.getInstance()
+
+
     private lateinit var ordersContainer:
             LinearLayout
+
 
     private lateinit var tvNoOrders:
             TextView
 
+
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.customer_orders
         )
 
+
         setupViews()
+
         setupNavigation()
     }
 
+
     override fun onResume() {
+
         super.onResume()
+
 
         loadOrders()
     }
+
 
     private fun setupViews() {
 
@@ -51,54 +66,67 @@ class CustomerOrdersActivity : ComponentActivity() {
                 R.id.ordersContainer
             )
 
+
         tvNoOrders =
             findViewById(
                 R.id.tvNoOrders
             )
     }
 
+
     private fun setupNavigation() {
 
-        val navHome =
+        var navHome =
             findViewById<LinearLayout>(
                 R.id.navHome
             )
 
-        val navOrders =
+
+        var navOrders =
             findViewById<LinearLayout>(
                 R.id.navOrders
             )
 
-        val navProfile =
+
+        var navProfile =
             findViewById<LinearLayout>(
                 R.id.navProfile
             )
 
+
         navHome.setOnClickListener {
+
             finish()
         }
 
+
         navOrders.setOnClickListener {
+
             loadOrders()
         }
 
+
         navProfile.setOnClickListener {
 
-            startActivity(
+            var intent =
                 Intent(
                     this,
                     CustomerProfileActivity::class.java
                 )
+
+
+            startActivity(
+                intent
             )
         }
     }
 
+
     private fun loadOrders() {
 
-        val firebaseUser =
-            FirebaseAuth
-                .getInstance()
-                .currentUser
+        var firebaseUser =
+            auth.currentUser
+
 
         if (firebaseUser == null) {
 
@@ -109,31 +137,31 @@ class CustomerOrdersActivity : ComponentActivity() {
             return
         }
 
-        val customer =
+
+        var customer =
             Customer(
                 uid = firebaseUser.uid
             )
+
 
         customerOrder.getMyOrders(
             customer
         ) { success, message, orders ->
 
-            if (!success) {
 
-                showMessage(message)
-                return@getMyOrders
-            }
+            if (success == false) {
 
-            val visibleOrders =
-                orders.filter {
+                showMessage(
+                    message
+                )
 
-                    !it.status.equals(
-                        "Cancelled",
-                        ignoreCase = true
+            } else {
+
+                var visibleOrders =
+                    removeCancelledOrders(
+                        orders
                     )
-                }
 
-            runOnUiThread {
 
                 showOrders(
                     visibleOrders
@@ -142,22 +170,52 @@ class CustomerOrdersActivity : ComponentActivity() {
         }
     }
 
+
+    private fun removeCancelledOrders(
+        orders: List<OrderData>
+    ): List<OrderData> {
+
+        var visibleOrders =
+            mutableListOf<OrderData>()
+
+
+        for (order in orders) {
+
+            if (
+                order.status != "Cancelled"
+            ) {
+
+                visibleOrders.add(
+                    order
+                )
+            }
+        }
+
+
+        return visibleOrders
+    }
+
+
     private fun showOrders(
         orders: List<OrderData>
     ) {
 
         clearOldOrderCards()
 
+
         if (orders.isEmpty()) {
 
             tvNoOrders.visibility =
                 View.VISIBLE
 
+
             return
         }
 
+
         tvNoOrders.visibility =
             View.GONE
+
 
         for (order in orders) {
 
@@ -167,36 +225,31 @@ class CustomerOrdersActivity : ComponentActivity() {
         }
     }
 
+
     private fun clearOldOrderCards() {
 
-        for (
-        index in ordersContainer.childCount - 1
-                downTo 0
-        ) {
+        ordersContainer.removeAllViews()
 
-            val child =
-                ordersContainer.getChildAt(
-                    index
-                )
 
-            if (child.id != R.id.tvNoOrders) {
-
-                ordersContainer.removeViewAt(
-                    index
-                )
-            }
-        }
+        ordersContainer.addView(
+            tvNoOrders
+        )
     }
+
 
     private fun addOrderCard(
         order: OrderData
     ) {
 
-        val card =
-            LinearLayout(this)
+        var card =
+            LinearLayout(
+                this
+            )
+
 
         card.orientation =
             LinearLayout.VERTICAL
+
 
         card.setPadding(
             32,
@@ -205,11 +258,13 @@ class CustomerOrdersActivity : ComponentActivity() {
             28
         )
 
-        val params =
+
+        var params =
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
+
 
         params.setMargins(
             0,
@@ -218,58 +273,75 @@ class CustomerOrdersActivity : ComponentActivity() {
             24
         )
 
+
         card.layoutParams =
             params
+
 
         card.setBackgroundResource(
             R.drawable.bg_input_outline
         )
 
+
         card.isClickable =
             true
+
 
         card.isFocusable =
             true
 
+
         card.addView(
             createText(
-                "Order ${order.orderId}",
+                "Order " +
+                        order.orderId,
                 true
             )
         )
 
+
         card.addView(
             createText(
-                "Status: ${order.status}",
+                "Status: " +
+                        order.status,
                 true
             )
         )
 
-        card.addView(
-            createText(
-                "Vehicle: ${order.vehicleType}"
-            )
-        )
 
         card.addView(
             createText(
-                "Pickup: ${order.pickupAddress}"
+                "Vehicle: " +
+                        order.vehicleType
             )
         )
 
-        card.addView(
-            createText(
-                "Drop-off: ${order.dropAddress}"
-            )
-        )
 
         card.addView(
             createText(
-                "Fee: ₱%.2f".format(
-                    order.fee
-                )
+                "Pickup: " +
+                        order.pickupAddress
             )
         )
+
+
+        card.addView(
+            createText(
+                "Drop-off: " +
+                        order.dropAddress
+            )
+        )
+
+
+        card.addView(
+            createText(
+                "Fee: " +
+                        formatMoney(
+                            order.fee
+                        )
+            )
+        )
+
 
         card.addView(
             createText(
@@ -277,42 +349,62 @@ class CustomerOrdersActivity : ComponentActivity() {
             )
         )
 
+
         card.setOnClickListener {
 
-            val trackIntent =
-                Intent(
-                    this,
-                    CustomerTrackActivity::class.java
-                )
-
-            trackIntent.putExtra(
-                "orderId",
+            openOrder(
                 order.orderId
             )
-
-            startActivity(
-                trackIntent
-            )
         }
+
 
         ordersContainer.addView(
             card
         )
     }
 
+
+    private fun openOrder(
+        orderId: String
+    ) {
+
+        var trackIntent =
+            Intent(
+                this,
+                CustomerTrackActivity::class.java
+            )
+
+
+        trackIntent.putExtra(
+            "orderId",
+            orderId
+        )
+
+
+        startActivity(
+            trackIntent
+        )
+    }
+
+
     private fun createText(
         text: String,
         bold: Boolean = false
     ): TextView {
 
-        val textView =
-            TextView(this)
+        var textView =
+            TextView(
+                this
+            )
+
 
         textView.text =
             text
 
+
         textView.textSize =
             15f
+
 
         textView.setTextColor(
             getColor(
@@ -320,12 +412,14 @@ class CustomerOrdersActivity : ComponentActivity() {
             )
         )
 
+
         textView.setPadding(
             0,
             5,
             0,
             5
         )
+
 
         if (bold) {
 
@@ -335,20 +429,31 @@ class CustomerOrdersActivity : ComponentActivity() {
             )
         }
 
+
         return textView
     }
+
+
+    private fun formatMoney(
+        amount: Double
+    ): String {
+
+        return "₱" +
+                String.format(
+                    "%.2f",
+                    amount
+                )
+    }
+
 
     private fun showMessage(
         message: String
     ) {
 
-        runOnUiThread {
-
-            Toast.makeText(
-                this,
-                message,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

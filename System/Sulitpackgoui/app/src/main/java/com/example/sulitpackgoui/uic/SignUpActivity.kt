@@ -12,90 +12,172 @@ import com.google.android.material.button.MaterialButton
 
 class SignUpActivity : ComponentActivity() {
 
-    private var customerAuth = CustomerAuth()
+    private var customerAuth =
+        CustomerAuth()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.customer_signup)
+
+        setContentView(
+            R.layout.customer_signup
+        )
+
 
         var etName =
-            findViewById<EditText>(R.id.etName)
+            findViewById<EditText>(
+                R.id.etName
+            )
+
 
         var etEmail =
-            findViewById<EditText>(R.id.etEmail)
+            findViewById<EditText>(
+                R.id.etEmail
+            )
+
+
+        var etPhoneNumber =
+            findViewById<EditText>(
+                R.id.etPhoneNumber
+            )
+
 
         var etPassword =
-            findViewById<EditText>(R.id.etPassword)
+            findViewById<EditText>(
+                R.id.etPassword
+            )
+
 
         var etConfirmPassword =
-            findViewById<EditText>(R.id.etConfirmPassword)
+            findViewById<EditText>(
+                R.id.etConfirmPassword
+            )
+
 
         var btnSignUp =
-            findViewById<MaterialButton>(R.id.btnSignUp)
+            findViewById<MaterialButton>(
+                R.id.btnSignUp
+            )
+
 
         var btnBack =
-            findViewById<TextView>(R.id.btnBack)
+            findViewById<TextView>(
+                R.id.btnBack
+            )
+
 
         var tvLogin =
-            findViewById<TextView>(R.id.tvLogin)
+            findViewById<TextView>(
+                R.id.tvLogin
+            )
+
 
         btnSignUp.setOnClickListener {
 
             var name =
-                etName.text.toString().trim()
+                etName
+                    .text
+                    .toString()
+                    .trim()
+
 
             var email =
-                etEmail.text.toString().trim()
+                etEmail
+                    .text
+                    .toString()
+                    .trim()
+
+
+            var phoneNumber =
+                etPhoneNumber
+                    .text
+                    .toString()
+                    .trim()
+
 
             var password =
-                etPassword.text.toString()
+                etPassword
+                    .text
+                    .toString()
+
 
             var confirmPassword =
-                etConfirmPassword.text.toString()
+                etConfirmPassword
+                    .text
+                    .toString()
+
 
             customerAuth.register(
                 customerName = name,
                 customerEmail = email,
+                customerPhoneNumber = phoneNumber,
                 customerPassword = password,
                 confirmPassword = confirmPassword
             ) { success, message ->
 
+
                 if (success) {
 
-                    Toast.makeText(
-                        this,
-                        "Account created successfully.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showMessage(
+                        "Account created successfully."
+                    )
 
-                    var intent =
-                        Intent(this, MainActivity::class.java)
 
-                    startActivity(intent)
-
-                    finish()
+                    openLogin()
 
                 } else {
 
-                    Toast.makeText(
-                        this,
-                        message,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showMessage(
+                        message
+                    )
                 }
             }
         }
+
 
         btnBack.setOnClickListener {
 
             finish()
         }
 
+
         tvLogin.setOnClickListener {
 
             finish()
         }
+    }
+
+
+    private fun openLogin() {
+
+        var intent =
+            Intent(
+                this,
+                MainActivity::class.java
+            )
+
+
+        startActivity(
+            intent
+        )
+
+
+        finish()
+    }
+
+
+    private fun showMessage(
+        message: String
+    ) {
+
+        Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

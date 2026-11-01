@@ -14,11 +14,14 @@ class CustomerOrder {
     private var database =
         FirebaseFirestore.getInstance()
 
+
     private var vehicleFeeDatabase =
         VehicleFeeDatabase()
 
+
     private var routeDistance =
         RouteDistance()
+
 
     fun createOrder(
         customer: Customer,
@@ -29,215 +32,395 @@ class CustomerOrder {
     ) {
 
         if (customer.uid.isBlank()) {
+
             onResult(
                 false,
                 "Customer is not logged in.",
                 ""
             )
+
             return
         }
 
+
         if (location.address.isBlank()) {
+
             onResult(
                 false,
                 "Pickup address is missing.",
                 ""
             )
+
             return
         }
 
+
         if (location.dropAddress.isBlank()) {
+
             onResult(
                 false,
                 "Drop-off address is missing.",
                 ""
             )
+
             return
         }
 
+
         if (
-            location.pickUpLatitude == 0.0 ||
-            location.pickUpLongitude == 0.0
+            location.pickUpLatitude ==
+            0.0
         ) {
+
             onResult(
                 false,
                 "Pickup location is missing.",
                 ""
             )
+
             return
         }
 
+
         if (
-            location.dropLatitude == 0.0 ||
-            location.dropLongitude == 0.0
+            location.pickUpLongitude ==
+            0.0
         ) {
+
+            onResult(
+                false,
+                "Pickup location is missing.",
+                ""
+            )
+
+            return
+        }
+
+
+        if (
+            location.dropLatitude ==
+            0.0
+        ) {
+
             onResult(
                 false,
                 "Drop-off location is missing.",
                 ""
             )
+
             return
         }
 
-        if (packageInfo.description.isBlank()) {
+
+        if (
+            location.dropLongitude ==
+            0.0
+        ) {
+
+            onResult(
+                false,
+                "Drop-off location is missing.",
+                ""
+            )
+
+            return
+        }
+
+
+        if (
+            packageInfo.description.isBlank()
+        ) {
+
             onResult(
                 false,
                 "Package description is missing.",
                 ""
             )
+
             return
         }
 
-        if (packageInfo.weight <= 0) {
+
+        if (
+            packageInfo.weight <= 0
+        ) {
+
             onResult(
                 false,
                 "Package weight must be greater than 0.",
                 ""
             )
+
             return
         }
 
-        if (packageInfo.pieces <= 0) {
+
+        if (
+            packageInfo.pieces <= 0
+        ) {
+
             onResult(
                 false,
                 "Number of pieces must be greater than 0.",
                 ""
             )
+
             return
         }
 
-        if (vehicle.vehicleType.isBlank()) {
+
+        if (
+            vehicle.vehicleType.isBlank()
+        ) {
+
             onResult(
                 false,
                 "Please select a vehicle.",
                 ""
             )
+
             return
         }
 
-        if (!vehicle.checkWeight(packageInfo.weight)) {
+
+        if (
+            vehicle.checkWeight(
+                packageInfo.weight
+            ) == false
+        ) {
+
             onResult(
                 false,
                 "Package is too heavy for the selected vehicle.",
                 ""
             )
+
             return
         }
 
+
         routeDistance.getRoadDistance(
             location
-        ) { distanceSuccess, roadDistanceKm, distanceMessage ->
+        ) { success, distance, message ->
 
-            if (!distanceSuccess) {
+
+            if (success == false) {
+
                 onResult(
                     false,
-                    distanceMessage,
+                    message,
                     ""
                 )
-                return@getRoadDistance
-            }
 
-            vehicleFeeDatabase.getVehicleFee(
-                vehicle.vehicleType
-            ) { feeSuccess, feeMessage, vehicleFee ->
+            } else {
 
-                if (!feeSuccess || vehicleFee == null) {
-                    onResult(
-                        false,
-                        feeMessage,
-                        ""
-                    )
-                    return@getVehicleFee
-                }
-
-                var calculator =
-                    FeeCalculator(
-                        devLocation = location,
-                        feeVehicle = vehicle,
-                        vehicleFee = vehicleFee,
-                        roadDistanceKm = roadDistanceKm
-                    )
-
-                var totalFee =
-                    calculator.calculateTotalFee()
-
-                var orderDocument =
-                    database
-                        .collection("orders")
-                        .document()
-
-                var orderId =
-                    orderDocument.id
-
-                var createdAt =
-                    System.currentTimeMillis()
-
-                var orderData =
-                    hashMapOf(
-                        "orderId" to orderId,
-                        "customerId" to customer.uid,
-                        "riderId" to "",
-
-                        "pickupAddress" to location.address,
-                        "pickupAddressDetails" to location.addressDetails,
-                        "pickupLatitude" to location.pickUpLatitude,
-                        "pickupLongitude" to location.pickUpLongitude,
-
-                        "dropAddress" to location.dropAddress,
-                        "dropAddressDetails" to location.dropAddressDetails,
-                        "dropLatitude" to location.dropLatitude,
-                        "dropLongitude" to location.dropLongitude,
-
-                        "description" to packageInfo.description,
-                        "weight" to packageInfo.weight,
-                        "pieces" to packageInfo.pieces,
-                        "instructions" to packageInfo.instructions,
-
-                        "vehicleType" to vehicle.vehicleType,
-
-                        "distance" to roadDistanceKm,
-                        "fee" to totalFee,
-
-                        "status" to "Pending",
-                        "createdAt" to createdAt
-                    )
-
-                orderDocument
-                    .set(orderData)
-                    .addOnSuccessListener {
-
-                        onResult(
-                            true,
-                            "Order created successfully.",
-                            orderId
-                        )
-                    }
-                    .addOnFailureListener { error ->
-
-                        onResult(
-                            false,
-                            error.message
-                                ?: "Failed to create order.",
-                            ""
-                        )
-                    }
+                getFeeAndSaveOrder(
+                    customer,
+                    location,
+                    packageInfo,
+                    vehicle,
+                    distance,
+                    onResult
+                )
             }
         }
     }
 
+
+    private fun getFeeAndSaveOrder(
+        customer: Customer,
+        location: DeliveryLocation,
+        packageInfo: PackageInfo,
+        vehicle: Vehicle,
+        distance: Double,
+        onResult: (Boolean, String, String) -> Unit
+    ) {
+
+        vehicleFeeDatabase.getVehicleFee(
+            vehicle.vehicleType
+        ) { success, message, vehicleFee ->
+
+
+            if (success == false) {
+
+                onResult(
+                    false,
+                    message,
+                    ""
+                )
+
+            } else if (
+                vehicleFee == null
+            ) {
+
+                onResult(
+                    false,
+                    "Vehicle fee not found.",
+                    ""
+                )
+
+            } else {
+
+                var calculator =
+                    FeeCalculator(
+                        vehicleFee = vehicleFee,
+                        roadDistanceKm = distance
+                    )
+
+
+                var totalFee =
+                    calculator.calculateTotalFee()
+
+
+                saveOrder(
+                    customer,
+                    location,
+                    packageInfo,
+                    vehicle,
+                    distance,
+                    totalFee,
+                    onResult
+                )
+            }
+        }
+    }
+
+
+    private fun saveOrder(
+        customer: Customer,
+        location: DeliveryLocation,
+        packageInfo: PackageInfo,
+        vehicle: Vehicle,
+        distance: Double,
+        totalFee: Double,
+        onResult: (Boolean, String, String) -> Unit
+    ) {
+
+        var orderDocument =
+            database
+                .collection("orders")
+                .document()
+
+
+        var orderId =
+            orderDocument.id
+
+
+        var order =
+            OrderData(
+                orderId = orderId,
+
+                customerId = customer.uid,
+
+                riderId = "",
+
+                pickupAddress =
+                    location.address,
+
+                pickupAddressDetails =
+                    location.addressDetails,
+
+                pickupLatitude =
+                    location.pickUpLatitude,
+
+                pickupLongitude =
+                    location.pickUpLongitude,
+
+                dropAddress =
+                    location.dropAddress,
+
+                dropAddressDetails =
+                    location.dropAddressDetails,
+
+                dropLatitude =
+                    location.dropLatitude,
+
+                dropLongitude =
+                    location.dropLongitude,
+
+                description =
+                    packageInfo.description,
+
+                weight =
+                    packageInfo.weight,
+
+                pieces =
+                    packageInfo.pieces,
+
+                instructions =
+                    packageInfo.instructions,
+
+                vehicleType =
+                    vehicle.vehicleType,
+
+                distance =
+                    distance,
+
+                fee =
+                    totalFee,
+
+                status =
+                    "Pending",
+
+                createdAt =
+                    System.currentTimeMillis()
+            )
+
+
+        orderDocument
+            .set(
+                order
+            )
+            .addOnSuccessListener {
+
+                onResult(
+                    true,
+                    "Order created successfully.",
+                    orderId
+                )
+            }
+            .addOnFailureListener { error ->
+
+                var message =
+                    "Failed to create order."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
+                onResult(
+                    false,
+                    message,
+                    ""
+                )
+            }
+    }
+
+
     fun getOrder(
         orderId: String,
-        onResult: (Boolean, String, OrderData?) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            OrderData?
+        ) -> Unit
     ) {
 
         if (orderId.isBlank()) {
+
             onResult(
                 false,
                 "Order ID is missing.",
                 null
             )
+
             return
         }
+
 
         database
             .collection("orders")
@@ -245,124 +428,64 @@ class CustomerOrder {
             .get()
             .addOnSuccessListener { document ->
 
-                if (!document.exists()) {
+
+                if (
+                    document.exists() == false
+                ) {
+
                     onResult(
                         false,
                         "Order not found.",
                         null
                     )
-                    return@addOnSuccessListener
+
+                } else {
+
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
+                        )
+
+
+                    if (order == null) {
+
+                        onResult(
+                            false,
+                            "Failed to read order.",
+                            null
+                        )
+
+                    } else {
+
+                        onResult(
+                            true,
+                            "Order loaded successfully.",
+                            order
+                        )
+                    }
                 }
-
-                var order =
-                    OrderData(
-                        orderId =
-                            document.getString("orderId") ?: "",
-
-                        customerId =
-                            document.getString("customerId") ?: "",
-
-                        riderId =
-                            document.getString("riderId") ?: "",
-
-                        pickupAddress =
-                            document.getString("pickupAddress") ?: "",
-
-                        pickupAddressDetails =
-                            document.getString(
-                                "pickupAddressDetails"
-                            ) ?: "",
-
-                        dropAddress =
-                            document.getString("dropAddress") ?: "",
-
-                        dropAddressDetails =
-                            document.getString(
-                                "dropAddressDetails"
-                            ) ?: "",
-
-                        pickupLatitude =
-                            document.getDouble(
-                                "pickupLatitude"
-                            ) ?: 0.0,
-
-                        pickupLongitude =
-                            document.getDouble(
-                                "pickupLongitude"
-                            ) ?: 0.0,
-
-                        dropLatitude =
-                            document.getDouble(
-                                "dropLatitude"
-                            ) ?: 0.0,
-
-                        dropLongitude =
-                            document.getDouble(
-                                "dropLongitude"
-                            ) ?: 0.0,
-
-                        description =
-                            document.getString(
-                                "description"
-                            ) ?: "",
-
-                        weight =
-                            document.getDouble(
-                                "weight"
-                            ) ?: 0.0,
-
-                        pieces =
-                            document.getLong(
-                                "pieces"
-                            )?.toInt() ?: 0,
-
-                        instructions =
-                            document.getString(
-                                "instructions"
-                            ) ?: "",
-
-                        vehicleType =
-                            document.getString(
-                                "vehicleType"
-                            ) ?: "",
-
-                        distance =
-                            document.getDouble(
-                                "distance"
-                            ) ?: 0.0,
-
-                        fee =
-                            document.getDouble(
-                                "fee"
-                            ) ?: 0.0,
-
-                        status =
-                            document.getString(
-                                "status"
-                            ) ?: "",
-
-                        createdAt =
-                            document.getLong(
-                                "createdAt"
-                            ) ?: 0L
-                    )
-
-                onResult(
-                    true,
-                    "Order loaded successfully.",
-                    order
-                )
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to load order."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message
-                        ?: "Failed to load order.",
+                    message,
                     null
                 )
             }
     }
+
 
     fun getMyOrders(
         customer: Customer,
@@ -374,13 +497,16 @@ class CustomerOrder {
     ) {
 
         if (customer.uid.isBlank()) {
+
             onResult(
                 false,
                 "Customer is not logged in.",
                 emptyList()
             )
+
             return
         }
+
 
         database
             .collection("orders")
@@ -391,110 +517,36 @@ class CustomerOrder {
             .get()
             .addOnSuccessListener { result ->
 
+
                 var orders =
                     mutableListOf<OrderData>()
 
-                for (document in result.documents) {
+
+                for (
+                document in
+                result.documents
+                ) {
 
                     var order =
-                        OrderData(
-                            orderId =
-                                document.getString("orderId") ?: "",
-
-                            customerId =
-                                document.getString("customerId") ?: "",
-
-                            riderId =
-                                document.getString("riderId") ?: "",
-
-                            pickupAddress =
-                                document.getString("pickupAddress") ?: "",
-
-                            pickupAddressDetails =
-                                document.getString(
-                                    "pickupAddressDetails"
-                                ) ?: "",
-
-                            dropAddress =
-                                document.getString("dropAddress") ?: "",
-
-                            dropAddressDetails =
-                                document.getString(
-                                    "dropAddressDetails"
-                                ) ?: "",
-
-                            pickupLatitude =
-                                document.getDouble(
-                                    "pickupLatitude"
-                                ) ?: 0.0,
-
-                            pickupLongitude =
-                                document.getDouble(
-                                    "pickupLongitude"
-                                ) ?: 0.0,
-
-                            dropLatitude =
-                                document.getDouble(
-                                    "dropLatitude"
-                                ) ?: 0.0,
-
-                            dropLongitude =
-                                document.getDouble(
-                                    "dropLongitude"
-                                ) ?: 0.0,
-
-                            description =
-                                document.getString(
-                                    "description"
-                                ) ?: "",
-
-                            weight =
-                                document.getDouble(
-                                    "weight"
-                                ) ?: 0.0,
-
-                            pieces =
-                                document.getLong(
-                                    "pieces"
-                                )?.toInt() ?: 0,
-
-                            instructions =
-                                document.getString(
-                                    "instructions"
-                                ) ?: "",
-
-                            vehicleType =
-                                document.getString(
-                                    "vehicleType"
-                                ) ?: "",
-
-                            distance =
-                                document.getDouble(
-                                    "distance"
-                                ) ?: 0.0,
-
-                            fee =
-                                document.getDouble(
-                                    "fee"
-                                ) ?: 0.0,
-
-                            status =
-                                document.getString(
-                                    "status"
-                                ) ?: "",
-
-                            createdAt =
-                                document.getLong(
-                                    "createdAt"
-                                ) ?: 0L
+                        document.toObject(
+                            OrderData::class.java
                         )
 
-                    orders.add(order)
+
+                    if (order != null) {
+
+                        orders.add(
+                            order
+                        )
+                    }
                 }
 
-                orders.sortByDescending {
-                    it.createdAt
+
+                orders.sortByDescending { order ->
+
+                    order.createdAt
                 }
+
 
                 onResult(
                     true,
@@ -504,14 +556,25 @@ class CustomerOrder {
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to load orders."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message
-                        ?: "Failed to load orders.",
+                    message,
                     emptyList()
                 )
             }
     }
+
 
     fun cancelOrder(
         customer: Customer,
@@ -520,91 +583,146 @@ class CustomerOrder {
     ) {
 
         if (customer.uid.isBlank()) {
+
             onResult(
                 false,
                 "Customer is not logged in."
             )
+
             return
         }
 
+
         if (orderId.isBlank()) {
+
             onResult(
                 false,
                 "Order ID is missing."
             )
+
             return
         }
+
 
         var orderDocument =
             database
                 .collection("orders")
                 .document(orderId)
 
+
         orderDocument
             .get()
             .addOnSuccessListener { document ->
 
-                if (!document.exists()) {
+
+                if (
+                    document.exists() == false
+                ) {
+
                     onResult(
                         false,
                         "Order not found."
                     )
-                    return@addOnSuccessListener
-                }
 
-                var customerId =
-                    document.getString(
-                        "customerId"
-                    ) ?: ""
+                } else {
 
-                var status =
-                    document.getString(
-                        "status"
-                    ) ?: ""
-
-                if (customerId != customer.uid) {
-                    onResult(
-                        false,
-                        "This order does not belong to you."
-                    )
-                    return@addOnSuccessListener
-                }
-
-                if (status != "Pending") {
-                    onResult(
-                        false,
-                        "Only pending orders can be cancelled."
-                    )
-                    return@addOnSuccessListener
-                }
-
-                orderDocument
-                    .update(
-                        "status",
-                        "Cancelled"
-                    )
-                    .addOnSuccessListener {
-
-                        onResult(
-                            true,
-                            "Order cancelled successfully."
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
                         )
-                    }
-                    .addOnFailureListener { error ->
+
+
+                    if (order == null) {
 
                         onResult(
                             false,
-                            error.message
-                                ?: "Failed to cancel order."
+                            "Failed to read order."
+                        )
+
+                    } else if (
+                        order.customerId !=
+                        customer.uid
+                    ) {
+
+                        onResult(
+                            false,
+                            "This order does not belong to you."
+                        )
+
+                    } else if (
+                        order.status !=
+                        "Pending"
+                    ) {
+
+                        onResult(
+                            false,
+                            "Only pending orders can be cancelled."
+                        )
+
+                    } else {
+
+                        updateOrderToCancelled(
+                            orderDocument,
+                            onResult
                         )
                     }
+                }
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to check order."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message
-                        ?: "Failed to check order."
+                    message
+                )
+            }
+    }
+
+
+    private fun updateOrderToCancelled(
+        orderDocument:
+        com.google.firebase.firestore.DocumentReference,
+        onResult: (Boolean, String) -> Unit
+    ) {
+
+        orderDocument
+            .update(
+                "status",
+                "Cancelled"
+            )
+            .addOnSuccessListener {
+
+                onResult(
+                    true,
+                    "Order cancelled successfully."
+                )
+            }
+            .addOnFailureListener { error ->
+
+                var message =
+                    "Failed to cancel order."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
+                onResult(
+                    false,
+                    message
                 )
             }
     }

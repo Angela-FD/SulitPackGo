@@ -21,57 +21,65 @@ import org.maplibre.android.maps.MapView
 
 class RiderActiveDeliveryActivity : ComponentActivity() {
 
-    // Firebase
     private var firebaseAuth =
         FirebaseAuth.getInstance()
 
 
-    // Rider backend
     private var riderDatabase =
         RiderDatabase()
+
 
     private var riderOrder =
         RiderOrder()
 
 
-    // Current Rider
-    private var currentRider: Rider? =
-        null
+    private var currentRider =
+        Rider()
 
 
-    // Current Order
-    private var currentOrder: OrderData? =
-        null
+    private var currentOrder =
+        OrderData()
 
 
-    // Map
-    private lateinit var mapView: MapView
+    private var riderLoaded =
+        false
 
 
-    // Text
-    private lateinit var tvStatus: TextView
-
-    private lateinit var tvPickupAddress: TextView
-    private lateinit var tvPickupDetails: TextView
-
-    private lateinit var tvDropoffAddress: TextView
-    private lateinit var tvDropoffDetails: TextView
+    private var orderLoaded =
+        false
 
 
-    // Button
-    private lateinit var btnUpdateStatus: MaterialButton
+    private lateinit var mapView:
+            MapView
+
+
+    private lateinit var tvStatus:
+            TextView
+
+    private lateinit var tvPickupAddress:
+            TextView
+
+    private lateinit var tvPickupDetails:
+            TextView
+
+    private lateinit var tvDropoffAddress:
+            TextView
+
+    private lateinit var tvDropoffDetails:
+            TextView
+
+
+    private lateinit var btnUpdateStatus:
+            MaterialButton
 
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
 
 
-        // Initialize MapLibre first.
-        //
-        // This is the same setup used
-        // by your Customer map picker.
         MapLibre.getInstance(
             this,
             "",
@@ -87,7 +95,6 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         setupViews()
 
 
-        // Start MapView
         mapView.onCreate(
             savedInstanceState
         )
@@ -146,7 +153,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
 
     private fun setupButtons() {
 
-        val btnBack =
+        var btnBack =
             findViewById<ImageButton>(
                 R.id.btnBack
             )
@@ -167,7 +174,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
 
     private fun loadRider() {
 
-        val currentUser =
+        var currentUser =
             firebaseAuth.currentUser
 
 
@@ -176,6 +183,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
             showMessage(
                 "Rider is not logged in."
             )
+
 
             finish()
 
@@ -188,97 +196,121 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         ) { success, message, rider ->
 
 
-            if (success && rider != null) {
+            if (success == false) {
+
+                showMessage(
+                    message
+                )
+
+
+                finish()
+
+            } else if (
+                rider == null
+            ) {
+
+                showMessage(
+                    "Rider profile not found."
+                )
+
+
+                finish()
+
+            } else {
 
                 currentRider =
                     rider
 
 
-                if (rider.currentOrderId.isBlank()) {
-
-                    showMessage(
-                        "You have no active delivery."
-                    )
-
-                    finish()
-
-                    return@getRider
-                }
+                riderLoaded =
+                    true
 
 
-                loadCurrentOrder(
-                    rider
-                )
-
-            } else {
-
-                showMessage(
-                    message
-                )
-
-                finish()
+                checkCurrentOrder()
             }
         }
     }
 
 
-    private fun loadCurrentOrder(
-        rider: Rider
-    ) {
+    private fun checkCurrentOrder() {
+
+        if (
+            currentRider.currentOrderId.isBlank()
+        ) {
+
+            showMessage(
+                "You have no active delivery."
+            )
+
+
+            finish()
+
+            return
+        }
+
+
+        loadCurrentOrder()
+    }
+
+
+    private fun loadCurrentOrder() {
 
         riderOrder.getCurrentOrder(
-            rider
+            currentRider
         ) { success, message, order ->
 
 
-            if (success && order != null) {
+            if (success == false) {
+
+                showMessage(
+                    message
+                )
+
+
+                finish()
+
+            } else if (
+                order == null
+            ) {
+
+                showMessage(
+                    "Order not found."
+                )
+
+
+                finish()
+
+            } else {
 
                 currentOrder =
                     order
 
 
-                showOrderInformation(
-                    order
-                )
+                orderLoaded =
+                    true
 
 
-                showDeliveryMap(
-                    order
-                )
+                showOrderInformation()
 
-            } else {
-
-                showMessage(
-                    message
-                )
-
-                finish()
+                showDeliveryMap()
             }
         }
     }
 
 
-    private fun showOrderInformation(
-        order: OrderData
-    ) {
-
-        // -------------------------
-        // STATUS
-        // -------------------------
+    private fun showOrderInformation() {
 
         tvStatus.text =
-            order.status
+            currentOrder.status
 
-
-        // -------------------------
-        // PICKUP
-        // -------------------------
 
         tvPickupAddress.text =
-            order.pickupAddress
+            currentOrder.pickupAddress
 
 
-        if (order.pickupAddressDetails.isBlank()) {
+        if (
+            currentOrder.pickupAddressDetails.isBlank()
+        ) {
 
             tvPickupDetails.text =
                 "No additional pickup details."
@@ -286,19 +318,17 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         } else {
 
             tvPickupDetails.text =
-                order.pickupAddressDetails
+                currentOrder.pickupAddressDetails
         }
 
 
-        // -------------------------
-        // DROP-OFF
-        // -------------------------
-
         tvDropoffAddress.text =
-            order.dropAddress
+            currentOrder.dropAddress
 
 
-        if (order.dropAddressDetails.isBlank()) {
+        if (
+            currentOrder.dropAddressDetails.isBlank()
+        ) {
 
             tvDropoffDetails.text =
                 "No additional drop-off details."
@@ -306,26 +336,30 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         } else {
 
             tvDropoffDetails.text =
-                order.dropAddressDetails
+                currentOrder.dropAddressDetails
         }
 
 
-        // -------------------------
-        // BUTTON
-        // -------------------------
-
-        if (order.status == "Pick Up Pending") {
+        if (
+            currentOrder.status ==
+            "Pick Up Pending"
+        ) {
 
             btnUpdateStatus.text =
                 "Mark as Out for Delivery"
 
+
             btnUpdateStatus.isEnabled =
                 true
 
-        } else if (order.status == "Out for Delivery") {
+        } else if (
+            currentOrder.status ==
+            "Out for Delivery"
+        ) {
 
             btnUpdateStatus.text =
                 "Mark as Delivered"
+
 
             btnUpdateStatus.isEnabled =
                 true
@@ -333,7 +367,8 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         } else {
 
             btnUpdateStatus.text =
-                order.status
+                currentOrder.status
+
 
             btnUpdateStatus.isEnabled =
                 false
@@ -341,21 +376,19 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
     }
 
 
-    private fun showDeliveryMap(
-        order: OrderData
-    ) {
+    private fun showDeliveryMap() {
 
-        val pickupLocation =
+        var pickupLocation =
             LatLng(
-                order.pickupLatitude,
-                order.pickupLongitude
+                currentOrder.pickupLatitude,
+                currentOrder.pickupLongitude
             )
 
 
-        val dropoffLocation =
+        var dropoffLocation =
             LatLng(
-                order.dropLatitude,
-                order.dropLongitude
+                currentOrder.dropLatitude,
+                currentOrder.dropLongitude
             )
 
 
@@ -367,16 +400,10 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
             ) {
 
 
-                // Remove old markers first
                 map.clear()
 
 
-                // -------------------------
-                // PICKUP MARKER
-                // -------------------------
-
                 map.addMarker(
-
                     MarkerOptions()
                         .position(
                             pickupLocation
@@ -385,17 +412,12 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
                             "Pickup"
                         )
                         .snippet(
-                            order.pickupAddress
+                            currentOrder.pickupAddress
                         )
                 )
 
 
-                // -------------------------
-                // DROP-OFF MARKER
-                // -------------------------
-
                 map.addMarker(
-
                     MarkerOptions()
                         .position(
                             dropoffLocation
@@ -404,38 +426,35 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
                             "Drop-off"
                         )
                         .snippet(
-                            order.dropAddress
+                            currentOrder.dropAddress
                         )
                 )
 
 
-                // Find the middle point between
-                // Pickup and Drop-off.
-                val middleLatitude =
+                var middleLatitude =
                     (
-                            order.pickupLatitude +
-                                    order.dropLatitude
+                            currentOrder.pickupLatitude +
+                                    currentOrder.dropLatitude
                             ) / 2
 
 
-                val middleLongitude =
+                var middleLongitude =
                     (
-                            order.pickupLongitude +
-                                    order.dropLongitude
+                            currentOrder.pickupLongitude +
+                                    currentOrder.dropLongitude
                             ) / 2
 
 
-                val middleLocation =
+                var middleLocation =
                     LatLng(
                         middleLatitude,
                         middleLongitude
                     )
 
 
-                // Move camera so Rider can
-                // see the delivery area.
                 map.cameraPosition =
-                    CameraPosition.Builder()
+                    CameraPosition
+                        .Builder()
                         .target(
                             middleLocation
                         )
@@ -450,15 +469,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
 
     private fun updateDeliveryStatus() {
 
-        val rider =
-            currentRider
-
-
-        val order =
-            currentOrder
-
-
-        if (rider == null) {
+        if (riderLoaded == false) {
 
             showMessage(
                 "Rider information is not ready."
@@ -468,7 +479,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         }
 
 
-        if (order == null) {
+        if (orderLoaded == false) {
 
             showMessage(
                 "Order information is not ready."
@@ -478,12 +489,16 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
         }
 
 
+        var oldStatus =
+            currentOrder.status
+
+
         btnUpdateStatus.isEnabled =
             false
 
 
         riderOrder.updateDeliveryStatus(
-            rider
+            currentRider
         ) { success, message ->
 
 
@@ -492,45 +507,38 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
             )
 
 
-            if (success) {
-
-
-                // If the order was:
-                //
-                // Pick Up Pending
-                //       ↓
-                // Out for Delivery
-                //
-                // reload it so the button changes.
-                if (
-                    order.status ==
-                    "Pick Up Pending"
-                ) {
-
-                    loadRider()
-
-                } else if (
-                    order.status ==
-                    "Out for Delivery"
-                ) {
-
-
-                    // Delivery is now finished.
-                    //
-                    // RiderOrder already changed:
-                    //
-                    // isAvailable = true
-                    // currentOrderId = ""
-                    //
-                    // We return to Rider Home.
-                    finish()
-                }
-
-            } else {
+            if (success == false) {
 
                 btnUpdateStatus.isEnabled =
                     true
+
+            } else {
+
+                handleSuccessfulStatusChange(
+                    oldStatus
+                )
             }
+        }
+    }
+
+
+    private fun handleSuccessfulStatusChange(
+        oldStatus: String
+    ) {
+
+        if (
+            oldStatus ==
+            "Pick Up Pending"
+        ) {
+
+            loadRider()
+
+        } else if (
+            oldStatus ==
+            "Out for Delivery"
+        ) {
+
+            finish()
         }
     }
 
@@ -547,11 +555,8 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
     }
 
 
-    // -----------------------------------
-    // MAP LIFECYCLE
-    // -----------------------------------
-
     override fun onStart() {
+
         super.onStart()
 
         mapView.onStart()
@@ -559,6 +564,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
 
 
     override fun onResume() {
+
         super.onResume()
 
         mapView.onResume()
@@ -590,6 +596,7 @@ class RiderActiveDeliveryActivity : ComponentActivity() {
 
 
     override fun onLowMemory() {
+
         super.onLowMemory()
 
         mapView.onLowMemory()

@@ -18,39 +18,58 @@ class RiderProfileActivity : ComponentActivity() {
     private var firebaseAuth =
         FirebaseAuth.getInstance()
 
+
     private var riderDatabase =
         RiderDatabase()
+
 
     private var riderAuth =
         RiderAuth()
 
 
-    private lateinit var tvAvatarInitials: TextView
-    private lateinit var tvProfileName: TextView
-    private lateinit var tvEmail: TextView
-    private lateinit var tvPhone: TextView
-    private lateinit var tvVehicle: TextView
+    private lateinit var tvAvatarInitials:
+            TextView
 
-    private lateinit var btnLogout: MaterialButton
+    private lateinit var tvProfileName:
+            TextView
+
+    private lateinit var tvEmail:
+            TextView
+
+    private lateinit var tvPhone:
+            TextView
+
+    private lateinit var tvVehicle:
+            TextView
+
+    private lateinit var btnLogout:
+            MaterialButton
 
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.rider_profile
         )
 
+
         setupViews()
+
         setupNavigation()
+
         setupButtons()
     }
 
 
     override fun onResume() {
+
         super.onResume()
+
 
         loadRider()
     }
@@ -59,62 +78,85 @@ class RiderProfileActivity : ComponentActivity() {
     private fun setupViews() {
 
         tvAvatarInitials =
-            findViewById(R.id.tvAvatarInitials)
+            findViewById(
+                R.id.tvAvatarInitials
+            )
+
 
         tvProfileName =
-            findViewById(R.id.tvProfileName)
+            findViewById(
+                R.id.tvProfileName
+            )
+
 
         tvEmail =
-            findViewById(R.id.tvEmail)
+            findViewById(
+                R.id.tvEmail
+            )
+
 
         tvPhone =
-            findViewById(R.id.tvPhone)
+            findViewById(
+                R.id.tvPhone
+            )
+
 
         tvVehicle =
-            findViewById(R.id.tvVehicle)
+            findViewById(
+                R.id.tvVehicle
+            )
+
 
         btnLogout =
-            findViewById(R.id.btnLogout)
+            findViewById(
+                R.id.btnLogout
+            )
     }
 
 
     private fun setupNavigation() {
 
-        val navSettings =
+        var navSettings =
             findViewById<TextView>(
                 R.id.navSettings
             )
 
-        val navHome =
+
+        var navHome =
             findViewById<TextView>(
                 R.id.navHome
             )
 
-        val navHistory =
+
+        var navHistory =
             findViewById<TextView>(
                 R.id.navHistory
             )
 
 
-        // SETTINGS
         navSettings.setOnClickListener {
 
             loadRider()
         }
 
 
-        // HOME
         navHome.setOnClickListener {
 
-            val intent =
+            var intent =
                 Intent(
                     this,
                     RiderHomeActivity::class.java
                 )
 
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+
+
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_SINGLE_TOP
+            )
 
 
             startActivity(
@@ -126,14 +168,14 @@ class RiderProfileActivity : ComponentActivity() {
         }
 
 
-        // HISTORY
         navHistory.setOnClickListener {
 
-            val intent =
+            var intent =
                 Intent(
                     this,
                     RiderHistoryActivity::class.java
                 )
+
 
             startActivity(
                 intent
@@ -153,7 +195,7 @@ class RiderProfileActivity : ComponentActivity() {
 
     private fun loadRider() {
 
-        val currentUser =
+        var currentUser =
             firebaseAuth.currentUser
 
 
@@ -162,6 +204,7 @@ class RiderProfileActivity : ComponentActivity() {
             showMessage(
                 "Rider is not logged in."
             )
+
 
             returnToLogin()
 
@@ -174,16 +217,24 @@ class RiderProfileActivity : ComponentActivity() {
         ) { success, message, rider ->
 
 
-            if (success && rider != null) {
+            if (success == false) {
 
-                showRiderInformation(
-                    rider
+                showMessage(
+                    message
+                )
+
+            } else if (
+                rider == null
+            ) {
+
+                showMessage(
+                    "Rider profile not found."
                 )
 
             } else {
 
-                showMessage(
-                    message
+                showRiderInformation(
+                    rider
                 )
             }
         }
@@ -202,15 +253,18 @@ class RiderProfileActivity : ComponentActivity() {
             rider.email
 
 
-        tvPhone.text =
-            if (rider.phoneNumber.isBlank()) {
+        if (
+            rider.phoneNumber.isBlank()
+        ) {
 
+            tvPhone.text =
                 "Not provided"
 
-            } else {
+        } else {
 
+            tvPhone.text =
                 rider.phoneNumber
-            }
+        }
 
 
         tvVehicle.text =
@@ -228,31 +282,58 @@ class RiderProfileActivity : ComponentActivity() {
         name: String
     ): String {
 
-        val parts =
-            name.trim()
+        var parts =
+            name
+                .trim()
                 .split(" ")
-                .filter {
-                    it.isNotBlank()
-                }
 
 
-        if (parts.isEmpty()) {
+        var cleanParts =
+            mutableListOf<String>()
+
+
+        for (part in parts) {
+
+            if (part.isNotBlank()) {
+
+                cleanParts.add(
+                    part
+                )
+            }
+        }
+
+
+        if (cleanParts.isEmpty()) {
 
             return "R"
         }
 
 
-        if (parts.size == 1) {
+        if (cleanParts.size == 1) {
 
-            return parts[0]
+            return cleanParts[0]
                 .first()
                 .uppercaseChar()
                 .toString()
         }
 
 
-        return "${parts[0].first().uppercaseChar()}" +
-                "${parts[1].first().uppercaseChar()}"
+        var firstInitial =
+            cleanParts[0]
+                .first()
+                .uppercaseChar()
+                .toString()
+
+
+        var secondInitial =
+            cleanParts[1]
+                .first()
+                .uppercaseChar()
+                .toString()
+
+
+        return firstInitial +
+                secondInitial
     }
 
 
@@ -261,39 +342,27 @@ class RiderProfileActivity : ComponentActivity() {
         riderAuth.logout()
 
 
-        val intent =
-            Intent(
-                this,
-                MainActivity::class.java
-            )
-
-
-        intent.flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-
-        startActivity(
-            intent
-        )
-
-
-        finish()
+        returnToLogin()
     }
 
 
     private fun returnToLogin() {
 
-        val intent =
+        var intent =
             Intent(
                 this,
                 MainActivity::class.java
             )
 
 
-        intent.flags =
-            Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK
+        )
+
+
+        intent.addFlags(
+            Intent.FLAG_ACTIVITY_CLEAR_TASK
+        )
 
 
         startActivity(

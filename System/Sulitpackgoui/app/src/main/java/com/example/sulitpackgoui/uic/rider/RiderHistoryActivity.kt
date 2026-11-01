@@ -31,30 +31,25 @@ class RiderHistoryActivity : ComponentActivity() {
 
     private lateinit var tvNoHistory: TextView
 
-
     private lateinit var cardHistory1: LinearLayout
     private lateinit var cardHistory2: LinearLayout
     private lateinit var cardHistory3: LinearLayout
     private lateinit var cardHistory4: LinearLayout
-
 
     private lateinit var tvHistoryId1: TextView
     private lateinit var tvHistoryId2: TextView
     private lateinit var tvHistoryId3: TextView
     private lateinit var tvHistoryId4: TextView
 
-
     private lateinit var tvHistoryRoute1: TextView
     private lateinit var tvHistoryRoute2: TextView
     private lateinit var tvHistoryRoute3: TextView
     private lateinit var tvHistoryRoute4: TextView
 
-
     private lateinit var tvHistoryFee1: TextView
     private lateinit var tvHistoryFee2: TextView
     private lateinit var tvHistoryFee3: TextView
     private lateinit var tvHistoryFee4: TextView
-
 
     private lateinit var tvHistoryStatus1: TextView
     private lateinit var tvHistoryStatus2: TextView
@@ -65,12 +60,12 @@ class RiderHistoryActivity : ComponentActivity() {
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
 
         setContentView(
             R.layout.rider_history
         )
-
 
         setupViews()
 
@@ -79,6 +74,7 @@ class RiderHistoryActivity : ComponentActivity() {
 
 
     override fun onResume() {
+
         super.onResume()
 
         loadRider()
@@ -201,28 +197,27 @@ class RiderHistoryActivity : ComponentActivity() {
 
     private fun setupNavigation() {
 
-        val navSettings =
+        var navSettings =
             findViewById<TextView>(
                 R.id.navSettings
             )
 
 
-        val navHome =
+        var navHome =
             findViewById<TextView>(
                 R.id.navHome
             )
 
 
-        val navHistory =
+        var navHistory =
             findViewById<TextView>(
                 R.id.navHistory
             )
 
 
-        // SETTINGS
         navSettings.setOnClickListener {
 
-            val intent =
+            var intent =
                 Intent(
                     this,
                     RiderProfileActivity::class.java
@@ -235,19 +230,23 @@ class RiderHistoryActivity : ComponentActivity() {
         }
 
 
-        // HOME
         navHome.setOnClickListener {
 
-            val intent =
+            var intent =
                 Intent(
                     this,
                     RiderHomeActivity::class.java
                 )
 
 
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+            )
+
+
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_SINGLE_TOP
+            )
 
 
             startActivity(
@@ -259,8 +258,6 @@ class RiderHistoryActivity : ComponentActivity() {
         }
 
 
-        // HISTORY
-        // Already on History.
         navHistory.setOnClickListener {
 
             loadRider()
@@ -270,7 +267,7 @@ class RiderHistoryActivity : ComponentActivity() {
 
     private fun loadRider() {
 
-        val currentUser =
+        var currentUser =
             firebaseAuth.currentUser
 
 
@@ -292,16 +289,24 @@ class RiderHistoryActivity : ComponentActivity() {
         ) { success, message, rider ->
 
 
-            if (success && rider != null) {
+            if (success == false) {
 
-                loadHistory(
-                    rider
+                showMessage(
+                    message
+                )
+
+            } else if (
+                rider == null
+            ) {
+
+                showMessage(
+                    "Rider profile not found."
                 )
 
             } else {
 
-                showMessage(
-                    message
+                loadHistory(
+                    rider
                 )
             }
         }
@@ -364,7 +369,7 @@ class RiderHistoryActivity : ComponentActivity() {
             View.GONE
 
 
-        if (orders.isNotEmpty()) {
+        if (orders.size >= 1) {
 
             showOrder(
                 orders[0],
@@ -431,19 +436,29 @@ class RiderHistoryActivity : ComponentActivity() {
 
 
         tvId.text =
-            "Order #${order.orderId}"
+            "Order #" +
+                    order.orderId
 
 
         tvRoute.text =
-            "${order.pickupAddress} → ${order.dropAddress}"
+            order.pickupAddress +
+                    " → " +
+                    order.dropAddress
 
 
         tvFee.text =
-            "₱${String.format("%.2f", order.fee)}"
+            "₱" +
+                    String.format(
+                        "%.2f",
+                        order.fee
+                    )
 
 
         tvStatus.text =
-            "Delivered • ${formatDate(order.createdAt)}"
+            "Delivered • " +
+                    formatDate(
+                        order.createdAt
+                    )
     }
 
 
@@ -467,15 +482,21 @@ class RiderHistoryActivity : ComponentActivity() {
         timestamp: Long
     ): String {
 
-        val formatter =
+        var formatter =
             SimpleDateFormat(
                 "MMM dd, hh:mm a",
                 Locale.getDefault()
             )
 
 
+        var date =
+            Date(
+                timestamp
+            )
+
+
         return formatter.format(
-            Date(timestamp)
+            date
         )
     }
 

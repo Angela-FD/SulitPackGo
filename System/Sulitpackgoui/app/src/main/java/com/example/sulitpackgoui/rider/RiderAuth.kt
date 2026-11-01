@@ -4,12 +4,13 @@ import com.google.firebase.auth.FirebaseAuth
 
 class RiderAuth {
 
-    private var firebaseAuth = FirebaseAuth.getInstance()
+    private var firebaseAuth =
+        FirebaseAuth.getInstance()
 
-    private var riderDatabase = RiderDatabase()
+    private var riderDatabase =
+        RiderDatabase()
 
 
-    // Register a new Rider account
     fun register(
         name: String,
         email: String,
@@ -20,67 +21,37 @@ class RiderAuth {
     ) {
 
         if (name.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter your name."
-            )
-
+            onResult(false, "Please enter your name.")
             return
         }
 
 
         if (email.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter your email."
-            )
-
+            onResult(false, "Please enter your email.")
             return
         }
 
 
         if (password.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter your password."
-            )
-
+            onResult(false, "Please enter your password.")
             return
         }
 
 
         if (password.length < 8) {
-
-            onResult(
-                false,
-                "Password must be at least 8 characters."
-            )
-
+            onResult(false, "Password must be at least 8 characters.")
             return
         }
 
 
         if (phoneNumber.isBlank()) {
-
-            onResult(
-                false,
-                "Please enter your phone number."
-            )
-
+            onResult(false, "Please enter your phone number.")
             return
         }
 
 
         if (vehicleType.isBlank()) {
-
-            onResult(
-                false,
-                "Please select a vehicle."
-            )
-
+            onResult(false, "Please select a vehicle.")
             return
         }
 
@@ -91,7 +62,6 @@ class RiderAuth {
                 password
             )
             .addOnSuccessListener {
-
 
                 var firebaseUser =
                     firebaseAuth.currentUser
@@ -104,61 +74,61 @@ class RiderAuth {
                         "Failed to create Rider account."
                     )
 
-                    return@addOnSuccessListener
-                }
+                } else {
 
-
-                var rider = Rider(
-
-                    uid = firebaseUser.uid,
-
-                    name = name,
-
-                    email = email,
-
-                    phoneNumber = phoneNumber,
-
-                    vehicleType = vehicleType,
-
-                    isAvailable = true,
-
-                    currentOrderId = ""
-                )
-
-
-                riderDatabase.saveRider(
-                    rider
-                ) { success, message ->
-
-
-                    if (success) {
-
-                        onResult(
-                            true,
-                            "Rider account created successfully."
+                    var rider =
+                        Rider(
+                            uid = firebaseUser.uid,
+                            name = name,
+                            email = email,
+                            phoneNumber = phoneNumber,
+                            vehicleType = vehicleType,
+                            isAvailable = true,
+                            currentOrderId = ""
                         )
 
-                    } else {
 
-                        onResult(
-                            false,
-                            message
-                        )
+                    riderDatabase.saveRider(
+                        rider
+                    ) { success, message ->
+
+                        if (success) {
+
+                            onResult(
+                                true,
+                                "Rider account created successfully."
+                            )
+
+                        } else {
+
+                            onResult(
+                                false,
+                                message
+                            )
+                        }
                     }
                 }
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to register Rider."
+
+
+                if (error.message != null) {
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message
-                        ?: "Failed to register Rider."
+                    message
                 )
             }
     }
 
 
-    // Login Rider
     fun login(
         email: String,
         password: String,
@@ -196,7 +166,6 @@ class RiderAuth {
             )
             .addOnSuccessListener {
 
-
                 var firebaseUser =
                     firebaseAuth.currentUser
 
@@ -209,61 +178,74 @@ class RiderAuth {
                         null
                     )
 
-                    return@addOnSuccessListener
-                }
+                } else {
+
+                    riderDatabase.getRider(
+                        firebaseUser.uid
+                    ) { success, message, rider ->
 
 
-                riderDatabase.getRider(
-                    firebaseUser.uid
-                ) { success, message, rider ->
+                        if (success) {
 
+                            if (rider != null) {
 
-                    if (success && rider != null) {
+                                onResult(
+                                    true,
+                                    "Login successful.",
+                                    rider
+                                )
 
-                        onResult(
-                            true,
-                            "Login successful.",
-                            rider
-                        )
+                            } else {
 
-                    } else {
+                                firebaseAuth.signOut()
 
+                                onResult(
+                                    false,
+                                    "This account is not registered as a Rider.",
+                                    null
+                                )
+                            }
 
-                        // If the Firebase account exists
-                        // but no Rider profile exists,
-                        // do not allow Rider login.
+                        } else {
 
-                        firebaseAuth.signOut()
+                            firebaseAuth.signOut()
 
-
-                        onResult(
-                            false,
-                            "This account is not registered as a Rider.",
-                            null
-                        )
+                            onResult(
+                                false,
+                                "This account is not registered as a Rider.",
+                                null
+                            )
+                        }
                     }
                 }
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Login failed."
+
+
+                if (error.message != null) {
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message
-                        ?: "Login failed.",
+                    message,
                     null
                 )
             }
     }
 
 
-    // Logout Rider
     fun logout() {
 
         firebaseAuth.signOut()
     }
 
 
-    // Get current logged-in Firebase Rider UID
     fun getCurrentRiderUid(): String {
 
         var currentUser =
@@ -271,7 +253,6 @@ class RiderAuth {
 
 
         if (currentUser == null) {
-
             return ""
         }
 

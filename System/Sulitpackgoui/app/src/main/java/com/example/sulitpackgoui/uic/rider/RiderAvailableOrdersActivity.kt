@@ -21,30 +21,34 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
     private var firebaseAuth =
         FirebaseAuth.getInstance()
 
+
     private var riderDatabase =
         RiderDatabase()
+
 
     private var riderOrder =
         RiderOrder()
 
 
-    private var currentRider: Rider? =
-        null
+    private lateinit var tvNoOrders:
+            TextView
 
 
-    private lateinit var tvNoOrders: TextView
-
-    private lateinit var ordersContainer: LinearLayout
+    private lateinit var ordersContainer:
+            LinearLayout
 
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.rider_delivery
         )
+
 
         setupViews()
 
@@ -53,10 +57,10 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
 
 
     override fun onResume() {
+
         super.onResume()
 
-        // Reload the available orders every time
-        // the Rider opens or returns to this screen.
+
         loadRider()
     }
 
@@ -78,7 +82,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
 
     private fun setupButtons() {
 
-        val btnBack =
+        var btnBack =
             findViewById<ImageButton>(
                 R.id.btnBack
             )
@@ -93,7 +97,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
 
     private fun loadRider() {
 
-        val currentUser =
+        var currentUser =
             firebaseAuth.currentUser
 
 
@@ -102,6 +106,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
             showMessage(
                 "Rider is not logged in."
             )
+
 
             finish()
 
@@ -114,49 +119,67 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         ) { success, message, rider ->
 
 
-            if (success && rider != null) {
-
-                currentRider =
-                    rider
-
-
-                // Rider already has an order.
-                if (rider.currentOrderId.isNotBlank()) {
-
-                    showMessage(
-                        "You already have an active delivery."
-                    )
-
-                    finish()
-
-                    return@getRider
-                }
-
-
-                // Rider is unavailable.
-                if (rider.isAvailable == false) {
-
-                    showMessage(
-                        "You are currently unavailable."
-                    )
-
-                    finish()
-
-                    return@getRider
-                }
-
-
-                loadAvailableOrders(
-                    rider
-                )
-
-            } else {
+            if (success == false) {
 
                 showMessage(
                     message
                 )
+
+            } else if (
+                rider == null
+            ) {
+
+                showMessage(
+                    "Rider profile not found."
+                )
+
+            } else {
+
+                checkRider(
+                    rider
+                )
             }
         }
+    }
+
+
+    private fun checkRider(
+        rider: Rider
+    ) {
+
+        if (
+            rider.currentOrderId.isNotBlank()
+        ) {
+
+            showMessage(
+                "You already have an active delivery."
+            )
+
+
+            finish()
+
+            return
+        }
+
+
+        if (
+            rider.isAvailable == false
+        ) {
+
+            showMessage(
+                "You are currently unavailable."
+            )
+
+
+            finish()
+
+            return
+        }
+
+
+        loadAvailableOrders(
+            rider
+        )
     }
 
 
@@ -196,10 +219,6 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         orders: List<OrderData>
     ) {
 
-        // Remove the old cards first.
-        //
-        // This prevents duplicate cards
-        // when the screen refreshes.
         ordersContainer.removeAllViews()
 
 
@@ -216,7 +235,6 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
             View.GONE
 
 
-        // Create one card for every order.
         for (order in orders) {
 
             addOrderCard(
@@ -230,8 +248,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         order: OrderData
     ) {
 
-        // Main card
-        val card =
+        var card =
             LinearLayout(
                 this
             )
@@ -254,7 +271,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        val cardLayout =
+        var cardLayout =
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -269,35 +286,13 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
             cardLayout
 
 
-        // -------------------------
-        // ORDER ID
-        // -------------------------
-
-        val tvOrderId =
-            TextView(
-                this
+        var tvOrderId =
+            createText(
+                "Order #" +
+                        order.orderId,
+                16f,
+                true
             )
-
-
-        tvOrderId.text =
-            "Order #${order.orderId}"
-
-
-        tvOrderId.textSize =
-            16f
-
-
-        tvOrderId.setTextColor(
-            getColor(
-                android.R.color.black
-            )
-        )
-
-
-        tvOrderId.setTypeface(
-            null,
-            Typeface.BOLD
-        )
 
 
         card.addView(
@@ -305,44 +300,14 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        // -------------------------
-        // ROUTE
-        // -------------------------
-
-        val tvRoute =
-            TextView(
-                this
+        var tvRoute =
+            createText(
+                order.pickupAddress +
+                        " → " +
+                        order.dropAddress,
+                14f,
+                false
             )
-
-
-        tvRoute.text =
-            "${order.pickupAddress} → ${order.dropAddress}"
-
-
-        tvRoute.textSize =
-            14f
-
-
-        tvRoute.setTextColor(
-            getColor(
-                android.R.color.black
-            )
-        )
-
-
-        val routeLayout =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-
-        routeLayout.topMargin =
-            dpToPx(8)
-
-
-        tvRoute.layoutParams =
-            routeLayout
 
 
         card.addView(
@@ -350,48 +315,20 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        // -------------------------
-        // ORDER INFORMATION
-        // -------------------------
-
-        val tvInfo =
-            TextView(
-                this
+        var tvInfo =
+            createText(
+                formatNumber(
+                    order.distance
+                ) +
+                        " km • " +
+                        formatNumber(
+                            order.weight
+                        ) +
+                        " kg • " +
+                        order.vehicleType,
+                13f,
+                false
             )
-
-
-        tvInfo.text =
-            "${String.format("%.2f", order.distance)} km" +
-                    " • " +
-                    "${String.format("%.2f", order.weight)} kg" +
-                    " • " +
-                    order.vehicleType
-
-
-        tvInfo.textSize =
-            13f
-
-
-        tvInfo.setTextColor(
-            getColor(
-                android.R.color.darker_gray
-            )
-        )
-
-
-        val infoLayout =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-
-        infoLayout.topMargin =
-            dpToPx(6)
-
-
-        tvInfo.layoutParams =
-            infoLayout
 
 
         card.addView(
@@ -399,50 +336,15 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        // -------------------------
-        // FEE
-        // -------------------------
-
-        val tvFee =
-            TextView(
-                this
+        var tvFee =
+            createText(
+                "₱" +
+                        formatNumber(
+                            order.fee
+                        ),
+                17f,
+                true
             )
-
-
-        tvFee.text =
-            "₱${String.format("%.2f", order.fee)}"
-
-
-        tvFee.textSize =
-            17f
-
-
-        tvFee.setTextColor(
-            getColor(
-                android.R.color.black
-            )
-        )
-
-
-        tvFee.setTypeface(
-            null,
-            Typeface.BOLD
-        )
-
-
-        val feeLayout =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-
-        feeLayout.topMargin =
-            dpToPx(10)
-
-
-        tvFee.layoutParams =
-            feeLayout
 
 
         card.addView(
@@ -450,44 +352,12 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        // -------------------------
-        // STATUS
-        // -------------------------
-
-        val tvStatus =
-            TextView(
-                this
+        var tvStatus =
+            createText(
+                "Pending",
+                12f,
+                false
             )
-
-
-        tvStatus.text =
-            "Pending"
-
-
-        tvStatus.textSize =
-            12f
-
-
-        tvStatus.setTextColor(
-            getColor(
-                android.R.color.darker_gray
-            )
-        )
-
-
-        val statusLayout =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-
-        statusLayout.topMargin =
-            dpToPx(4)
-
-
-        tvStatus.layoutParams =
-            statusLayout
 
 
         card.addView(
@@ -495,12 +365,9 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         )
 
 
-        // -------------------------
-        // CLICK ORDER
-        // -------------------------
-
         card.isClickable =
             true
+
 
         card.isFocusable =
             true
@@ -509,24 +376,70 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
         card.setOnClickListener {
 
             openOrderDetails(
-                order
+                order.orderId
             )
         }
 
 
-        // Add the finished card
-        // to the Available Orders list.
         ordersContainer.addView(
             card
         )
     }
 
 
+    private fun createText(
+        text: String,
+        size: Float,
+        bold: Boolean
+    ): TextView {
+
+        var textView =
+            TextView(
+                this
+            )
+
+
+        textView.text =
+            text
+
+
+        textView.textSize =
+            size
+
+
+        textView.setTextColor(
+            getColor(
+                android.R.color.black
+            )
+        )
+
+
+        textView.setPadding(
+            0,
+            dpToPx(5),
+            0,
+            dpToPx(5)
+        )
+
+
+        if (bold) {
+
+            textView.setTypeface(
+                null,
+                Typeface.BOLD
+            )
+        }
+
+
+        return textView
+    }
+
+
     private fun openOrderDetails(
-        order: OrderData
+        orderId: String
     ) {
 
-        val intent =
+        var intent =
             Intent(
                 this,
                 RiderOrderDetailsActivity::class.java
@@ -535,7 +448,7 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
 
         intent.putExtra(
             "orderId",
-            order.orderId
+            orderId
         )
 
 
@@ -545,20 +458,30 @@ class RiderAvailableOrdersActivity : ComponentActivity() {
     }
 
 
-    // Converts dp into pixels.
-    //
-    // Android layouts normally use dp,
-    // but views created in Kotlin need pixels.
+    private fun formatNumber(
+        number: Double
+    ): String {
+
+        return String.format(
+            "%.2f",
+            number
+        )
+    }
+
+
     private fun dpToPx(
         dp: Int
     ): Int {
 
-        val density =
-            resources.displayMetrics.density
+        var density =
+            resources
+                .displayMetrics
+                .density
 
 
         return (
-                dp * density
+                dp *
+                        density
                 ).toInt()
     }
 

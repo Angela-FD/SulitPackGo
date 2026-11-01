@@ -22,89 +22,152 @@ class CustomerReviewActivity : ComponentActivity() {
     private var location =
         DeliveryLocation()
 
+
+    private var packageInfo =
+        PackageInfo()
+
+
     private var vehicle =
         Vehicle()
+
 
     private var routeDistance =
         RouteDistance()
 
+
     private var feeDatabase =
         VehicleFeeDatabase()
+
 
     private var customerOrder =
         CustomerOrder()
 
-    private lateinit var tvPickup: TextView
-    private lateinit var tvDropoff: TextView
-    private lateinit var tvVehicle: TextView
-    private lateinit var tvPackage: TextView
 
-    private lateinit var tvBaseFee: TextView
-    private lateinit var tvDistanceFee: TextView
-    private lateinit var tvTotalFee: TextView
+    private var feeReady =
+        false
 
-    private lateinit var btnPlaceOrder: MaterialButton
 
-    private var feeReady = false
+    private var totalFee =
+        0.0
 
-    private var totalFee = 0.0
+
+    private lateinit var tvPickup:
+            TextView
+
+    private lateinit var tvDropoff:
+            TextView
+
+    private lateinit var tvVehicle:
+            TextView
+
+    private lateinit var tvPackage:
+            TextView
+
+    private lateinit var tvBaseFee:
+            TextView
+
+    private lateinit var tvDistanceFee:
+            TextView
+
+    private lateinit var tvTotalFee:
+            TextView
+
+    private lateinit var btnPlaceOrder:
+            MaterialButton
+
 
     override fun onCreate(
         savedInstanceState: Bundle?
     ) {
+
         super.onCreate(savedInstanceState)
+
 
         setContentView(
             R.layout.customer_review
         )
 
+
         setupViews()
+
         getOrderData()
+
         showOrderData()
+
         calculateFee()
+
         setupButtons()
     }
+
 
     private fun setupViews() {
 
         tvPickup =
-            findViewById(R.id.tvPickupValue)
+            findViewById(
+                R.id.tvPickupValue
+            )
+
 
         tvDropoff =
-            findViewById(R.id.tvDropoffValue)
+            findViewById(
+                R.id.tvDropoffValue
+            )
+
 
         tvVehicle =
-            findViewById(R.id.tvVehicleValue)
+            findViewById(
+                R.id.tvVehicleValue
+            )
+
 
         tvPackage =
-            findViewById(R.id.tvPackageValue)
+            findViewById(
+                R.id.tvPackageValue
+            )
+
 
         tvBaseFee =
-            findViewById(R.id.tvFeeValue)
+            findViewById(
+                R.id.tvFeeValue
+            )
+
 
         tvDistanceFee =
-            findViewById(R.id.tvDistanceFeeValue)
+            findViewById(
+                R.id.tvDistanceFeeValue
+            )
+
 
         tvTotalFee =
-            findViewById(R.id.tvTotalFeeValue)
+            findViewById(
+                R.id.tvTotalFeeValue
+            )
+
 
         btnPlaceOrder =
-            findViewById(R.id.btnPlaceOrder)
+            findViewById(
+                R.id.btnPlaceOrder
+            )
 
-        btnPlaceOrder.isEnabled = false
+
+        btnPlaceOrder.isEnabled =
+            false
     }
+
 
     private fun getOrderData() {
 
         location.address =
-            intent.getStringExtra(
+            readTextExtra(
                 "pickupAddress"
-            ) ?: ""
+            )
+
 
         location.addressDetails =
-            intent.getStringExtra(
+            readTextExtra(
                 "pickupAddressDetails"
-            ) ?: ""
+            )
+
 
         location.pickUpLatitude =
             intent.getDoubleExtra(
@@ -112,21 +175,25 @@ class CustomerReviewActivity : ComponentActivity() {
                 0.0
             )
 
+
         location.pickUpLongitude =
             intent.getDoubleExtra(
                 "pickupLongitude",
                 0.0
             )
 
+
         location.dropAddress =
-            intent.getStringExtra(
+            readTextExtra(
                 "dropAddress"
-            ) ?: ""
+            )
+
 
         location.dropAddressDetails =
-            intent.getStringExtra(
+            readTextExtra(
                 "dropAddressDetails"
-            ) ?: ""
+            )
+
 
         location.dropLatitude =
             intent.getDoubleExtra(
@@ -134,53 +201,75 @@ class CustomerReviewActivity : ComponentActivity() {
                 0.0
             )
 
+
         location.dropLongitude =
             intent.getDoubleExtra(
                 "dropLongitude",
                 0.0
             )
 
+
         var vehicleType =
-            intent.getStringExtra(
+            readTextExtra(
                 "vehicleType"
-            ) ?: ""
+            )
+
 
         vehicle.selectVehicle(
             vehicleType
         )
-    }
 
-    private fun showOrderData() {
 
-        var description =
-            intent.getStringExtra(
+        packageInfo.description =
+            readTextExtra(
                 "description"
-            ) ?: ""
+            )
 
-        var weight =
+
+        packageInfo.weight =
             intent.getDoubleExtra(
                 "weight",
                 0.0
             )
 
-        var pieces =
+
+        packageInfo.pieces =
             intent.getIntExtra(
                 "pieces",
                 0
             )
 
+
+        packageInfo.instructions =
+            readTextExtra(
+                "instructions"
+            )
+    }
+
+
+    private fun showOrderData() {
+
         tvPickup.text =
             location.address
+
 
         tvDropoff.text =
             location.dropAddress
 
+
         tvVehicle.text =
             vehicle.vehicleType
 
+
         tvPackage.text =
-            "$description • $weight kg • $pieces piece(s)"
+            packageInfo.description +
+                    " • " +
+                    packageInfo.weight.toString() +
+                    " kg • " +
+                    packageInfo.pieces.toString() +
+                    " piece(s)"
     }
+
 
     private fun calculateFee() {
 
@@ -188,67 +277,112 @@ class CustomerReviewActivity : ComponentActivity() {
             location
         ) { success, distance, message ->
 
-            if (!success) {
-                showMessage(message)
-                return@getRoadDistance
+
+            if (success == false) {
+
+                showMessage(
+                    message
+                )
+
+            } else {
+
+                loadVehicleFee(
+                    distance
+                )
             }
+        }
+    }
 
-            feeDatabase.getVehicleFee(
-                vehicle.vehicleType
-            ) { feeSuccess, feeMessage, vehicleFee ->
 
-                if (
-                    !feeSuccess ||
-                    vehicleFee == null
-                ) {
+    private fun loadVehicleFee(
+        distance: Double
+    ) {
 
-                    showMessage(feeMessage)
+        feeDatabase.getVehicleFee(
+            vehicle.vehicleType
+        ) { success, message, vehicleFee ->
 
-                    return@getVehicleFee
-                }
+
+            if (success == false) {
+
+                showMessage(
+                    message
+                )
+
+            } else if (
+                vehicleFee == null
+            ) {
+
+                showMessage(
+                    "Vehicle fee not found."
+                )
+
+            } else {
 
                 var calculator =
                     FeeCalculator(
-                        devLocation = location,
-                        feeVehicle = vehicle,
                         vehicleFee = vehicleFee,
                         roadDistanceKm = distance
                     )
 
+
                 var baseFee =
                     calculator.calculateBaseFee()
+
 
                 var distanceFee =
                     calculator.calculateDistanceFee()
 
+
                 totalFee =
                     calculator.calculateTotalFee()
 
-                runOnUiThread {
 
-                    tvBaseFee.text =
-                        "₱%.2f".format(
-                            baseFee
-                        )
-
-                    tvDistanceFee.text =
-                        "₱%.2f".format(
-                            distanceFee
-                        )
-
-                    tvTotalFee.text =
-                        "₱%.2f".format(
-                            totalFee
-                        )
-
-                    feeReady = true
-
-                    btnPlaceOrder.isEnabled =
-                        true
-                }
+                showFee(
+                    baseFee,
+                    distanceFee,
+                    totalFee
+                )
             }
         }
     }
+
+
+    private fun showFee(
+        baseFee: Double,
+        distanceFee: Double,
+        total: Double
+    ) {
+
+        runOnUiThread {
+
+            tvBaseFee.text =
+                formatMoney(
+                    baseFee
+                )
+
+
+            tvDistanceFee.text =
+                formatMoney(
+                    distanceFee
+                )
+
+
+            tvTotalFee.text =
+                formatMoney(
+                    total
+                )
+
+
+            feeReady =
+                true
+
+
+            btnPlaceOrder.isEnabled =
+                true
+        }
+    }
+
 
     private fun setupButtons() {
 
@@ -257,24 +391,28 @@ class CustomerReviewActivity : ComponentActivity() {
                 R.id.btnBack
             )
 
+
         btnBack.setOnClickListener {
+
             finish()
         }
 
+
         btnPlaceOrder.setOnClickListener {
 
-            if (!feeReady) {
+            if (feeReady) {
+
+                placeOrder()
+
+            } else {
 
                 showMessage(
                     "Please wait for the delivery fee."
                 )
-
-                return@setOnClickListener
             }
-
-            placeOrder()
         }
     }
+
 
     private fun placeOrder() {
 
@@ -282,6 +420,7 @@ class CustomerReviewActivity : ComponentActivity() {
             FirebaseAuth
                 .getInstance()
                 .currentUser
+
 
         if (firebaseUser == null) {
 
@@ -292,48 +431,20 @@ class CustomerReviewActivity : ComponentActivity() {
             return
         }
 
-        var customerName =
-            intent.getStringExtra(
-                "customerName"
-            ) ?: "Customer"
 
         var customer =
             Customer(
-                uid = firebaseUser.uid,
-                name = customerName,
-                email = firebaseUser.email ?: "",
-                role = "customer"
+                uid = firebaseUser.uid
             )
 
-        var packageInfo =
-            PackageInfo(
-                description =
-                    intent.getStringExtra(
-                        "description"
-                    ) ?: "",
 
-                weight =
-                    intent.getDoubleExtra(
-                        "weight",
-                        0.0
-                    ),
+        btnPlaceOrder.isEnabled =
+            false
 
-                pieces =
-                    intent.getIntExtra(
-                        "pieces",
-                        0
-                    ),
-
-                instructions =
-                    intent.getStringExtra(
-                        "instructions"
-                    ) ?: ""
-            )
-
-        btnPlaceOrder.isEnabled = false
 
         btnPlaceOrder.text =
             "Placing Order..."
+
 
         customerOrder.createOrder(
             customer,
@@ -342,21 +453,25 @@ class CustomerReviewActivity : ComponentActivity() {
             vehicle
         ) { success, message, orderId ->
 
+
             runOnUiThread {
 
                 if (success) {
 
                     openConfirmation(
-                        orderId,
-                        customerName
+                        orderId
                     )
 
                 } else {
 
-                    showMessage(message)
+                    showMessage(
+                        message
+                    )
+
 
                     btnPlaceOrder.text =
                         "Place Order"
+
 
                     btnPlaceOrder.isEnabled =
                         true
@@ -365,9 +480,9 @@ class CustomerReviewActivity : ComponentActivity() {
         }
     }
 
+
     private fun openConfirmation(
-        orderId: String,
-        customerName: String
+        orderId: String
     ) {
 
         var confirmationIntent =
@@ -376,27 +491,59 @@ class CustomerReviewActivity : ComponentActivity() {
                 CustomerConfirmationActivity::class.java
             )
 
+
         confirmationIntent.putExtra(
             "orderId",
             orderId
         )
+
 
         confirmationIntent.putExtra(
             "totalFee",
             totalFee
         )
 
-        confirmationIntent.putExtra(
-            "customerName",
-            customerName
-        )
 
         startActivity(
             confirmationIntent
         )
 
+
         finish()
     }
+
+
+    private fun readTextExtra(
+        name: String
+    ): String {
+
+        var value =
+            intent.getStringExtra(
+                name
+            )
+
+
+        if (value == null) {
+
+            return ""
+        }
+
+
+        return value
+    }
+
+
+    private fun formatMoney(
+        amount: Double
+    ): String {
+
+        return "₱" +
+                String.format(
+                    "%.2f",
+                    amount
+                )
+    }
+
 
     private fun showMessage(
         message: String

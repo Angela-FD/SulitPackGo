@@ -94,6 +94,26 @@
                     android:textSize="16sp" />
 
 
+                <!-- PHONE -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Phone Number"
+                    android:textColor="#666666"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvProfilePhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="09XXXXXXXXX"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+
                 <!-- EDIT PROFILE -->
 
                 <com.google.android.material.button.MaterialButton
@@ -175,50 +195,74 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_bottom_nav"
         android:elevation="10dp"
-        android:gravity="center"
         android:orientation="horizontal">
 
 
         <!-- ORDERS -->
 
-        <TextView
+        <LinearLayout
             android:id="@+id/navOrders"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:text="Orders"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Orders"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
 
         <!-- HOME -->
 
-        <TextView
+        <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:text="Home"
-            android:textColor="#666666"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
 
         <!-- PROFILE -->
 
-        <TextView
+        <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center"
-            android:text="Profile"
-            android:textColor="#2B8F3F"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="#2B8F3F"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

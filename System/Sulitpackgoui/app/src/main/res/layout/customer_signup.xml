@@ -48,6 +48,8 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <!-- FULL NAME -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,6 +71,8 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@color/black" />
+
+        <!-- EMAIL -->
 
         <TextView
             android:layout_width="wrap_content"
@@ -92,6 +96,35 @@
             android:paddingEnd="16dp"
             android:textColor="@color/black" />
 
+        <!-- PHONE NUMBER -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:text="Phone Number"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:autofillHints="phone"
+            android:background="@drawable/bg_input_outline"
+            android:hint="09XXXXXXXXX"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/black"
+            android:textColorHint="#777777" />
+
+        <!-- PASSWORD -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,6 +147,8 @@
             android:paddingEnd="16dp"
             android:textColor="@color/black" />
 
+        <!-- CONFIRM PASSWORD -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,6 +170,8 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:textColor="@color/black" />
+
+        <!-- SIGN UP -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSignUp"
