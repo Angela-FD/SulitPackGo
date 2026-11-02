@@ -4,7 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomerDatabase {
 
-    private var database = FirebaseFirestore.getInstance()
+    private var database =
+        FirebaseFirestore.getInstance()
 
 
     fun saveCustomer(
@@ -12,18 +13,10 @@ class CustomerDatabase {
         onResult: (Boolean, String) -> Unit
     ) {
 
-        var customerData = hashMapOf(
-            "uid" to customer.uid,
-            "name" to customer.name,
-            "email" to customer.email,
-            "role" to customer.role
-        )
-
-
         database
             .collection("users")
             .document(customer.uid)
-            .set(customerData)
+            .set(customer)
             .addOnSuccessListener {
 
                 onResult(
@@ -33,17 +26,45 @@ class CustomerDatabase {
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to save customer."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message ?: "Failed to save customer."
+                    message
                 )
             }
     }
 
+
     fun getCustomer(
         uid: String,
-        onResult: (Boolean, String, Customer?) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            Customer?
+        ) -> Unit
     ) {
+
+        if (uid.isBlank()) {
+
+            onResult(
+                false,
+                "Customer ID is missing.",
+                null
+            )
+
+            return
+        }
+
 
         database
             .collection("users")
@@ -51,35 +72,45 @@ class CustomerDatabase {
             .get()
             .addOnSuccessListener { document ->
 
-                if (document.exists()) {
-
-                    var customer = Customer(
-                        uid = document.getString("uid") ?: "",
-                        name = document.getString("name") ?: "",
-                        email = document.getString("email") ?: "",
-                        role = document.getString("role") ?: "customer"
+                var customer =
+                    document.toObject(
+                        Customer::class.java
                     )
 
-                    onResult(
-                        true,
-                        "Customer found.",
-                        customer
-                    )
 
-                } else {
+                if (customer == null) {
 
                     onResult(
                         false,
                         "Customer profile not found.",
                         null
                     )
+
+                } else {
+
+                    onResult(
+                        true,
+                        "Customer found.",
+                        customer
+                    )
                 }
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to get customer."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message ?: "Failed to get customer.",
+                    message,
                     null
                 )
             }

@@ -4,56 +4,95 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class VehicleFeeDatabase {
 
-    private var database = FirebaseFirestore.getInstance()
+    private var database =
+        FirebaseFirestore.getInstance()
 
     fun getVehicleFee(
         vehicleType: String,
-        onResult: (Boolean, String, VehicleFee?) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            VehicleFee?
+        ) -> Unit
     ) {
+
         if (vehicleType.isBlank()) {
+
             onResult(
                 false,
                 "Vehicle type is missing.",
                 null
             )
+
             return
         }
 
-        database.collection("vehicleFees")
+
+        database
+            .collection("vehicleFees")
             .document(vehicleType)
             .get()
             .addOnSuccessListener { document ->
 
-                if (!document.exists()) {
+
+                if (
+                    document.exists() == false
+                ) {
+
                     onResult(
                         false,
                         "Vehicle fee not found.",
                         null
                     )
-                    return@addOnSuccessListener
+
+                } else {
+
+                    var vehicleFee =
+                        document.toObject(
+                            VehicleFee::class.java
+                        )
+
+
+                    if (vehicleFee == null) {
+
+                        onResult(
+                            false,
+                            "Failed to read vehicle fee.",
+                            null
+                        )
+
+                    } else {
+
+                        if (
+                            vehicleFee.vehicleType.isBlank()
+                        ) {
+
+                            vehicleFee.vehicleType =
+                                vehicleType
+                        }
+
+
+                        onResult(
+                            true,
+                            "Vehicle fee loaded successfully.",
+                            vehicleFee
+                        )
+                    }
                 }
-
-                var vehicleFee = VehicleFee(
-                    vehicleType = document.getString("vehicleType") ?: vehicleType,
-                    baseFee = document.getDouble("baseFee") ?: 0.0,
-                    ratePerKm = document.getDouble("ratePerKm") ?: 0.0
-                )
-
-                onResult(
-                    true,
-                    "Vehicle fee loaded successfully.",
-                    vehicleFee
-                )
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to load vehicle fee.",
+                    getErrorMessage(
+                        error,
+                        "Failed to load vehicle fee."
+                    ),
                     null
                 )
             }
     }
+
 
     fun updateVehicleFee(
         vehicleType: String,
@@ -61,39 +100,54 @@ class VehicleFeeDatabase {
         ratePerKm: Double,
         onResult: (Boolean, String) -> Unit
     ) {
+
         if (vehicleType.isBlank()) {
+
             onResult(
                 false,
                 "Vehicle type is missing."
             )
+
             return
         }
 
+
         if (baseFee < 0) {
+
             onResult(
                 false,
                 "Base fee cannot be negative."
             )
+
             return
         }
 
+
         if (ratePerKm < 0) {
+
             onResult(
                 false,
                 "Rate per KM cannot be negative."
             )
+
             return
         }
 
-        var vehicleFeeData = hashMapOf(
-            "vehicleType" to vehicleType,
-            "baseFee" to baseFee,
-            "ratePerKm" to ratePerKm
-        )
 
-        database.collection("vehicleFees")
+        var vehicleFee =
+            VehicleFee(
+                vehicleType = vehicleType,
+                baseFee = baseFee,
+                ratePerKm = ratePerKm
+            )
+
+
+        database
+            .collection("vehicleFees")
             .document(vehicleType)
-            .set(vehicleFeeData)
+            .set(
+                vehicleFee
+            )
             .addOnSuccessListener {
 
                 onResult(
@@ -105,8 +159,25 @@ class VehicleFeeDatabase {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to update vehicle fee."
+                    getErrorMessage(
+                        error,
+                        "Failed to update vehicle fee."
+                    )
                 )
             }
+    }
+
+    private fun getErrorMessage(
+        error: Exception,
+        defaultMessage: String
+    ): String {
+
+        if (error.message != null) {
+
+            return error.message.toString()
+        }
+
+
+        return defaultMessage
     }
 }

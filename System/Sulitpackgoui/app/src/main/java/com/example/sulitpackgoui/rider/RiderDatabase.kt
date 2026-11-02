@@ -4,7 +4,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class RiderDatabase {
 
-    private var database = FirebaseFirestore.getInstance()
+    private var database =
+        FirebaseFirestore.getInstance()
 
 
     fun saveRider(
@@ -12,22 +13,10 @@ class RiderDatabase {
         onResult: (Boolean, String) -> Unit
     ) {
 
-        var riderData = hashMapOf(
-            "uid" to rider.uid,
-            "name" to rider.name,
-            "email" to rider.email,
-            "phoneNumber" to rider.phoneNumber,
-            "vehicleType" to rider.vehicleType,
-            "isAvailable" to rider.isAvailable,
-            "currentOrderId" to rider.currentOrderId,
-            "role" to "rider"
-        )
-
-
         database
             .collection("riders")
             .document(rider.uid)
-            .set(riderData)
+            .set(rider)
             .addOnSuccessListener {
 
                 onResult(
@@ -37,17 +26,41 @@ class RiderDatabase {
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to save rider."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message ?: "Failed to save rider."
+                    message
                 )
             }
     }
+
 
     fun getRider(
         uid: String,
         onResult: (Boolean, String, Rider?) -> Unit
     ) {
+
+        if (uid.isBlank()) {
+
+            onResult(
+                false,
+                "Invalid rider ID.",
+                null
+            )
+
+            return
+        }
+
 
         database
             .collection("riders")
@@ -55,39 +68,126 @@ class RiderDatabase {
             .get()
             .addOnSuccessListener { document ->
 
-                if (document.exists()) {
-
-                    var rider = Rider(
-                        uid = document.getString("uid") ?: "",
-                        name = document.getString("name") ?: "",
-                        email = document.getString("email") ?: "",
-                        phoneNumber = document.getString("phoneNumber") ?: "",
-                        vehicleType = document.getString("vehicleType") ?: "",
-                        isAvailable = document.getBoolean("isAvailable") ?: true,
-                        currentOrderId = document.getString("currentOrderId") ?: ""
+                var rider =
+                    document.toObject(
+                        Rider::class.java
                     )
 
-                    onResult(
-                        true,
-                        "Rider found.",
-                        rider
-                    )
 
-                } else {
+                if (rider == null) {
 
                     onResult(
                         false,
                         "Rider profile not found.",
                         null
                     )
+
+                } else {
+
+                    onResult(
+                        true,
+                        "Rider found.",
+                        rider
+                    )
                 }
             }
             .addOnFailureListener { error ->
 
+                var message =
+                    "Failed to get rider."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
                 onResult(
                     false,
-                    error.message ?: "Failed to get rider.",
+                    message,
                     null
+                )
+            }
+    }
+
+
+    fun updateAvailability(
+        rider: Rider,
+        isAvailable: Boolean,
+        onResult: (Boolean, String) -> Unit
+    ) {
+
+        if (rider.uid.isBlank()) {
+
+            onResult(
+                false,
+                "Rider is not logged in."
+            )
+
+            return
+        }
+
+
+        if (isAvailable) {
+
+            if (rider.currentOrderId.isNotBlank()) {
+
+                onResult(
+                    false,
+                    "Finish your current delivery first."
+                )
+
+                return
+            }
+        }
+
+
+        database
+            .collection("riders")
+            .document(rider.uid)
+            .update(
+                "isAvailable",
+                isAvailable
+            )
+            .addOnSuccessListener {
+
+                rider.isAvailable =
+                    isAvailable
+
+
+                if (isAvailable) {
+
+                    onResult(
+                        true,
+                        "You are now available."
+                    )
+
+                } else {
+
+                    onResult(
+                        true,
+                        "You are now unavailable."
+                    )
+                }
+            }
+            .addOnFailureListener { error ->
+
+                var message =
+                    "Failed to update availability."
+
+
+                if (error.message != null) {
+
+                    message =
+                        error.message.toString()
+                }
+
+
+                onResult(
+                    false,
+                    message
                 )
             }
     }

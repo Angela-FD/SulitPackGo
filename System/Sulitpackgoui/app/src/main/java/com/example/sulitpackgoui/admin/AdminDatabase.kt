@@ -1,34 +1,49 @@
 package com.example.sulitpackgoui.admin
 
 import com.example.sulitpackgoui.customer.Customer
-import com.example.sulitpackgoui.rider.Rider
 import com.example.sulitpackgoui.order.OrderData
+import com.example.sulitpackgoui.rider.Rider
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminDatabase {
-
-    private var database = FirebaseFirestore.getInstance()
+    private var database =
+        FirebaseFirestore.getInstance()
 
     fun getCustomers(
-        onResult: (Boolean, String, List<Customer>) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            List<Customer>
+        ) -> Unit
     ) {
-        database.collection("users")
-            .whereEqualTo("role", "customer")
+
+        database
+            .collection("users")
+            .whereEqualTo(
+                "role",
+                "customer"
+            )
             .get()
             .addOnSuccessListener { result ->
 
-                var customers = mutableListOf<Customer>()
+                var customers =
+                    mutableListOf<Customer>()
 
-                for (document in result.documents) {
+                for (
+                document in
+                result.documents
+                ) {
+                    var customer =
+                        document.toObject(
+                            Customer::class.java
+                        )
 
-                    var customer = Customer(
-                        uid = document.getString("uid") ?: "",
-                        name = document.getString("name") ?: "",
-                        email = document.getString("email") ?: "",
-                        role = document.getString("role") ?: "customer"
-                    )
+                    if (customer != null) {
 
-                    customers.add(customer)
+                        customers.add(
+                            customer
+                        )
+                    }
                 }
 
                 onResult(
@@ -41,7 +56,10 @@ class AdminDatabase {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to load customers.",
+                    getErrorMessage(
+                        error,
+                        "Failed to load customers."
+                    ),
                     emptyList()
                 )
             }
@@ -51,53 +69,70 @@ class AdminDatabase {
         customerId: String,
         onResult: (Boolean, String) -> Unit
     ) {
+
         if (customerId.isBlank()) {
-            onResult(false, "Customer ID is missing.")
+
+            onResult(
+                false,
+                "Customer ID is missing."
+            )
+
             return
         }
 
-        database.collection("users")
+        database
+            .collection("users")
             .document(customerId)
             .delete()
             .addOnSuccessListener {
 
                 onResult(
                     true,
-                    "Customer deleted successfully."
+                    "Customer profile deleted successfully."
                 )
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to delete customer."
+                    getErrorMessage(
+                        error,
+                        "Failed to delete customer."
+                    )
                 )
             }
     }
 
     fun getRiders(
-        onResult: (Boolean, String, List<Rider>) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            List<Rider>
+        ) -> Unit
     ) {
-        database.collection("users")
-            .whereEqualTo("role", "rider")
+        database
+            .collection("riders")
             .get()
             .addOnSuccessListener { result ->
 
-                var riders = mutableListOf<Rider>()
+                var riders =
+                    mutableListOf<Rider>()
 
-                for (document in result.documents) {
+                for (
+                document in
+                result.documents
+                ) {
+                    var rider =
+                        document.toObject(
+                            Rider::class.java
+                        )
 
-                    var rider = Rider(
-                        uid = document.getString("uid") ?: "",
-                        name = document.getString("name") ?: "",
-                        email = document.getString("email") ?: "",
-                        phoneNumber = document.getString("phoneNumber") ?: "",
-                        vehicleType = document.getString("vehicleType") ?: "",
-                        isAvailable = document.getBoolean("isAvailable") ?: true,
-                        currentOrderId = document.getString("currentOrderId") ?: ""
-                    )
+                    if (rider != null) {
 
-                    riders.add(rider)
+                        riders.add(
+                            rider
+                        )
+                    }
                 }
 
                 onResult(
@@ -110,7 +145,10 @@ class AdminDatabase {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to load riders.",
+                    getErrorMessage(
+                        error,
+                        "Failed to load riders."
+                    ),
                     emptyList()
                 )
             }
@@ -120,105 +158,129 @@ class AdminDatabase {
         riderId: String,
         onResult: (Boolean, String) -> Unit
     ) {
+
         if (riderId.isBlank()) {
-            onResult(false, "Rider ID is missing.")
+
+            onResult(
+                false,
+                "Rider ID is missing."
+            )
+
             return
         }
 
-        database.collection("users")
-            .document(riderId)
+        var riderReference =
+            database
+                .collection("riders")
+                .document(riderId)
+
+        riderReference
             .get()
             .addOnSuccessListener { document ->
 
-                if (!document.exists()) {
-                    onResult(false, "Rider not found.")
-                    return@addOnSuccessListener
-                }
+                if (
+                    document.exists() == false
+                ) {
 
-                var currentOrderId =
-                    document.getString("currentOrderId") ?: ""
-
-                if (currentOrderId.isNotBlank()) {
                     onResult(
                         false,
-                        "Cannot delete rider with an active order."
+                        "Rider not found."
                     )
-                    return@addOnSuccessListener
-                }
 
-                database.collection("users")
-                    .document(riderId)
-                    .delete()
-                    .addOnSuccessListener {
+                } else {
 
-                        onResult(
-                            true,
-                            "Rider deleted successfully."
+                    var rider =
+                        document.toObject(
+                            Rider::class.java
                         )
-                    }
-                    .addOnFailureListener { error ->
+
+                    if (rider == null) {
 
                         onResult(
                             false,
-                            error.message ?: "Failed to delete rider."
+                            "Failed to read Rider."
                         )
+
+                    } else if (
+                        rider.currentOrderId.isNotBlank()
+                    ) {
+
+                        onResult(
+                            false,
+                            "Cannot delete rider with an active order."
+                        )
+
+                    } else {
+
+                        riderReference
+                            .delete()
+                            .addOnSuccessListener {
+
+                                onResult(
+                                    true,
+                                    "Rider profile deleted successfully."
+                                )
+                            }
+                            .addOnFailureListener { error ->
+
+                                onResult(
+                                    false,
+                                    getErrorMessage(
+                                        error,
+                                        "Failed to delete rider."
+                                    )
+                                )
+                            }
                     }
+                }
             }
             .addOnFailureListener { error ->
 
                 onResult(
                     false,
-                    error.message ?: "Failed to check rider."
+                    getErrorMessage(
+                        error,
+                        "Failed to check rider."
+                    )
                 )
             }
     }
 
     fun getOrders(
-        onResult: (Boolean, String, List<OrderData>) -> Unit
+        onResult: (
+            Boolean,
+            String,
+            List<OrderData>
+        ) -> Unit
     ) {
-        database.collection("orders")
+        database
+            .collection("orders")
             .get()
             .addOnSuccessListener { result ->
 
-                var orders = mutableListOf<OrderData>()
+                var orders =
+                    mutableListOf<OrderData>()
 
-                for (document in result.documents) {
+                for (
+                document in
+                result.documents
+                ) {
 
-                    var order = OrderData(
-                        orderId = document.getString("orderId") ?: "",
-                        customerId = document.getString("customerId") ?: "",
-                        riderId = document.getString("riderId") ?: "",
+                    var order =
+                        document.toObject(
+                            OrderData::class.java
+                        )
 
-                        pickupAddress = document.getString("pickupAddress") ?: "",
-                        pickupAddressDetails = document.getString("pickupAddressDetails") ?: "",
+                    if (order != null) {
 
-                        dropAddress = document.getString("dropAddress") ?: "",
-                        dropAddressDetails = document.getString("dropAddressDetails") ?: "",
-
-                        pickupLatitude = document.getDouble("pickupLatitude") ?: 0.0,
-                        pickupLongitude = document.getDouble("pickupLongitude") ?: 0.0,
-                        dropLatitude = document.getDouble("dropLatitude") ?: 0.0,
-                        dropLongitude = document.getDouble("dropLongitude") ?: 0.0,
-
-                        description = document.getString("description") ?: "",
-                        packageType = document.getString("packageType") ?: "",
-                        weight = document.getDouble("weight") ?: 0.0,
-                        pieces = document.getLong("pieces")?.toInt() ?: 0,
-                        instructions = document.getString("instructions") ?: "",
-
-                        vehicleType = document.getString("vehicleType") ?: "",
-                        distance = document.getDouble("distance") ?: 0.0,
-                        fee = document.getDouble("fee") ?: 0.0,
-
-                        status = document.getString("status") ?: "",
-                        createdAt = document.getLong("createdAt") ?: 0L
-                    )
-
-                    orders.add(order)
+                        orders.add(
+                            order
+                        )
+                    }
                 }
 
-                orders.sortByDescending {
-                    it.createdAt
+                orders.sortByDescending { order ->
+                    order.createdAt
                 }
 
                 onResult(
@@ -231,9 +293,22 @@ class AdminDatabase {
 
                 onResult(
                     false,
-                    error.message ?: "Failed to load orders.",
+                    getErrorMessage(
+                        error,
+                        "Failed to load orders."
+                    ),
                     emptyList()
                 )
             }
+    }
+    private fun getErrorMessage(
+        error: Exception,
+        defaultMessage: String
+    ): String {
+        if (error.message != null) {
+
+            return error.message.toString()
+        }
+        return defaultMessage
     }
 }
