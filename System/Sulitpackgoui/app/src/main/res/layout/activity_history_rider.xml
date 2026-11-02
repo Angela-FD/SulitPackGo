@@ -97,7 +97,7 @@
                 android:minHeight="18dp"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
-                tools:text="Lipa to Malvar" />
+                tools:text="Batangas City to Nasugbu" />
 
             <TextView
                 android:id="@+id/tvHistoryStatus1"
@@ -155,7 +155,7 @@
                 android:minHeight="18dp"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
-                tools:text="Lipa to Tanauan" />
+                tools:text="Lemery to Lipa" />
 
             <TextView
                 android:id="@+id/tvHistoryStatus2"
@@ -213,7 +213,7 @@
                 android:minHeight="18dp"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
-                tools:text="Lipa to Sto. Tomas" />
+                tools:text="Lipa to San Pascual" />
 
             <TextView
                 android:id="@+id/tvHistoryStatus3"
@@ -272,7 +272,7 @@
                 android:minHeight="18dp"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
-                tools:text="Mataasnakahoy to Lipa" />
+                tools:text="Calaca to Lipa" />
 
             <TextView
                 android:id="@+id/tvHistoryStatus4"

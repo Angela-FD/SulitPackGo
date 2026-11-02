@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Orders"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/tvNoOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:text="No orders yet."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <!-- ORDER 1 -->
+        <LinearLayout
+            android:id="@+id/cardOrder1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvOrderId1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-1" />
+
+                <TextView
+                    android:id="@+id/tvStatus1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Delivered" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRoute1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="SM City, Batangas" />
+
+            <TextView
+                android:id="@+id/tvInfo1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="7.4 km • 3.2 kg • Motor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRider1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="18dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:text="Rider: Juan Dela Cruz" />
+
+                <TextView
+                    android:id="@+id/tvFee1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="₱185" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ORDER 2 -->
+        <LinearLayout
+            android:id="@+id/cardOrder2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvOrderId2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-2" />
+
+                <TextView
+                    android:id="@+id/tvStatus2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:textColor="#1E88E5"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="In Transit" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRoute2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Robinsons Place Lipa" />
+
+            <TextView
+                android:id="@+id/tvInfo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="13.1 km • 6.0 kg • Van" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRider2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="18dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:text="Rider: Pedro Reyes" />
+
+                <TextView
+                    android:id="@+id/tvFee2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="₱265" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardOrder3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvOrderId3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="#ABC-3" />
+
+                <TextView
+                    android:id="@+id/tvStatus3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#F9A825"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Pending" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRoute3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Lemery Market" />
+
+            <TextView
+                android:id="@+id/tvInfo3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="5.9 km • 1.8 kg • Motor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRider3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="18dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:text="No rider yet" />
+
+                <TextView
+                    android:id="@+id/tvFee3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="₱150" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

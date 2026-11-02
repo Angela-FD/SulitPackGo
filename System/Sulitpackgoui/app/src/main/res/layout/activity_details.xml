@@ -100,7 +100,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                tools:text="SM City Lipa, Ayala Highway" />
+                tools:text="SM City Batangas" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                tools:text="J.P. Laurel Highway, Malvar" />
+                tools:text="WalterMart Nasugbu" />
 
             <View
                 android:layout_width="match_parent"

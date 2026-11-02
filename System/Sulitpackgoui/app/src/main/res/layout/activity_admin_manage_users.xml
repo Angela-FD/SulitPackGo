@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Users"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="All registered customers."
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvNoUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:text="No users yet."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/cardUser1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textColor="#2B8F3F"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="MS" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUserName1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Maria Santos" />
+
+                <TextView
+                    android:id="@+id/tvUserEmail1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="maria@email.com" />
+
+                <TextView
+                    android:id="@+id/tvUserPhone1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="0917 123 4567" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardUser2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textColor="#2B8F3F"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="WR" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUserName2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Wilbert Ramos" />
+
+                <TextView
+                    android:id="@+id/tvUserEmail2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="wilbert@email.com" />
+
+                <TextView
+                    android:id="@+id/tvUserPhone2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="0918 912 3456" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardUser3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textColor="#2B8F3F"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="BB" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUserName3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="20dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Bea Bautista" />
+
+                <TextView
+                    android:id="@+id/tvUserEmail3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="bea@email.com" />
+
+                <TextView
+                    android:id="@+id/tvUserPhone3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="16dp"
+                    android:textColor="#666666"
+                    android:textSize="12sp"
+                    tools:text="0919 876 1234" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

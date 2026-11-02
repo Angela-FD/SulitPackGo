@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Riders"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="All registered riders."
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvNoRiders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:text="No riders yet."
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/cardRider1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRiderName1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="22dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Juan Dela Cruz" />
+
+                <TextView
+                    android:id="@+id/tvRiderStatus1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Available" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRiderVehicle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Motor" />
+
+            <TextView
+                android:id="@+id/tvRiderPhone1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="0917 123 4567" />
+
+            <TextView
+                android:id="@+id/tvRiderEmail1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="juan@email.com" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardRider2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRiderName2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="22dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Pedro Reyes" />
+
+                <TextView
+                    android:id="@+id/tvRiderStatus2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:textColor="#F9A825"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Unavailable" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRiderVehicle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Van" />
+
+            <TextView
+                android:id="@+id/tvRiderPhone2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="0997 654 4321" />
+
+            <TextView
+                android:id="@+id/tvRiderEmail2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="pedro@email.com" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardRider3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_input_outline"
+            android:backgroundTint="@android:color/white"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvRiderName3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="22dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Jonathan Lopez" />
+
+                <TextView
+                    android:id="@+id/tvRiderStatus3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2B8F3F"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Available" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRiderVehicle3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="18dp"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                tools:text="Tricycle" />
+
+            <TextView
+                android:id="@+id/tvRiderPhone3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="0935 678 9123" />
+
+            <TextView
+                android:id="@+id/tvRiderEmail3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="16dp"
+                android:textColor="#666666"
+                android:textSize="12sp"
+                tools:text="ana@email.com" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -30,7 +30,7 @@
                 android:contentDescription="Settings"
                 android:focusable="true"
                 android:gravity="center"
-                android:text="⚙️"
+                android:text="⚙"
                 android:textColor="@android:color/black"
                 android:textSize="30sp" />
         </LinearLayout>
